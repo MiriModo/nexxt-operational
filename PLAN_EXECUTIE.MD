@@ -150,7 +150,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   graficul și documentele lipsă; o intervenție inexistentă sau infezabilă e refuzată cu motiv; teste.
 
 ## Milestone 5: Explicație și evaluare
-- [ ] M5-T1 `explain` extins — Acceptance criteria: după secțiunile existente apar `── Verificări`
+- [x] M5-T1 `explain` extins — Acceptance criteria: după secțiunile existente apar `── Verificări`
   (plan cu motive, rezultate, unde s-a oprit), `── Retenție` (B descompus, legături, p, V, tabel cu
   intervențiile: cost / p_după / fezabil / motiv), `── Recomandare` (textul final + documente lipsă);
   rulează pentru orice caz din coadă fără excepție (test existent extins).

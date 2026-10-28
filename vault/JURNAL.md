@@ -90,3 +90,11 @@
   oferta și graficul pentru intervenția aleasă de om), `persist` (approvals.json + rând `aprobare`/`override` în audit.jsonl),
   CLI cu afișarea ofertei, graficului și documentelor lipsă; `ApprovalError` → `SystemExit` cu mesaj clar.
 - `recommend` scrie acum și `offers.json`. 7 teste în `tests/test_approve.py`.
+
+## M5-T1 — explain extins + pipeline.run_full (done)
+- `pipeline.py`: `FullRun` (pf, cfg, res, mocks, checks, offers, recs, audit; `by_case`) + `run_full` — sursa unică pentru
+  explain / evaluate / demo (CLI-ul vine la M6-T1).
+- `explain.py`: `explain_checks` (motive, plan cu motive, omise, rezultate, interogări), `explain_retention` (B descompus,
+  legături pe componente, semnale active, formula p, V, tabel intervenții cu ► pe cea aleasă), `explain_recommendation`
+  (stare, motiv, ofertă, grafic, documente, text); `explain_full`; CLI cu `--scurt` pentru varianta veche.
+- 4 teste în `tests/test_explain_full.py` (toate cazurile au cele 6 secțiuni).

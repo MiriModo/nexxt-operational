@@ -11,7 +11,8 @@ from pathlib import Path
 
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, fmt_ron, read_json, setup_console
 from .config_loader import Config
-from .queue import CaseInput, Trace, run_pipeline, score_case
+from .queue import CaseInput, Trace, score_case
+from .recommend import ETICHETA
 
 ACT_TXT = {"oferta_in_grila": "ofertă în grilă", "partial": "parțial", "imposibil": "imposibil"}
 
@@ -126,29 +127,111 @@ def explain_case(case: dict, ci: CaseInput, tr: Trace, cfg: Config) -> str:
     return "\n".join(L)
 
 
+# ================================================================ explicația completă (verificări + retenție + recomandare)
+
+MARK = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·"}
+
+
+def explain_checks(check: dict) -> list[str]:
+    L = ["\n── Verificări (alese după produse deținute + motiv)"]
+    L.append("  motive: " + ", ".join(f"{m['motiv']} ({m['sursa']})" for m in check["motive"]) + "; produse deținute: "
+             + (", ".join(check["produse_detinute"]) or "—"))
+    L.append("  planificate, cu motivul includerii:")
+    for x in check["plan"]:
+        L.append(f"    [{x['treapta']:<13}] {x['id']:<30} {'extern' if x['externa'] else 'intern':<6} ← {x['motiv']}")
+    if check["omise"]:
+        L.append("  omise, cu motivul omiterii:")
+        for x in check["omise"]:
+            L.append(f"    [{x['treapta']:<13}] {x['id']:<30} {'extern' if x['externa'] else 'intern':<6} ✗ {x['motiv']}")
+    L.append("  rezultate:")
+    for x in check["rezultate"]:
+        L.append(f"    {MARK[x['status']]} {x['id']:<30} {x['dovada']}" + (f"  [{x['sursa']}]" if x.get("sursa") and x["sursa"] != "intern" else ""))
+    ie = check["interogari_externe"]
+    L.append(f"  interogări externe: {ie.get('executate', 0)} executate din {ie['rulare_tot']} posibile → "
+             f"{ie['rulare_tot'] - ie.get('executate', 0)} evitate"
+             + (f"; oprit la {check['oprit_la']} ({check['verificare_picata']})" if check["oprit_la"] else ""))
+    return L
+
+
+def explain_retention(offer: dict, cfg: Config) -> list[str]:
+    R = cfg.retention
+    b, leg = offer["B_detalii"], offer["legaturi"]
+    L = ["\n── Retenție (cea mai ieftină implicare care păstrează clientul)"]
+    L.append(f"  B = dobândă la noi {fmt_ron(b['dobanda_la_noi'])} − dobândă piață {fmt_ron(b['dobanda_piata'])} "
+             f"({b['dobanda_pct_piata'] if b['dobanda_pct_piata'] is not None else '—'}%) − cost mutare {fmt_ron(b['cost_mutare'])} "
+             f"= {fmt_ron(offer['B'])} RON (orizont {b.get('orizont_luni', 0)} luni)")
+    c = leg["componente"]
+    L.append(f"  legături = {leg['scor']:.2f} (produse {c['produse']:.2f} · vechime {c['vechime']:.2f} ({leg['vechime_ani']} ani) · "
+             f"nivel {c['nivel']:.2f} · activitate {c['activitate']:.0f}) → {'suficiente' if leg['suficiente_pentru_oferta'] else 'insuficiente'} pentru ofertă")
+    L.append(f"  semnale active: {', '.join(offer['semnale_active']) or '—'}")
+    s = R.sigmoid
+    L.append(f"  p = sigmoid({s['a']}·B_norm + {s['b']}·active − {s['c']} − {s['d']}·legături) = {offer['p']:.0%}   (țintă ≤ {offer['p_tinta']:.0%})")
+    L.append(f"  V = {fmt_ron(offer['V'])} RON (marjă {fmt_ron(offer['valoare']['venit_marja'])} + produse {fmt_ron(offer['valoare']['produse'])}) "
+             f"→ p × V = {fmt_ron(offer['p'] * offer['V'])} RON")
+    L.append(f"  {'':2}{'intervenție':<22} {'fezabil':<7} {'cost':>9} {'B după':>9} {'p după':>6} {'țintă':<5} {'merită':<6} motiv")
+    for i in offer["interventii"]:
+        mark = "►" if i["id"] == offer["interventie_aleasa"] else " "
+        L.append(f"  {mark} {i['id']:<22} {'da' if i['fezabil'] else 'nu':<7} {fmt_ron(i['cost']):>9} {fmt_ron(i['B_dupa']):>9} "
+                 f"{i['p_dupa']:>6.0%} {'da' if i['respecta_tinta'] else 'nu':<5} {'da' if i['merita'] else 'nu':<6} "
+                 f"{'' if i['fezabil'] else i['motiv_infezabil']}"[:170])
+    L.append(f"  aleasă: {offer['interventie_aleasa'] or '—'} — {offer['motiv_alegere']}")
+    return L
+
+
+def explain_recommendation(rec: dict) -> list[str]:
+    L = [f"\n── Recomandare: {ETICHETA[rec['recomandare']].upper()}"]
+    L.append(f"  motiv: {rec['motiv']}")
+    o = rec["oferta"]
+    if o:
+        L.append("  ofertă: " + ", ".join(f"{k} {v}" for k, v in o.items() if v is not None and k not in ("tip",)))
+    if rec["grafic"]:
+        g = rec["grafic"]
+        L.append(f"  grafic: {g['nr_rate']} rate, prima {fmt_ron(g['primele_luni'][0]['rata'])} RON ({g['primele_luni'][0]['luna']}), "
+                 f"dobândă totală {fmt_ron(g['dobanda_totala'])} RON")
+    if rec["documente_lipsa"]:
+        L.append("  documente de adus: " + "; ".join(f"{d['tip']} ({d['motiv']})" for d in rec["documente_lipsa"]))
+    else:
+        L.append("  documente: dosarul e complet pentru această recomandare")
+    L.append(f"  text pentru consilier: {rec['explicatie']}")
+    return L
+
+
+def explain_full(case: dict, full) -> str:
+    a = full.by_case(case["case_id"])
+    txt = explain_case(a["case"], a["input"], a["trace"], full.cfg)
+    L = explain_checks(a["check"]) + explain_retention(a["offer"], full.cfg) + explain_recommendation(a["rec"])
+    return txt + "\n" + "\n".join(L)
+
+
 def main(argv: list[str] | None = None) -> None:
     setup_console()
-    ap = argparse.ArgumentParser(description="Explică un caz din coadă.")
+    ap = argparse.ArgumentParser(description="Explică un caz din coadă: semnale, calcul, verificări, retenție, recomandare.")
     ap.add_argument("case_id")
     ap.add_argument("--today")
     ap.add_argument("--data-dir", default=str(DATA_DIR))
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--config-dir", default=str(CONFIG_DIR))
+    ap.add_argument("--scurt", action="store_true", help="doar partea de coadă (fără verificări / retenție / recomandare)")
     a = ap.parse_args(argv)
 
-    pf, cfg, res = run_pipeline(a.data_dir, a.out_dir, a.config_dir, a.today)
+    from .pipeline import run_full
+    full = run_full(a.data_dir, a.out_dir, a.config_dir, a.today)
+    res = full.res
     # cazul e identificat după conținut (client, credit, cerere) ca să fie robust la o coadă regenerată
     qpath = Path(a.out_dir) / "queue.json"
     target = None
     if qpath.exists():
         target = next((c for c in read_json(qpath) if c["case_id"] == a.case_id), None)
     key = (lambda c: (c["client_id"], c["loan_id"], c["request_id"]))
-    case = next((c for c in res.cases if target and key(c) == key(target)), None) \
-        or next((c for c in res.cases if c["case_id"] == a.case_id), None)
+    case = next((c for c in res.cases if target and key(c) == key(target)), None)         or next((c for c in res.cases if c["case_id"] == a.case_id), None)
     if case is None:
         raise SystemExit(f"Cazul {a.case_id} nu există în coadă ({len(res.cases)} cazuri).")
-    print(explain_case(case, res.inputs[case["case_id"]], res.traces[case["case_id"]], cfg))
+    if a.scurt:
+        print(explain_case(case, res.inputs[case["case_id"]], res.traces[case["case_id"]], full.cfg))
+    else:
+        print(explain_full(case, full))
 
 
 if __name__ == "__main__":
     main()
+
