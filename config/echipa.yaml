@@ -1,0 +1,8 @@
+# Echipa de consilieri. Cazurile se alocă determinist (hash pe client_id), ca același client să ajungă mereu la
+# același consilier; deciziile din approvals.json poartă `consilier`, iar feedback-ul se raportează și pe consilier.
+consilieri:
+  - { id: ana.pop, nume: "Ana Pop" }
+  - { id: mihai.ionescu, nume: "Mihai Ionescu" }
+  - { id: ioana.dumitru, nume: "Ioana Dumitru" }
+  - { id: radu.stan, nume: "Radu Stan" }
+alocare: hash          # hash (determinist pe client_id) | primul (toate cazurile la primul consilier)

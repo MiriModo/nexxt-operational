@@ -268,17 +268,22 @@ def audit_rows(case: dict, check: dict, offer: dict, r: dict, today: date) -> li
 
 # ---------------------------------------------------------------- pe portofoliu + CLI
 
-def build_recommendations(pf, cfg: Config, res, checks: list[dict], offers: list[dict], mocks: Mocks) -> tuple[list[dict], list[dict]]:
+def build_recommendations(pf, cfg: Config, res, checks: list[dict], offers: list[dict], mocks: Mocks,
+                          versiune: str | None = None) -> tuple[list[dict], list[dict]]:
+    from .versiune import versiune_completa
     by_check = {c["case_id"]: c for c in checks}
     by_offer = {o["case_id"]: o for o in offers}
+    versiune = versiune or versiune_completa(cfg)["scurt"]
     rows, audit = [], []
     for case in res.cases:
         ci = res.inputs[case["case_id"]]
         check, offer = by_check[case["case_id"]], by_offer[case["case_id"]]
         r = recomanda(case, check, offer, ci.client, ci.loan, ci.cereri, mocks.documente.get(case["client_id"], []),
                       pf.today, pf.market, cfg)
+        r["consilier"] = cfg.echipa.pentru(case["client_id"])
+        r["versiune"] = versiune
         rows.append(r)
-        audit += audit_rows(case, check, offer, r, pf.today)
+        audit += [{**a, "versiune": versiune} for a in audit_rows(case, check, offer, r, pf.today)]
     return rows, audit
 
 

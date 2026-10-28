@@ -34,6 +34,7 @@ def _case_payload(full: FullRun, case: dict) -> dict:
     return {
         "case": {k: case[k] for k in ("case_id", "client_id", "loan_id", "produs", "sursa", "request_id", "semnale", "scoruri",
                                       "banda", "deadline", "motive_top3", "actiune_propusa", "blocaje")},
+        "consilier": rec.get("consilier"), "versiune": rec.get("versiune"),
         "client": {"nume": cl["nume"], "nivel": cl["nivel_relatie"], "tipologie": cl["tipologie_declarata"],
                    "client_din": cl["client_din"], "produse": cl.get("produse_atasate", [])},
         "loan": ({"sold": ci.loan["sold_ramas"], "tip_dobanda": ci.loan["tip_dobanda"], "dobanda": ci.loan["dobanda_curenta"],

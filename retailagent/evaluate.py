@@ -264,8 +264,9 @@ def main(argv: list[str] | None = None) -> None:
     comparatie = compara_modele_churn(a.data_dir, a.out_dir, a.config_dir, cfg, gt) \
         if (a.compara_churn or len(pf.clients) <= 500) else None
 
-    report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing,
-              "model_final": model_final, "scalare": scalare, "comparatie_churn": comparatie}
+    from .versiune import versiune_completa
+    report = {"versiune": versiune_completa(cfg, a.config_dir), "detectie": detection, "clasificare_tranzactii": inflows, **queue,
+              "capcane": traps, "timp": timing, "model_final": model_final, "scalare": scalare, "comparatie_churn": comparatie}
     write_json(Path(a.out_dir) / "evaluation.json", report)
 
     # ---------------- consolă

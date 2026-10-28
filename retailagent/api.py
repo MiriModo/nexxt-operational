@@ -24,7 +24,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .approve import ApprovalError, decide, persist
+from .approve import ApprovalError, decide, inregistreaza_rezultat, persist
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, read_json
 from .demo import build_data
 from .pipeline import run_full
@@ -34,13 +34,18 @@ class DecizieInput(BaseModel):
     decizie: Literal["aproba", "modifica", "respinge"]
     interventie: str | None = None
     motiv: str | None = None
+    consilier: str | None = None
+
+
+class RezultatInput(BaseModel):
+    rezultat: Literal["ramas", "plecat"]
 
 
 def compact_caz(c: dict) -> dict:
     """Aceeași formă ca un caz complet (contractul UI), dar fără listele mari — pentru coadă și pagina de start."""
     o, ch, r = c["offer"], c["check"], c["rec"]
     return {
-        "case": c["case"], "client": c["client"], "loan": c["loan"],
+        "case": c["case"], "client": c["client"], "loan": c["loan"], "consilier": c.get("consilier"), "versiune": c.get("versiune"),
         "check": {"motive": ch["motive"], "plan": [], "omise": [], "rezultate": [], "oprit_la": ch["oprit_la"],
                   "verificare_picata": ch["verificare_picata"], "interogari": ch["interogari"], "concluzii": ch["concluzii"]},
         "offer": {**{k: o[k] for k in ("B", "B_detalii", "p", "p_tinta", "V", "legaturi", "semnale_active", "aleasa",
@@ -88,8 +93,10 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     @app.get("/api/metrici/context")
     def context():
         d = stare.data
+        from .versiune import versiune_completa
         return {"azi": d["azi"], "clienti": d["clienti"], "p_tinta": d["p_tinta"], "model_churn": d.get("model_churn"),
-                "total_cazuri": d["total_cazuri"]}
+                "total_cazuri": d["total_cazuri"], "versiune": versiune_completa(stare.full.cfg, stare.config_dir),
+                "buget_portofoliu": stare.full.buget}
 
     @app.get("/api/cazuri")
     def cazuri(limit: int = 500, compact: bool = True, banda: str | None = None, q: str | None = None):
@@ -115,13 +122,19 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
 
     @app.get("/api/coada")
     def coada(limit: int = 60, offset: int = 0, banda: str | None = None, q: str | None = None,
-              sort: str = "prioritate", ascunde_decise: bool = False):
+              sort: str = "prioritate", ascunde_decise: bool = False, recomandare: str | None = None,
+              consilier: str | None = None):
         """Pagina de coadă: filtre + sortare + paginare pe server (UI-ul nu încarcă toate cazurile)."""
         rows = stare.data["cazuri"]
         benzi = set(banda.split(",")) if banda else None
         decise = _decise() if ascunde_decise else {}
         if benzi:
             rows = [c for c in rows if c["case"]["banda"] in benzi]
+        if recomandare:
+            rec_set = set(recomandare.split(","))
+            rows = [c for c in rows if c["rec"]["recomandare"] in rec_set]
+        if consilier:
+            rows = [c for c in rows if c.get("consilier") == consilier]
         if ascunde_decise:
             rows = [c for c in rows if c["case"]["case_id"] not in decise]
         if q:
@@ -167,18 +180,42 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
             raise HTTPException(404, f"cazul {case_id} nu există")
         try:
             rec = decide(stare.recs[case_id], stare.offers[case_id], d.decizie, d.interventie, d.motiv, stare.full.cfg,
-                         datetime.now(), stare.data_dir)
+                         datetime.now(), stare.data_dir, d.consilier)
         except ApprovalError as e:
             raise HTTPException(400, str(e)) from e
         persist(rec, stare.out_dir)
         return {"decizie": d.decizie, "interventie": rec["interventie_finala"], "motiv": rec["motiv"], "case_id": case_id,
                 "la": rec["timestamp"], "sursa": "api", "override": rec["override"], "oferta": rec["oferta"],
-                "documente_lipsa": rec["documente_lipsa"]}
+                "documente_lipsa": rec["documente_lipsa"], "consilier": rec["consilier"], "versiune": rec.get("versiune")}
 
     @app.get("/api/decizii")
     def decizii():
         p = stare.out_dir / "approvals.json"
         return read_json(p) if p.exists() else []
+
+    @app.get("/api/cazuri/{case_id}/decizii")
+    def decizii_caz(case_id: str):
+        """Istoricul deciziilor (aprobări, override-uri, rezultate) ale unui caz, cronologic."""
+        p = stare.out_dir / "approvals.json"
+        return [d for d in (read_json(p) if p.exists() else []) if d["case_id"] == case_id]
+
+    @app.post("/api/cazuri/{case_id}/rezultat")
+    def rezultat(case_id: str, r: RezultatInput):
+        try:
+            return inregistreaza_rezultat(case_id, r.rezultat, datetime.now(), stare.out_dir)
+        except ApprovalError as e:
+            raise HTTPException(400, str(e)) from e
+
+    @app.get("/api/feedback")
+    def feedback():
+        from .feedback import raport_feedback
+        p = stare.out_dir / "approvals.json"
+        approvals = read_json(p) if p.exists() else []
+        return raport_feedback(approvals, stare.full.recs, stare.full.offers)
+
+    @app.get("/api/echipa")
+    def echipa():
+        return {"consilieri": [c.model_dump() for c in stare.full.cfg.echipa.consilieri], "alocare": stare.full.cfg.echipa.alocare}
 
     @app.post("/api/rescan")
     def rescan():

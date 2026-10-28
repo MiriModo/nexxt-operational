@@ -322,6 +322,33 @@ class ChecksConfig(BaseModel):
         return {v.id: v for v in self.verificari}
 
 
+# ---------------------------------------------------------------- echipa.yaml
+
+class ConsilierCfg(BaseModel):
+    id: str
+    nume: str
+
+
+class EchipaConfig(BaseModel):
+    consilieri: list[ConsilierCfg] = Field(default_factory=lambda: [ConsilierCfg(id="consilier", nume="Consilier")])
+    alocare: Literal["hash", "primul"] = "hash"
+
+    @model_validator(mode="after")
+    def _check(self) -> "EchipaConfig":
+        ids = [c.id for c in self.consilieri]
+        if not ids or len(ids) != len(set(ids)):
+            raise ValueError("echipa.yaml: consilierii trebuie să aibă id-uri unice (cel puțin unul)")
+        return self
+
+    def pentru(self, client_id: str) -> str:
+        """Consilierul alocat unui client (determinist)."""
+        if self.alocare == "primul":
+            return self.consilieri[0].id
+        import hashlib
+        h = int(hashlib.sha256(client_id.encode()).hexdigest(), 16)
+        return self.consilieri[h % len(self.consilieri)].id
+
+
 # ---------------------------------------------------------------- agregare
 
 MOTIVE_SPECIALE = ("risc", "blocaj")
@@ -333,6 +360,7 @@ class Config(BaseModel):
     constraints: ConstraintsConfig
     retention: RetentionConfig
     checks: ChecksConfig
+    echipa: EchipaConfig = Field(default_factory=EchipaConfig)
 
     @model_validator(mode="after")
     def _cross(self) -> "Config":
@@ -369,4 +397,5 @@ def load_config(config_dir: Path | str = CONFIG_DIR) -> Config:
                   priority=PriorityConfig(**_load_yaml(config_dir / "priority.yaml")),
                   constraints=ConstraintsConfig(**_load_yaml(config_dir / "constraints.yaml")),
                   retention=RetentionConfig(**_load_yaml(config_dir / "retention.yaml")),
-                  checks=ChecksConfig(**_load_yaml(config_dir / "checks.yaml")))
+                  checks=ChecksConfig(**_load_yaml(config_dir / "checks.yaml")),
+                  echipa=EchipaConfig(**_load_yaml(config_dir / "echipa.yaml")) if (config_dir / "echipa.yaml").exists() else EchipaConfig())
