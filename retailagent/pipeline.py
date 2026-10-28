@@ -13,6 +13,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .buget import aloca_buget
 from .checks import Mocks, load_mocks, run_all_checks
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, fmt_ron, log_event, setup_console, write_json
 from .config_loader import Config, load_config
@@ -35,6 +36,7 @@ class FullRun:
     audit: list[dict]
     detections: list[dict] = field(default_factory=list)
     intake: list[dict] = field(default_factory=list)
+    buget: dict = field(default_factory=dict)
 
     def by_case(self, case_id: str) -> dict:
         """Toate artefactele unui caz: case, input, trace, check, offer, rec."""
@@ -70,8 +72,9 @@ def run_full(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR, today: s
     lap("retention")
     recs, audit = build_recommendations(pf, cfg, res, checks, offers, mocks)
     lap("recommend")
+    buget = aloca_buget(recs, offers, cfg)          # plafonul lunar pe portofoliu: marchează ofertele peste plafon
     full = FullRun(pf, cfg, res, mocks, checks, offers, recs, audit)
-    full.detections, full.intake = det, intake
+    full.detections, full.intake, full.buget = det, intake, buget
     return full
 
 

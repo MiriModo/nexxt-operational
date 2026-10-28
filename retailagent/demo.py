@@ -50,7 +50,8 @@ def _case_payload(full: FullRun, case: dict) -> dict:
                   "model": offer.get("model_churn"), "contributii": _contributii(full, offer),
                   "interventii": [{k: i[k] for k in ("id", "eticheta", "fezabil", "motiv_infezabil", "cost", "B_dupa", "p_dupa", "respecta_tinta", "merita")}
                                   for i in offer["interventii"]]},
-        "rec": {k: rec[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "grafic", "documente_lipsa", "explicatie")},
+        "rec": {**{k: rec[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "grafic", "documente_lipsa", "explicatie")},
+                "incertitudini": rec.get("incertitudini", []), "buget": rec.get("buget")},
     }
 
 
@@ -181,7 +182,7 @@ function visible(){return D.cazuri.filter(c=>{const k=c.case,r=c.rec;
 function rows(){const tb=document.getElementById('rows');tb.innerHTML=visible().map(c=>{const k=c.case;const dec=decided[k.case_id];
  return `<tr class="row ${sel===k.case_id?'sel':''}" data-id="${k.case_id}"><td class="mono">${k.case_id}</td><td>${esc(c.client.nume)}<div class="muted mono">${k.client_id} · ${c.client.nivel}</div></td><td>${esc(k.produs||'—')}</td><td><span class="b ${k.banda}">${k.banda}</span>${k.blocaje.length?' <span class="tag">blocat</span>':''}</td><td class="num">${k.scoruri.prioritate.toFixed(2)}</td><td class="mono">${k.deadline}</td><td>${esc(LBL[c.rec.recomandare])}${dec?` <span class="tag">${esc(dec)}</span>`:''}</td></tr>`}).join('');
  tb.querySelectorAll('tr').forEach(tr=>tr.onclick=()=>{sel=tr.dataset.id;rows();panel();});}
-function st(s){return `<span class="st ${s}">${{ok:'✔',avertizare:'⚠',fail:'✘',neexecutat:'·'}[s]} ${s}</span>`}
+function st(s){return `<span class="st ${s}">${{ok:'✔',avertizare:'⚠',fail:'✘',neexecutat:'·',indisponibil:'◌'}[s]} ${s}</span>`}
 function panel(){const c=D.cazuri.find(x=>x.case.case_id===sel);if(!c)return;const k=c.case,ch=c.check,o=c.offer,r=c.rec,s=k.scoruri;
  const loan=c.loan?`sold ${ron(c.loan.sold)} RON · ${c.loan.tip_dobanda} ${c.loan.dobanda}%${c.loan.expira?' (fixă până la '+c.loan.expira+')':''} · rată ${ron(c.loan.rata)} RON`:'fără credit existent';
  let h=`<h2>${k.case_id} · ${esc(c.client.nume)} <span class="muted">(${k.client_id}, ${c.client.nivel}, ${c.client.tipologie}, client din ${c.client.client_din.slice(0,4)})</span></h2>

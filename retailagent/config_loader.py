@@ -195,6 +195,11 @@ class InterventieCfg(BaseModel):
         return self
 
 
+class BugetPortofoliuCfg(BaseModel):
+    plafon_lunar_ron: float = Field(default=0.0, ge=0.0)        # 0 = fără plafon
+    ordonare: Literal["v_retinut_pe_cost", "cost_crescator"] = "v_retinut_pe_cost"
+
+
 class LegaturiCfg(BaseModel):
     ponderi: dict[str, float]
     produse_max: int
@@ -225,6 +230,8 @@ class RetentionConfig(BaseModel):
     B_norm_max: float = 2.0
     semnale_active: dict[str, float]
     interogari_bc_min_pentru_activ: int = 2
+    refinantare_externa_activ: bool = True
+    buget_portofoliu: "BugetPortofoliuCfg" = Field(default_factory=lambda: BugetPortofoliuCfg())
     legaturi: LegaturiCfg
     valoare: ValoareClientCfg
     piata: dict[str, str]
@@ -289,6 +296,9 @@ class ChecksConfig(BaseModel):
     verificari: list[VerificareCfg]
     motive: dict[str, MotivCfg]
     documente_necesare: dict[str, list[DocumentCfg]]
+    zile_cerere_duplicata: int = 7
+    # incertitudine -> motivele (cereri / semnale) pentru care devine critică (escaladare); [] = întotdeauna critică
+    incertitudini_critice: dict[str, list[str]] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def _check(self) -> "ChecksConfig":

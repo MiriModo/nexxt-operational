@@ -46,7 +46,7 @@ def compact_caz(c: dict) -> dict:
         "offer": {**{k: o[k] for k in ("B", "B_detalii", "p", "p_tinta", "V", "legaturi", "semnale_active", "aleasa",
                                         "motiv_alegere", "explicatie", "model")}, "interventii": [], "contributii": None},
         "rec": {**{k: r[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "documente_lipsa")},
-                "grafic": None, "explicatie": ""},
+                "incertitudini": r.get("incertitudini", []), "buget": r.get("buget"), "grafic": None, "explicatie": ""},
         "compact": True,
     }
 

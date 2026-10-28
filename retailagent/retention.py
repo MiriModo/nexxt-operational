@@ -76,6 +76,8 @@ def semnale_active(semnale: list[dict], concluzii: dict, cfg: Config) -> tuple[i
     lista = [s["id"] for s in semnale if s["id"] in R.semnale_active and s["scor"] >= R.semnale_active[s["id"]]]
     if (concluzii or {}).get("interogari_bc", 0) >= R.interogari_bc_min_pentru_activ:
         lista.append("interogari_bc")
+    if R.refinantare_externa_activ and (concluzii or {}).get("refinantare_externa_in_curs"):
+        lista.append("refinantare_externa_in_curs")
     return len(lista), lista
 
 

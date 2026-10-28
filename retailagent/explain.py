@@ -129,7 +129,7 @@ def explain_case(case: dict, ci: CaseInput, tr: Trace, cfg: Config) -> str:
 
 # ================================================================ explicația completă (verificări + retenție + recomandare)
 
-MARK = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·"}
+MARK = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·", "indisponibil": "◌"}
 
 
 def explain_checks(check: dict) -> list[str]:

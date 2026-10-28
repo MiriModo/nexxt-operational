@@ -38,6 +38,7 @@ class Context:
     requests: list[dict]                 # cererile clientului
     flows: Flows                         # încasări/plăți recurente deduse din tranzacții
     params: dict[str, Any] = field(default_factory=dict)
+    codebitor_la: list[dict] = field(default_factory=list)   # creditele altora pe care clientul e codebitor (istoricul lor e în `payments`)
 
 
 @dataclass(frozen=True)

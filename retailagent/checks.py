@@ -132,7 +132,7 @@ def build_context(pf: Portfolio, mocks: Mocks, cfg: Config, case: dict, cereri: 
     codebitor_la = (codebitori if codebitori is not None else codebitor_index(pf)).get(cid, [])
     return CheckContext(pf.today, client, loan, loans, codebitor_la, cereri, motive, pf.market,
                         client_flows(pf, cfg, cid), pf.tx_by_client.get(cid, []),
-                        {l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in loans}, mocks, cfg)
+                        {l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in [*loans, *codebitor_la]}, mocks, cfg)
 
 
 def check_registry(cfg: Config) -> None:
@@ -166,7 +166,7 @@ def print_plan(r: dict) -> None:
             print(f"    [{x['treapta']:<13}] {x['id']:<30} {'extern' if x['externa'] else 'intern':<6}  ✗ {x['motiv']}")
     print("  rezultate:")
     for x in r["rezultate"]:
-        mark = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·"}[x["status"]]
+        mark = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·", "indisponibil": "◌"}[x["status"]]
         print(f"    {mark} {x['id']:<30} {x['dovada']}")
     ie = r["interogari_externe"]
     print(f"  interogări externe: {ie['executate']} executate din {ie['rulare_tot']} posibile → {ie['rulare_tot'] - ie['executate']} evitate"

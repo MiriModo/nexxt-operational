@@ -33,7 +33,7 @@ Cereri clienți ────────────┘            │
 
 ```bash
 pip install -r requirements.txt
-python -m retailagent.generate            # 10.000 de clienți (50 etalon + 9.950 statistici), ~30 s; --n 50 = doar etalonul
+python -m retailagent.generate            # 10.000 de clienți (60 etalon + 9.940 statistici), ~30 s; --n 60 = doar etalonul
 python -m retailagent.pipeline            # tot fluxul (~45 s), evaluarea și out/demo.html
 ```
 

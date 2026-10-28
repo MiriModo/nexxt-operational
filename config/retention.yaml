@@ -32,6 +32,13 @@ semnale_active:
   simulare_in_app: 0.5
   rata_alt_creditor: 0.9         # credit nou la alt creditor
 interogari_bc_min_pentru_activ: 2   # ≥ 2 interogări la Biroul de Credit în 6 luni = își caută bancă (+1 activ)
+refinantare_externa_activ: true     # BC arată un credit nou la altă bancă de aceeași sumă, recent → +1 activ (concluzie din verificări)
+
+# Bugetul lunar de retenție la nivel de portofoliu: ofertele comerciale se ordonează după V_reținut / cost și se
+# marchează `in_buget`; cele peste plafon rămân recomandate, dar amânate („peste plafon luna asta").
+buget_portofoliu:
+  plafon_lunar_ron: 2000000
+  ordonare: v_retinut_pe_cost       # v_retinut_pe_cost | cost_crescator
 
 # Legăturile clientului cu banca (0..1). Oferta depinde de ele: un client fără legături nu primește reducere
 # „pe gratis", doar informare sau o ofertă condiționată de aducerea salariului (pachet).

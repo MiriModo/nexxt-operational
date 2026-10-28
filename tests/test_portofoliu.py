@@ -68,9 +68,10 @@ def test_profil_invalid_ridica_eroare(tmp_path):
 
 # ---------------------------------------------------------------- etalonul rămâne identic
 
-def test_primii_50_identici_cu_generarea_de_50(scale, tmp_path):
-    d50 = tmp_path / "d50"
-    generate(50, 42, TODAY, d50)
+def test_etalonul_identic_cu_generarea_separata(scale, tmp_path):
+    """Primii len(SCENARIOS) clienți din portofoliul mare sunt byte cu byte etalonul generat singur."""
+    d50 = tmp_path / "etalon"
+    generate(len(SCENARIOS), 42, TODAY, d50)
     for name, key in (("clients.json", "client_id"), ("loans.json", "loan_id"), ("payment_history.json", "loan_id"),
                       ("requests.json", "request_id"), ("transactions.json", "client_id")):
         a = json.loads((d50 / name).read_text(encoding="utf-8"))

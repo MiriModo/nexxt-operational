@@ -183,8 +183,26 @@ def cerinte_dure_final(full) -> dict:
              ("oferte_pe_cazuri_blocate", blocate), ("expirare_sub_30_zile_nu_P1", exp30))}
 
 
+def eval_situatii(full, gt: list[dict]) -> dict:
+    """Situațiile neașteptate: incertitudinile așteptate (etalon) sunt marcate pe cazul de top al clientului?"""
+    top = _top_rec(full)
+    ast = [g for g in gt if g.get("incertitudini_asteptate")]
+    ok = 0
+    gresite = []
+    for g in ast:
+        got = {i["id"] for i in (top.get(g["client_id"], {}).get("incertitudini") or [])}
+        if set(g["incertitudini_asteptate"]) <= got:
+            ok += 1
+        else:
+            gresite.append({"client_id": g["client_id"], "asteptat": g["incertitudini_asteptate"], "obtinut": sorted(got)})
+    toate = Counter(i["id"] for r in full.recs for i in (r.get("incertitudini") or []))
+    return {"asteptate": len(ast), "corecte": ok, "gresite": gresite, "distributie": dict(toate),
+            "cazuri_cu_incertitudini": sum(1 for r in full.recs if r.get("incertitudini"))}
+
+
 def raport_model_final(full, gt: list[dict]) -> dict:
     return {"cifra_vedeta": cifra_vedeta(full, gt), "nu_interveni": procent_nu_interveni(full),
+            "situatii": eval_situatii(full, gt), "buget_portofoliu": getattr(full, "buget", {}),
             "interogari_externe": interogari_evitate(full), "recomandari": eval_recomandari(full, gt),
             "verificari_picate": eval_verificari(full, gt), "cerinte_dure": cerinte_dure_final(full),
             "distributie_recomandari": dict(Counter(r["recomandare"] for r in full.recs))}
@@ -215,6 +233,15 @@ def print_model_final(m: dict) -> None:
         print(f"    {e:<20} " + " ".join(f"{row[l]:>6}" for l in labels))
     v = m["verificari_picate"]
     print(f"  Verificări picate corect: {v['corecte']}/{v['asteptate']} · false pozitive: {v['false_pozitive']}")
+    s = m.get("situatii") or {}
+    if s:
+        print(f"  Situații neașteptate: incertitudini marcate corect {s['corecte']}/{s['asteptate']} · cazuri cu incertitudini: "
+              f"{s['cazuri_cu_incertitudini']} (" + ", ".join(f"{k}={v}" for k, v in s["distributie"].items()) + ")"
+              + (f" · greșite: {s['gresite']}" if s["gresite"] else ""))
+    b = m.get("buget_portofoliu") or {}
+    if b:
+        print(f"  Buget de portofoliu: plafon {fmt_ron(b['plafon_lunar_ron'])} RON · {b['in_buget']}/{b['oferte']} oferte în buget "
+              f"({fmt_ron(b['cost_in_buget'])} din {fmt_ron(b['cost_total_oferte'])} RON) · {b['amanate']} amânate")
     print("  Cerințe dure:")
     for k, x in m["cerinte_dure"].items():
         print(f"    {k:<32} încălcări: {x['incalcari']}" + (f"  {x['cazuri']}" if x["cazuri"] else ""))

@@ -23,7 +23,7 @@ from .common import (
 # ---------------------------------------------------------------- parametri de piață
 
 MARKET = {"ircc": 5.55, "dobanda_fixa_piata_ipotecar": 4.90, "dobanda_piata_nevoi_personale": 8.90,
-          "dobanda_piata_card": 22.0}
+          "dobanda_piata_card": 22.0, "curs_eur": 4.97}
 
 TIPOLOGIE = {"SL": "salariat", "SE": "salariat", "IND": "independent", "PEN": "pensionar",
              "ANT": "antreprenor", "DIA": "diaspora", "TAN": "tanar_fara_istoric"}
@@ -47,6 +47,7 @@ class L:
     ltv_depasit: bool = False          # PLANTAT
     asigurare: bool = False            # PLANTAT: asigurare care expiră în < 30 zile
     restructurat: bool = False         # PLANTAT
+    moneda: str = "RON"                # RON | EUR (soldul și rata sunt în moneda creditului; market.json → curs_eur)
 
 
 @dataclass
@@ -165,7 +166,33 @@ SCENARIOS: list[S] = [
       req=[R("simulare_rambursare_anticipata", "ipotecar", 7, 20_000)], exp=("P3", "monitorizare"), produse=2),
     # 50 · capcana c: platinum fără niciun semnal
     S("IND", "platinum", [L("ipotecar", "fixa")], exp=None, produse=4, nota="capcana_c"),
+    # 51–60 · situații neașteptate (roadmap pasul 6)
+    S("SL", "standard", [L("ipotecar", "variabila", sold=120_000, ani_ramasi=20, marja=2.4, moneda="EUR")],
+      exp=P1R, produse=2, nota="situatie_valuta: credit în EUR, ratele în valută depășesc 20% din venit"),
+    S("SL", "standard", [L("card_credit")], plant={"codebitor_risc": True}, exp=P1R, produse=1,
+      nota="situatie_codebitor: codebitor pe creditul cu întârziere al clientului 18"),
+    S("SL", "gold", [L("ipotecar", "fixa", exp_zile=20, sold=300_000, ani_ramasi=18, marja=2.5), L("card_credit", intarziere=10)],
+      exp=P1R, produse=3, nota="situatie_contradictorii: expirare pe ipotecar + întârziere nouă pe card"),
+    S("SL", "gold", [L("ipotecar", "fixa", exp_zile=45, sold=350_000, ani_ramasi=20, marja=2.5)],
+      req=[R("adeverinta_sold", "ipotecar", 3), R("adeverinta_sold", "ipotecar", 1)], exp=("P1", "retentie_refinantare"), produse=3,
+      nota="situatie_cerere_duplicata: două cereri de adeverință la 2 zile"),
+    S("SL", "standard", [L("ipotecar", "fixa", exp_zile=60, sold=200_000, ani_ramasi=15, marja=2.6)],
+      exp=("P3", "monitorizare"), produse=2, nota="situatie_fara_cont: clientul nu are cont curent la noi"),
+    S("SL", "gold", [L("ipotecar", "fixa", exp_zile=25, sold=280_000, ani_ramasi=17, marja=2.5)],
+      exp=("P1", "retentie_refinantare"), produse=3, nota="situatie_fara_anaf: ANAF nu răspunde"),
+    S("SE", "standard", [L("card_credit")], plant={"rata_alt": "vechi"}, exp=("P3", "monitorizare"), produse=1,
+      nota="situatie_surse_contradictorii: BC arată un credit activ invizibil în tranzacții"),
+    S("PEN", "standard", [L("nevoi_personale")], plant={"flag": "decedat"}, exp=("P3", "task_flag_blocant"), produse=1,
+      nota="situatie_decedat: client decedat → nicio comunicare"),
+    S("ANT", "gold", [L("card_credit")], plant={"flag": "pep"}, req=[R("credit_nou", "nevoi_personale", 2, 40_000)],
+      exp=("P2", "task_flag_blocant"), produse=2, nota="situatie_pep: PEP cere credit nou → aprobare specială"),
+    S("SL", "gold", [L("ipotecar", "fixa", exp_zile=50, sold=320_000, ani_ramasi=19, marja=2.5)],
+      req=[R("adeverinta_sold", "ipotecar", 4)], exp=("P1", "retentie_refinantare"), produse=3,
+      nota="situatie_refinantare_externa: BC arată un credit nou la altă bancă de aceeași sumă"),
 ]
+
+# index (0-based) al situațiilor neașteptate (51–60) — folosit de teste
+SITUATII = {s.nota.split(":")[0]: i for i, s in enumerate(SCENARIOS) if s.nota.startswith("situatie_")}
 
 # index (0-based) al scenariilor-capcană în blocul de 50 — folosit de teste
 TRAP_INDEX = {s.nota: i for i, s in enumerate(SCENARIOS) if s.nota.startswith("capcana")}
@@ -413,7 +440,7 @@ class Generator:
         self._loan_seq += 1
         lid = f"L{self._loan_seq:04d}"
         p = spec.produs
-        loan = {"loan_id": lid, "client_id": cid, "produs": p, "moneda": "RON", "suma_initiala": None,
+        loan = {"loan_id": lid, "client_id": cid, "produs": p, "moneda": spec.moneda, "suma_initiala": None,
                 "sold_ramas": None, "data_acordare": None, "data_scadenta": None, "rata_lunara": None,
                 "tip_dobanda": None, "dobanda_curenta": None, "dobanda_fixa_expira_la": None, "indice": None,
                 "marja": None, "restructurat_anterior": False, "restructurari": [], "garantie": None,
@@ -611,7 +638,8 @@ class Generator:
             "client_din": add_years(self.today, -vechime).isoformat(),
             "consimtamant_anaf": plant.get("consimtamant") != "anaf",
             "consimtamant_biroul_credit": plant.get("consimtamant") != "bc",
-            "flag_pep": plant.get("flag") == "pep", "flag_frauda_interna": False, "flag_decedat": False,
+            "flag_pep": plant.get("flag") == "pep", "flag_frauda_interna": plant.get("flag") == "frauda",
+            "flag_decedat": plant.get("flag") == "decedat",
             "angajator_id": employer["angajator_id"] if employer else None,
             "produse_atasate": produse, "tipologie_declarata": TIPOLOGIE[sc.typ],
         }
@@ -622,7 +650,7 @@ class Generator:
             loan = self.make_loan(cid, spec, sc.tier)
             self.loans.append(loan)
             self.make_payments(loan, spec)
-            total_rate += loan["rata_lunara"]
+            total_rate += loan["rata_lunara"] * (MARKET["curs_eur"] if loan["moneda"] == "EUR" else 1.0)
 
         self._luni_fara_iesiri = set(self.tx_months[-2:]) if plant.get("cont_nefolosit") else set()
         self.make_transactions(cid, sc, nume, employer, total_rate)
@@ -705,9 +733,11 @@ def planted_signals(sc: S) -> list[str]:
     if p.get("angajator"):
         out.append("angajator_in_dificultate")
     for key, sig in (("ci", "ci_expirata"), ("consimtamant", "consimtamant_lipsa"), ("flag", "flag_blocant"),
-                     ("kyc", "kyc_vechi"), ("poprire", "poprire_activa")):
+                     ("kyc", "kyc_vechi"), ("poprire", "poprire_activa"), ("codebitor_risc", "codebitor_cu_risc")):
         if p.get(key):
             out.append(sig)
+    if any(l.moneda != "RON" for l in sc.loans):
+        out.append("expunere_valutara")
     for r in sc.req:
         if r.tip in ("adeverinta_sold", "refinantare"):
             out.append("cerere_adeverinta_sold")
@@ -734,7 +764,7 @@ def generate(n: int = 50, seed: int = 42, today: str = DEFAULT_TODAY, out: Path 
 def main(argv: list[str] | None = None) -> None:
     setup_console()
     ap = argparse.ArgumentParser(description="Generează portofoliul sintetic + ground truth.")
-    ap.add_argument("--n", type=int, default=10000, help="implicit 10.000: 50 etalon + 9.950 statistici (--n 50 = doar etalonul)")
+    ap.add_argument("--n", type=int, default=10000, help="implicit 10.000: 60 etalon + 9.940 statistici (--n 60 = doar etalonul)")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--today", default=DEFAULT_TODAY)
     ap.add_argument("--out", default=str(DATA_DIR))

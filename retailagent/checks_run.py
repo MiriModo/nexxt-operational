@@ -67,10 +67,18 @@ class CheckContext:
 
 @dataclass
 class CheckResult:
-    status: str                         # ok | avertizare | fail
+    status: str                         # ok | avertizare | fail | indisponibil (sursa nu a răspuns: fluxul continuă, cazul e marcat)
     dovada: str
     detalii: dict = field(default_factory=dict)
     sursa: str = "intern"
+    incertitudine: str | None = None    # id-ul incertitudinii (checks.yaml → incertitudini_critice) pe care o lasă în urmă
+
+
+def noteaza_incertitudine(ctx: "CheckContext", iid: str, text: str) -> None:
+    """Situație neașteptată tratată prin degradare controlată: se continuă, dar decizia poartă marcajul."""
+    lst = ctx.concluzii.setdefault("incertitudini", [])
+    if all(x["id"] != iid for x in lst):
+        lst.append({"id": iid, "text": text})
 
 
 CheckFn = Callable[[CheckContext, dict], CheckResult]
@@ -122,15 +130,25 @@ def identitate_kyc(ctx: CheckContext, p: dict) -> CheckResult:
 def expuneri_interne(ctx: CheckContext, p: dict) -> CheckResult:
     rate = sum(l["rata_lunara"] or 0 for l in ctx.loans)
     rate_cod = sum(l["rata_lunara"] or 0 for l in ctx.codebitor_la)
+    rate_valuta = sum(l["rata_lunara"] or 0 for l in ctx.loans if l.get("moneda", "RON") != "RON")
     carduri = [f"{l['loan_id']} {round((l.get('utilizare_limita') or 0) * 100)}%" for l in ctx.loans if l["produs"] == "card_credit"]
     ctx.concluzii["rate_lunare_noi"] = round(rate + rate_cod, 2)
+    ctx.concluzii["rate_valuta_ron"] = round(rate_valuta, 2)
     ctx.concluzii["sold_total_noi"] = round(sum(l["sold_ramas"] for l in ctx.loans), 2)
     txt = f"{len(ctx.loans)} credite la noi, rate {fmt_ron(rate)} RON/lună"
+    if rate_valuta:
+        txt += f" (din care în valută {fmt_ron(rate_valuta)} RON la cursul curent)"
     if carduri:
         txt += f"; carduri: {', '.join(carduri)}"
+    status = "ok"
     if ctx.codebitor_la:
         txt += f"; codebitor la {', '.join(l['loan_id'] for l in ctx.codebitor_la)} (+{fmt_ron(rate_cod)} RON/lună)"
-    return CheckResult("ok", txt, {"rate_lunare": round(rate, 2), "rate_codebitor": round(rate_cod, 2)})
+        for l in ctx.codebitor_la:
+            h = (ctx.payments.get(l["loan_id"]) or [None])[-1]
+            if h and h["zile_intarziere"] > 0:
+                status = "avertizare"
+                txt += f"; {l['loan_id']} are {h['zile_intarziere']} zile întârziere — răspunde solidar"
+    return CheckResult(status, txt, {"rate_lunare": round(rate, 2), "rate_codebitor": round(rate_cod, 2), "rate_valuta": round(rate_valuta, 2)})
 
 
 @check("venit_observat")
@@ -156,7 +174,8 @@ def venit_observat(ctx: CheckContext, p: dict) -> CheckResult:
 def sold_cont(ctx: CheckContext, p: dict) -> CheckResult:
     cont = ctx.mocks.conturi.get(ctx.client["client_id"])
     if not cont:
-        return CheckResult("avertizare", "fără cont curent la noi", {})
+        noteaza_incertitudine(ctx, "fara_cont", "clientul nu are cont curent la noi: fără sold / fond de urgență observabil")
+        return CheckResult("avertizare", "fără cont curent la noi — soldul și fondul de urgență nu pot fi observate", {}, incertitudine="fara_cont")
     ist = cont["istoric_lunar"][-p["luni"]:]
     mediu = sum(x["sold_mediu"] for x in ist) / len(ist)
     minim = min(x["sold_minim"] for x in ist)
@@ -284,10 +303,17 @@ def capacitate_plata(ctx: CheckContext, p: dict) -> CheckResult:
     ctx.concluzii["dti_curent"] = round(d, 3) if d is not None else None
     if d is None:
         return CheckResult("avertizare", "venit necunoscut: DTI nu se poate calcula", {"rate": round(rate, 2)})
-    mx = ctx.cfg.constraints.dti.max
-    status = "avertizare" if d > mx else "ok"
-    return CheckResult(status, f"DTI {d:.0%} = rate {fmt_ron(rate)} / venit {fmt_ron(venit)} RON" + (f" — peste {mx:.0%}" if status == "avertizare" else ""),
-                       {"dti": round(d, 3), "rate": round(rate, 2), "venit": round(venit, 2)})
+    C = ctx.cfg.constraints.dti
+    status = "avertizare" if d > C.max else "ok"
+    txt = f"DTI {d:.0%} = rate {fmt_ron(rate)} / venit {fmt_ron(venit)} RON" + (f" — peste {C.max:.0%}" if d > C.max else "")
+    rv = ctx.concluzii.get("rate_valuta_ron", 0.0)
+    if rv:
+        dv = rv / venit
+        ctx.concluzii["dti_valuta"] = round(dv, 3)
+        if dv > C.max_valuta:
+            status = "avertizare"
+            txt += f"; ratele în valută sunt {dv:.0%} din venit, peste {C.max_valuta:.0%} (DTI valută, BNR)"
+    return CheckResult(status, txt, {"dti": round(d, 3), "rate": round(rate, 2), "venit": round(venit, 2), "dti_valuta": ctx.concluzii.get("dti_valuta")})
 
 
 @check("eligibilitate_produs_nou")
@@ -331,7 +357,11 @@ def eligibilitate_produs_nou(ctx: CheckContext, p: dict) -> CheckResult:
 def venit_anaf(ctx: CheckContext, p: dict) -> CheckResult:
     a = ctx.mocks.anaf.get(ctx.client["client_id"])
     if not a:
-        return CheckResult("avertizare", "ANAF: fără răspuns pentru client", {}, "ANAF")
+        # situație: sursa externă nu răspunde → degradare controlată: se continuă cu venitul observat, decizia e marcată
+        noteaza_incertitudine(ctx, "anaf_indisponibil", "ANAF nu a răspuns: venitul nu e confirmat, se folosește cel observat în cont")
+        return CheckResult("indisponibil", f"ANAF indisponibil — se continuă cu venitul observat "
+                           f"({fmt_ron(ctx.concluzii.get('venit_lunar_observat', 0))} RON/lună), de confirmat înainte de ofertă",
+                           {"venit_observat": ctx.concluzii.get("venit_lunar_observat", 0)}, "ANAF", incertitudine="anaf_indisponibil")
     if a.get("rezident_fiscal", "RO") != "RO":
         return CheckResult("avertizare", f"ANAF: nerezident fiscal ({a['rezident_fiscal']}); venitul din străinătate nu e raportat — "
                            f"se folosesc transferurile proprii ({fmt_ron(ctx.concluzii.get('transferuri_proprii_lunar', 0))} RON/lună) "
@@ -367,11 +397,28 @@ def venit_anaf(ctx: CheckContext, p: dict) -> CheckResult:
 def istoric_bc(ctx: CheckContext, p: dict) -> CheckResult:
     b = ctx.mocks.bc.get(ctx.client["client_id"])
     if not b:
-        return CheckResult("avertizare", "Biroul de Credit: fără răspuns", {}, "Biroul de Credit")
+        noteaza_incertitudine(ctx, "bc_indisponibil", "Biroul de Credit nu a răspuns: istoricul extern e necunoscut")
+        return CheckResult("indisponibil", "Biroul de Credit indisponibil — se continuă cu ratele văzute în tranzacții", {}, "Biroul de Credit",
+                           incertitudine="bc_indisponibil")
     active = [c for c in b["credite"] if c["stare"] == "activ"]
     rate = round(sum(c["rata_lunara"] for c in active), 2)
-    ctx.concluzii.update(rate_alti_creditori=rate, rate_alti_creditori_bc=rate, interogari_bc=b["interogari_ultimele_6l"],
-                         credite_externe=len(active))
+    rate_tx = round(sum(f.suma_medie for f in ctx.flows.creditori), 2)
+    ctx.concluzii.update(rate_alti_creditori=max(rate, rate_tx), rate_alti_creditori_bc=max(rate, rate_tx),   # varianta prudentă
+                         interogari_bc=b["interogari_ultimele_6l"], credite_externe=len(active))
+    # situație: surse contradictorii — BC arată un credit activ pe care tranzacțiile nu îl arată (sau invers)
+    nevazute = [c for c in active if not any(abs(f.suma_medie - c["rata_lunara"]) <= max(5.0, 0.05 * c["rata_lunara"]) for f in ctx.flows.creditori)]
+    if nevazute:
+        noteaza_incertitudine(ctx, "surse_contradictorii", "Biroul de Credit arată " + ", ".join(f"{c['institutie']} ({fmt_ron(c['rata_lunara'])} RON/lună)" for c in nevazute)
+                              + " fără rate vizibile în tranzacții: DTI calculat prudent, cu ratele din BC")
+    # situație: refinanțare externă deja începută — credit nou la altă bancă, recent, de mărimea celui de la noi
+    sold_max = max((l["sold_ramas"] for l in ctx.loans), default=0.0)
+    recente = [c for c in active if (ctx.today - parse_date(c["data_acordare"])).days <= p.get("refinantare_zile", 45)
+               and sold_max and 0.7 * sold_max <= c["sold"] <= 1.3 * sold_max]
+    if recente:
+        c = recente[0]
+        ctx.concluzii["refinantare_externa_in_curs"] = True
+        noteaza_incertitudine(ctx, "refinantare_externa_in_curs", f"credit nou la {c['institutie']} ({fmt_ron(c['sold'])} RON, acordat {c['data_acordare']}) "
+                              "de mărimea creditului nostru: refinanțarea e probabil deja în curs")
     rele = [c for c in b["credite"] if c["max_zile_intarziere_24l"] >= p["max_zile_intarziere_24l"]]
     if rele:
         c = rele[0]
@@ -384,7 +431,11 @@ def istoric_bc(ctx: CheckContext, p: dict) -> CheckResult:
            f"{b['interogari_ultimele_6l']} interogări în 6 luni")
     if b["interogari_ultimele_6l"] >= ctx.cfg.retention.interogari_bc_min_pentru_activ:
         txt += " → își caută bancă"
-    return CheckResult("ok", txt, {"scor": b["scor"], "interogari": b["interogari_ultimele_6l"], "credite_active": len(active)}, "Biroul de Credit")
+    inc = "refinantare_externa_in_curs" if recente else ("surse_contradictorii" if nevazute else None)
+    if inc:
+        txt += "; ⚠ " + next(x["text"] for x in ctx.concluzii["incertitudini"] if x["id"] == inc)
+    return CheckResult("avertizare" if inc else "ok", txt, {"scor": b["scor"], "interogari": b["interogari_ultimele_6l"], "credite_active": len(active)},
+                       "Biroul de Credit", incertitudine=inc)
 
 
 @check("expuneri_crc")
@@ -439,9 +490,9 @@ def reevaluare_garantie(ctx: CheckContext, p: dict) -> CheckResult:
 # ---------------------------------------------------------------- rulare în trepte
 
 CONCLUZII_IMPLICITE = {"venit_lunar": 0.0, "venit_lunar_observat": 0.0, "venit_lunar_anaf": None, "salariu_la_alta_banca": False,
-                       "rate_lunare_noi": 0.0, "rate_alti_creditori": 0.0, "dti_curent": None, "ltv_dosar": None,
+                       "rate_lunare_noi": 0.0, "rate_alti_creditori": 0.0, "dti_curent": None, "dti_valuta": None, "ltv_dosar": None,
                        "ltv_actual": None, "interogari_bc": 0, "cost_mutare": None, "scenarii": None,
-                       "eligibil": None, "motiv_ineligibil": None, "litigii_cf": False}
+                       "eligibil": None, "motiv_ineligibil": None, "litigii_cf": False, "refinantare_externa_in_curs": False}
 
 
 def run_checks(plan: dict, ctx: CheckContext) -> dict:
@@ -449,22 +500,25 @@ def run_checks(plan: dict, ctx: CheckContext) -> dict:
     CH = ctx.cfg.checks
     by_id = CH.by_id()
     ctx.concluzii = dict(CONCLUZII_IMPLICITE)
+    ctx.concluzii["incertitudini"] = []
     rezultate: list[dict] = []
     oprit_la = picata = None
     executate = 0
     for treapta in CH.trepte:
         items = [x for x in plan["plan"] if x["treapta"] == treapta]
         if oprit_la:
-            rezultate += [{**x, "status": "neexecutat", "dovada": f"neexecutat (oprit la {oprit_la})", "detalii": {}, "sursa": None}
-                          for x in items]
+            rezultate += [{**x, "status": "neexecutat", "dovada": f"neexecutat (oprit la {oprit_la})", "detalii": {}, "sursa": None,
+                           "incertitudine": None} for x in items]
             continue
         for x in items:
             r = CHECKS[x["id"]](ctx, by_id[x["id"]].parametri)
-            executate += int(x["externa"])
-            rezultate.append({**x, "status": r.status, "dovada": r.dovada, "detalii": r.detalii, "sursa": r.sursa})
+            executate += int(x["externa"] and r.status != "indisponibil")
+            rezultate.append({**x, "status": r.status, "dovada": r.dovada, "detalii": r.detalii, "sursa": r.sursa,
+                              "incertitudine": r.incertitudine})
             if r.status == "fail" and picata is None:
                 picata = x["id"]
         if picata and not oprit_la:
             oprit_la = treapta
     return {**plan, "rezultate": rezultate, "oprit_la": oprit_la, "verificare_picata": picata, "concluzii": ctx.concluzii,
+            "incertitudini": ctx.concluzii["incertitudini"],
             "interogari_externe": {**plan["interogari_externe"], "executate": executate}}

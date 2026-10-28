@@ -31,14 +31,40 @@ class Portfolio:
     requests_by_client: dict[str, list[dict]]
 
 
+def normalizeaza_valuta(loans: list[dict], payments: list[dict], market: dict) -> None:
+    """Creditele în valută: soldul, rata, suma, limita, evaluarea și restanțele se exprimă în RON (curs din market.json),
+    iar valorile originale rămân în câmpurile `*_valuta`. Toate calculele de după lucrează în RON; afișarea arată moneda."""
+    curs = {"RON": 1.0, "EUR": float(market.get("curs_eur", 5.0))}
+    for l in loans:
+        m = l.get("moneda", "RON")
+        if m == "RON" or l.get("sold_valuta") is not None:
+            continue
+        k = curs.get(m, 1.0)
+        l["curs"] = k
+        for f in ("sold_ramas", "rata_lunara", "suma_initiala", "limita"):
+            if l.get(f) is not None:
+                l[f"{f.split('_')[0]}_valuta"] = l[f]
+                l[f] = round(l[f] * k, 2)
+        if l.get("garantie") and l["garantie"].get("valoare_evaluare"):
+            l["garantie"]["valoare_evaluare_valuta"] = l["garantie"]["valoare_evaluare"]
+            l["garantie"]["valoare_evaluare"] = round(l["garantie"]["valoare_evaluare"] * k, 2)
+    fx = {l["loan_id"]: l["curs"] for l in loans if l.get("curs")}
+    for p in payments:
+        if p["loan_id"] in fx and p.get("suma_restanta"):
+            p["suma_restanta"] = round(p["suma_restanta"] * fx[p["loan_id"]], 2)
+
+
 def load_portfolio(data_dir: Path | str = DATA_DIR, today: str | None = None) -> Portfolio:
     d = Path(data_dir)
     loans = read_json(d / "loans.json")
     requests = read_json(d / "requests.json")
+    market = read_json(d / "market.json")
+    payments = read_json(d / "payment_history.json")
+    normalizeaza_valuta(loans, payments, market)
     by_client, pay, tx, req = defaultdict(list), defaultdict(list), defaultdict(list), defaultdict(list)
     for l in loans:
         by_client[l["client_id"]].append(l)
-    for p in read_json(d / "payment_history.json"):
+    for p in payments:
         pay[p["loan_id"]].append(p)
     for v in pay.values():
         v.sort(key=lambda p: p["luna"])
@@ -48,7 +74,17 @@ def load_portfolio(data_dir: Path | str = DATA_DIR, today: str | None = None) ->
         req[r["client_id"]].append(r)
     return Portfolio(resolve_today(today, d), read_json(d / "clients.json"), loans, dict(by_client), dict(pay),
                      dict(tx), {e["angajator_id"]: e for e in read_json(d / "employers.json")},
-                     read_json(d / "market.json"), requests, dict(req))
+                     market, requests, dict(req))
+
+
+def codebitor_index(pf: Portfolio) -> dict[str, list[dict]]:
+    """client_id -> creditele altora pe care e codebitor (o singură trecere prin portofoliu)."""
+    out: dict[str, list[dict]] = defaultdict(list)
+    for l in pf.loans:
+        for c in l.get("codebitori", []):
+            if c.get("client_id") and c["client_id"] != l["client_id"]:
+                out[c["client_id"]].append(l)
+    return dict(out)
 
 
 def check_registry(cfg: Config) -> None:
@@ -63,14 +99,15 @@ def check_registry(cfg: Config) -> None:
                              f"și cod ({reg.familie}/{reg.nivel})")
 
 
-def client_context(pf: Portfolio, client: dict, flows: Flows) -> Context:
+def client_context(pf: Portfolio, client: dict, flows: Flows, codebitor_la: list[dict] | None = None) -> Context:
     cid = client["client_id"]
     loans = pf.loans_by_client.get(cid, [])
+    cod = codebitor_la if codebitor_la is not None else codebitor_index(pf).get(cid, [])
     return Context(today=pf.today, client=client, loan=None, loans=loans,
                    transactions=pf.tx_by_client.get(cid, []),
-                   payments={l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in loans},
+                   payments={l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in [*loans, *cod]},
                    employer=pf.employers.get(client.get("angajator_id")), market=pf.market,
-                   requests=pf.requests_by_client.get(cid, []), flows=flows)
+                   requests=pf.requests_by_client.get(cid, []), flows=flows, codebitor_la=cod)
 
 
 def client_flows(pf: Portfolio, cfg: Config, client_id: str, patterns: Patterns | None = None) -> Flows:
@@ -82,9 +119,10 @@ def run_scan(pf: Portfolio, cfg: Config) -> list[dict]:
     check_registry(cfg)
     patterns = Patterns(cfg.signals.tipare)
     active = cfg.signals.active()
+    codebitori = codebitor_index(pf)
     out: list[dict] = []
     for client in pf.clients:
-        base = client_context(pf, client, client_flows(pf, cfg, client["client_id"], patterns))
+        base = client_context(pf, client, client_flows(pf, cfg, client["client_id"], patterns), codebitori.get(client["client_id"], []))
         targets = [None] + base.loans
         for loan in targets:
             for s in active:
