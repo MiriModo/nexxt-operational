@@ -23,7 +23,7 @@ export default function Desk() {
     <>
       <section className="day section" aria-labelledby="hello">
         <p className="date">{dateLong(today)} · my desk</p>
-        <h1 id="hello" className="hl">{first}, here's your day.</h1>
+        <h1 id="hello">{first}, here's your day.</h1>
         <div className="figures">
           <Figure n={coada.p1_azi} label="urgent cases due today" to="/queue?band=P1&only=due_today&sort=due" zero={coada.p1_azi === 0} />
           <Figure n={coada.de_confirmat} label="cases with something to confirm before the offer" to="/queue?only=to_confirm" zero={coada.de_confirmat === 0} />
