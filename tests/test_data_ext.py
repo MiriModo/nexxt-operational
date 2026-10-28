@@ -44,9 +44,35 @@ def test_salariu_mutat_vs_venit_pierdut_in_anaf(pipeline):
     anaf = by_client(load(pipeline, "externe/anaf.json"))
     ultima = {cid: max(s["valori"]) for cid, a in anaf.items() for s in a["surse"] if s["tip"] == "salariu"}
     luna_inchisa = anaf[scen(pipeline, 13)]["perioada"]["pana_la"]
-    assert ultima[scen(pipeline, 13)] == luna_inchisa          # salariul continuă la altă bancă
-    for nr in (12, 14, 15):
+    for nr in (13, 14):
+        assert ultima[scen(pipeline, nr)] == luna_inchisa      # salariul continuă, la altă bancă
+    for nr in (12, 15):
         assert ultima[scen(pipeline, nr)] < luna_inchisa        # venitul chiar a dispărut
+
+
+def test_scenariul_14_este_cazul_opus_lui_13(pipeline):
+    """C0013 = salariu mutat + legături (gold, produse, cont folosit); C0014 = salariu mutat, fără legături."""
+    gt = by_client(load(pipeline, "ground_truth.json"))
+    clients = {c["client_id"]: c for c in pipeline["pf"].clients}
+    c13, c14 = scen(pipeline, 13), scen(pipeline, 14)
+    for cid in (c13, c14):
+        assert "salariu_mutat" in gt[cid]["semnale_plantate"]
+        assert "venit_disparut" not in gt[cid]["semnale_plantate"]
+        assert any(s["id"] == "salariu_mutat" and s["scor"] == 1.0 for s in pipeline["det"] if s["client_id"] == cid)
+        assert not any(s["id"] == "venit_disparut" for s in pipeline["det"] if s["client_id"] == cid)
+    assert gt[c13]["recomandare_asteptata"] == "oferta_produs"
+    assert gt[c14]["recomandare_asteptata"] == "nu_interveni"
+    assert clients[c14]["nivel_relatie"] == "standard" and len(clients[c14]["produse_atasate"]) == 1
+    assert clients[c14]["client_din"] >= "2024-10-28"                       # client de cel mult 2 ani
+    assert clients[c13]["nivel_relatie"] == "gold" and clients[c13]["client_din"] < "2020-01-01"
+    # contul lui C0014 nu mai e folosit după mutarea salariului; al lui C0013 da
+    tx = load(pipeline, "transactions.json")
+    recente = ("2026-09", "2026-10")
+    iesiri = lambda cid: [t for t in tx if t["client_id"] == cid and t["directie"] == "out" and t["data"][:7] in recente]
+    assert iesiri(c14) == []
+    assert len(iesiri(c13)) >= 4
+    # venit_disparut rămâne plantat la exact 2 clienți
+    assert sum("venit_disparut" in g["semnale_plantate"] for g in gt.values()) == 2
 
 
 def test_esecurile_plantate_la_verificari(pipeline):

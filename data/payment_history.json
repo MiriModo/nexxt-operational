@@ -571,7 +571,7 @@
     "loan_id": "L0003",
     "luna": "2026-09",
     "zile_intarziere": 12,
-    "suma_restanta": 1741.84,
+    "suma_restanta": 1787.04,
     "plata_minima_card": false,
     "rambursare_anticipata": 0
   },
@@ -2113,38 +2113,6 @@
   },
   {
     "loan_id": "L0012",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0012",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0012",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0012",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0012",
     "luna": "2025-02",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -2305,110 +2273,6 @@
   },
   {
     "loan_id": "L0013",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-06",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-07",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-08",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
-    "luna": "2025-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0013",
     "luna": "2025-11",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -2490,30 +2354,6 @@
   {
     "loan_id": "L0013",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0014",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0014",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0014",
-    "luna": "2024-12",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -2874,22 +2714,6 @@
   {
     "loan_id": "L0015",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0016",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0016",
-    "luna": "2025-06",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -4162,6 +3986,62 @@
   {
     "loan_id": "L0022",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2025-02",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2025-03",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0023",
+    "luna": "2025-04",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -4491,7 +4371,7 @@
     "loan_id": "L0024",
     "luna": "2026-09",
     "zile_intarziere": 12,
-    "suma_restanta": 2948.54,
+    "suma_restanta": 2120.92,
     "plata_minima_card": false,
     "rambursare_anticipata": 0
   },
@@ -4682,14 +4562,6 @@
   {
     "loan_id": "L0025",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0026",
-    "luna": "2025-03",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -4835,7 +4707,7 @@
     "loan_id": "L0026",
     "luna": "2026-09",
     "zile_intarziere": 35,
-    "suma_restanta": 1044.74,
+    "suma_restanta": 1776.49,
     "plata_minima_card": false,
     "rambursare_anticipata": 0
   },
@@ -5026,6 +4898,94 @@
   {
     "loan_id": "L0027",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-02",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-03",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-04",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-05",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-06",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-07",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0028",
+    "luna": "2025-08",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -5131,103 +5091,7 @@
     "loan_id": "L0028",
     "luna": "2026-09",
     "zile_intarziere": 8,
-    "suma_restanta": 1343.59,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-06",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-07",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-08",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0029",
-    "luna": "2025-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
+    "suma_restanta": 1737.84,
     "plata_minima_card": false,
     "rambursare_anticipata": 0
   },
@@ -5898,30 +5762,6 @@
   {
     "loan_id": "L0032",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0033",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0033",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0033",
-    "luna": "2024-12",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -6858,70 +6698,6 @@
   {
     "loan_id": "L0037",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0038",
-    "luna": "2025-05",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -8017,6 +7793,30 @@
   },
   {
     "loan_id": "L0044",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0044",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0044",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0044",
     "luna": "2025-01",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -8178,86 +7978,6 @@
   {
     "loan_id": "L0044",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-06",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0045",
-    "luna": "2025-07",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -8569,6 +8289,62 @@
   },
   {
     "loan_id": "L0047",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2025-02",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2025-03",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
+    "luna": "2025-04",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0047",
     "luna": "2025-05",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -8698,6 +8474,86 @@
   {
     "loan_id": "L0047",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-02",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-03",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-04",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-05",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-06",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0048",
+    "luna": "2025-07",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -10353,6 +10209,22 @@
   },
   {
     "loan_id": "L0057",
+    "luna": "2025-06",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0057",
+    "luna": "2025-07",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0057",
     "luna": "2025-08",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -10458,6 +10330,38 @@
   {
     "loan_id": "L0057",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0058",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0058",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0058",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0058",
+    "luna": "2025-01",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -10625,110 +10529,6 @@
   },
   {
     "loan_id": "L0059",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-06",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-07",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-08",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
-    "luna": "2025-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0059",
     "luna": "2025-11",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -10810,38 +10610,6 @@
   {
     "loan_id": "L0059",
     "luna": "2026-09",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0060",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0060",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0060",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0060",
-    "luna": "2025-01",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -11194,6 +10962,46 @@
   {
     "loan_id": "L0061",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0062",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0062",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0062",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0062",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0062",
+    "luna": "2025-02",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,
@@ -11737,78 +11545,6 @@
   },
   {
     "loan_id": "L0065",
-    "luna": "2024-10",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2024-11",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2024-12",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-01",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-02",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-03",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-04",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-05",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
-    "luna": "2025-06",
-    "zile_intarziere": 0,
-    "suma_restanta": 0,
-    "plata_minima_card": false,
-    "rambursare_anticipata": 0
-  },
-  {
-    "loan_id": "L0065",
     "luna": "2025-07",
     "zile_intarziere": 0,
     "suma_restanta": 0,
@@ -11922,6 +11658,54 @@
   {
     "loan_id": "L0065",
     "luna": "2026-09",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2024-10",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2024-11",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2024-12",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2025-01",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2025-02",
+    "zile_intarziere": 0,
+    "suma_restanta": 0,
+    "plata_minima_card": false,
+    "rambursare_anticipata": 0
+  },
+  {
+    "loan_id": "L0066",
+    "luna": "2025-03",
     "zile_intarziere": 0,
     "suma_restanta": 0,
     "plata_minima_card": false,

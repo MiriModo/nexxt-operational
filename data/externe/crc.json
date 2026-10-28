@@ -23,10 +23,10 @@
     "prag_raportare_ron": 20000,
     "expuneri": [
       {
-        "institutie": "BCR",
+        "institutie": "Provident Financial IFN",
         "rol": "debitor",
         "tip": "nevoi_personale",
-        "sold": 28500.0,
+        "sold": 93400.0,
         "restante": 0,
         "zile_restanta": 0
       }
@@ -41,7 +41,7 @@
         "institutie": "Provident Financial IFN",
         "rol": "debitor",
         "tip": "nevoi_personale",
-        "sold": 33500.0,
+        "sold": 22000.0,
         "restante": 0,
         "zile_restanta": 0
       }
@@ -71,10 +71,10 @@
     "prag_raportare_ron": 20000,
     "expuneri": [
       {
-        "institutie": "CEC Bank",
+        "institutie": "ING Bank",
         "rol": "debitor",
         "tip": "nevoi_personale",
-        "sold": 63200.0,
+        "sold": 20000.0,
         "restante": 0,
         "zile_restanta": 0
       }
@@ -86,10 +86,10 @@
     "prag_raportare_ron": 20000,
     "expuneri": [
       {
-        "institutie": "Provident Financial IFN",
+        "institutie": "CEC Bank",
         "rol": "debitor",
         "tip": "nevoi_personale",
-        "sold": 33000.0,
+        "sold": 37700.0,
         "restante": 0,
         "zile_restanta": 0
       }
@@ -101,10 +101,10 @@
     "prag_raportare_ron": 20000,
     "expuneri": [
       {
-        "institutie": "BCR",
+        "institutie": "ING Bank",
         "rol": "debitor",
         "tip": "nevoi_personale",
-        "sold": 32700.0,
+        "sold": 42600.0,
         "restante": 0,
         "zile_restanta": 0
       }
@@ -326,7 +326,7 @@
     "prag_raportare_ron": 20000,
     "expuneri": [
       {
-        "institutie": "BCR",
+        "institutie": "Libra Internet Bank",
         "rol": "garant",
         "tip": "ipotecar",
         "sold": 185000,

@@ -71,7 +71,10 @@ FINAL: dict[int, tuple[str | None, str | None, dict, str]] = {
          "salariul vine acum la altă bancă (ANAF: același angajator; ratele le acoperă prin transfer propriu) "
          "→ risc de plecare, nu de credit. Legături rămase: gold, client din 2017, folosește contul și cardul "
          "→ fidel → merită pachet salariu la noi + reducere"),
-    14: (RESTR, None, {}, "salariul nu mai vine; ANAF confirmă"),
+    14: (NU,    None, {"anaf": "salariu_continua"},
+         "cazul opus lui 13: salariul vine la altă bancă (ANAF: același angajator; ratele prin transfer propriu), "
+         "dar fără legături rămase: standard, client de 1,5 ani, un singur produs, contul nu mai e folosit "
+         "→ nu merită reducere; doar informare"),
     15: (RESTR, None, {}, "salariul nu mai vine; ANAF confirmă"),
     16: (PROD,  None, {"pachet": True}, "platinum, adeverință de sold, salariul la altă bancă"),
     17: (BLOC,  None, {}, "capcana d: CI expirată → doar task-ul, verificările așteaptă"),

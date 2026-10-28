@@ -67,6 +67,7 @@ class S:
     req: list[R] = field(default_factory=list)
     exp: tuple[str, str] | None = None     # (banda așteptată, acțiune așteptată); None = nu apare în coadă
     produse: int | None = None             # nr. produse atașate (non-credit)
+    ani_client: float | None = None        # vechimea relației (implicit aleatoare)
     nota: str = ""
 
 
@@ -102,7 +103,9 @@ SCENARIOS: list[S] = [
     S("SL", "standard", [L("ipotecar", "variabila")], plant={"salariu_mutat": True}, exp=P1R),
     S("SL", "gold", [L("nevoi_personale"), L("ipotecar", "variabila")], plant={"salariu_mutat": "alta_banca"},
       exp=("P1", "retentie_refinantare"), nota="salariul vine la altă bancă; ratele le acoperă din contul de acolo"),
-    S("SL", "standard", [L("card_credit"), L("imobiliar", "variabila")], plant={"salariu_mutat": True}, exp=P1R),
+    S("SL", "standard", [L("card_credit"), L("imobiliar", "variabila")],
+      plant={"salariu_mutat": "alta_banca", "cont_nefolosit": True}, exp=("P1", "retentie_refinantare"),
+      produse=1, ani_client=1.5, nota="cazul opus lui 13: salariu mutat, fără legături (standard, 1 produs, cont nefolosit)"),
     S("SL", "standard", [L("refinantare"), L("ipotecar", "fixa")], plant={"salariu_mutat": True}, exp=P1R),
     # 16 · cerere de adeverință de sold
     S("SE", "platinum", [L("ipotecar", "variabila", sold=600_000, ani_ramasi=23, suma=750_000, marja=2.6, ani_vechime=8)],
@@ -203,6 +206,7 @@ class Generator:
         self.clients, self.loans, self.payments, self.transactions = [], [], [], []
         self.employers, self.requests, self.ground_truth = [], [], []
         self._loan_seq = self._req_seq = 0
+        self._luni_fara_iesiri: set[str] = set()
 
     # ---------------- helpers
     def d(self, days: int) -> date:
@@ -219,6 +223,8 @@ class Generator:
 
     def tx(self, cid: str, mkey: str, day: int, suma: float, directie: str, cine: str, tip: str) -> None:
         dt = self.day_in_month(mkey, day)
+        if dt and directie == "out" and mkey in self._luni_fara_iesiri:
+            return                                    # contul nu mai e folosit (plantat): ieșirile dispar
         if dt:
             self.transactions.append({"client_id": cid, "data": dt, "suma": round(suma, 2), "directie": directie,
                                       "platitor_beneficiar": cine, "tip_etichetat": tip})
@@ -428,12 +434,15 @@ class Generator:
         rng.shuffle(extra)
         produse = (produse + extra)[:max(nprod, len(produse))]
 
+        vechime = rng.uniform(3, 15) if sc.typ != "TAN" else 0.5      # rng se apelează mereu (flux stabil)
+        if sc.ani_client is not None:
+            vechime = sc.ani_client
         client = {
             "client_id": cid, "nume": nume, "data_nasterii": nastere.isoformat(),
             "ci_expira_la": (self.d(-40) if plant.get("ci") else self.d(rng.randint(200, 3000))).isoformat(),
             "kyc_actualizat_la": (add_years(self.today, -2.6) if plant.get("kyc") else self.d(-rng.randint(30, 600))).isoformat(),
             "nivel_relatie": sc.tier,
-            "client_din": add_years(self.today, -rng.uniform(3, 15) if sc.typ != "TAN" else -0.5).isoformat(),
+            "client_din": add_years(self.today, -vechime).isoformat(),
             "consimtamant_anaf": plant.get("consimtamant") != "anaf",
             "consimtamant_biroul_credit": plant.get("consimtamant") != "bc",
             "flag_pep": plant.get("flag") == "pep", "flag_frauda_interna": False, "flag_decedat": False,
@@ -449,7 +458,9 @@ class Generator:
             self.make_payments(loan, spec)
             total_rate += loan["rata_lunara"]
 
+        self._luni_fara_iesiri = set(self.tx_months[-2:]) if plant.get("cont_nefolosit") else set()
         self.make_transactions(cid, sc, nume, employer, total_rate)
+        self._luni_fara_iesiri = set()
 
         for rq in sc.req:
             self._req_seq += 1

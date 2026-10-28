@@ -44,8 +44,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "capcana e: cerere de adeverință pe un credit deja în coadă",
     "comportament": {
-      "prag_castig_plecare_ron": 13900.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 6100.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
   },
@@ -62,9 +62,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "capcana b: sold mic, an rămas → câștigul plecării nu acoperă costul unei intervenții",
     "comportament": {
-      "prag_castig_plecare_ron": 10800.0,
-      "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "prag_castig_plecare_ron": 3500.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -79,7 +79,7 @@
     "verificare_picata_asteptata": "garantie",
     "nota_model_final": "platinum, 750k; extrasul CF arată un litigiu notat → escaladat",
     "comportament": {
-      "prag_castig_plecare_ron": 9500.0,
+      "prag_castig_plecare_ron": 7700.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
@@ -95,7 +95,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "nevoi personale 40k, gap mic după expirare",
     "comportament": {
-      "prag_castig_plecare_ron": 7700.0,
+      "prag_castig_plecare_ron": 17500.0,
       "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": false
     }
@@ -143,9 +143,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "card + credit nou la alt creditor; nimic de reținut",
     "comportament": {
-      "prag_castig_plecare_ron": 19900.0,
+      "prag_castig_plecare_ron": 13000.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -159,8 +159,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "rată veche la alt creditor",
     "comportament": {
-      "prag_castig_plecare_ron": 18600.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 15200.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": true
     }
   },
@@ -216,18 +216,17 @@
   {
     "client_id": "C0014",
     "semnale_plantate": [
-      "salariu_mutat",
-      "venit_disparut"
+      "salariu_mutat"
     ],
     "banda_asteptata": "P1",
-    "actiune_asteptata": "restructurare_preventiva",
-    "recomandare_asteptata": "restructurare",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "nu_interveni",
     "verificare_picata_asteptata": null,
-    "nota_model_final": "salariul nu mai vine; ANAF confirmă",
+    "nota_model_final": "cazul opus lui 13: salariul vine la altă bancă (ANAF: același angajator; ratele prin transfer propriu), dar fără legături rămase: standard, client de 1,5 ani, un singur produs, contul nu mai e folosit → nu merită reducere; doar informare",
     "comportament": {
       "prag_castig_plecare_ron": 8600.0,
       "reactioneaza_la_informare": true,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -242,7 +241,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "salariul nu mai vine; ANAF confirmă",
     "comportament": {
-      "prag_castig_plecare_ron": 27900.0,
+      "prag_castig_plecare_ron": 12800.0,
       "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": false
     }
@@ -258,7 +257,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "platinum, adeverință de sold, salariul la altă bancă",
     "comportament": {
-      "prag_castig_plecare_ron": 10600.0,
+      "prag_castig_plecare_ron": 6700.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": true
     }
@@ -275,8 +274,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "capcana d: CI expirată → doar task-ul, verificările așteaptă",
     "comportament": {
-      "prag_castig_plecare_ron": 11400.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 9100.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
   },
@@ -291,8 +290,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 8800.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 20800.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
   },
@@ -309,7 +308,7 @@
     "comportament": {
       "prag_castig_plecare_ron": 8200.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -323,8 +322,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "cere el restructurare",
     "comportament": {
-      "prag_castig_plecare_ron": 31900.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 7400.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": true
     }
   },
@@ -339,8 +338,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "venit în scădere; e și codebitor pe ipotecarul clientului 1",
     "comportament": {
-      "prag_castig_plecare_ron": 9100.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 32800.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
   },
@@ -355,7 +354,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 25100.0,
+      "prag_castig_plecare_ron": 20900.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
@@ -371,8 +370,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 8900.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 22200.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
   },
@@ -387,7 +386,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 11700.0,
+      "prag_castig_plecare_ron": 9600.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
@@ -403,9 +402,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 3700.0,
+      "prag_castig_plecare_ron": 17000.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -419,9 +418,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 11800.0,
+      "prag_castig_plecare_ron": 9700.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -435,8 +434,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "pensionar: prelungirea maturității încalcă limita de vârstă → doar pauză de rată",
     "comportament": {
-      "prag_castig_plecare_ron": 5500.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 22400.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": false
     }
   },
@@ -451,7 +450,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 18500.0,
+      "prag_castig_plecare_ron": 8300.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
@@ -467,8 +466,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 18800.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 11900.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
   },
@@ -483,9 +482,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 11600.0,
+      "prag_castig_plecare_ron": 9300.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -499,9 +498,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 6700.0,
+      "prag_castig_plecare_ron": 12500.0,
       "reactioneaza_la_informare": true,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -515,9 +514,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 5600.0,
+      "prag_castig_plecare_ron": 13700.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -531,9 +530,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 8300.0,
-      "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "prag_castig_plecare_ron": 25000.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -547,8 +546,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 9600.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 17500.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
   },
@@ -563,8 +562,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 17500.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 15800.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": false
     }
   },
@@ -579,9 +578,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "PEP",
     "comportament": {
-      "prag_castig_plecare_ron": 6100.0,
+      "prag_castig_plecare_ron": 13600.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -595,8 +594,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "LTV depășit; reevaluarea confirmă",
     "comportament": {
-      "prag_castig_plecare_ron": 5200.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 17600.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": true
     }
   },
@@ -611,9 +610,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "LTV depășit; reevaluarea confirmă",
     "comportament": {
-      "prag_castig_plecare_ron": 18300.0,
-      "reactioneaza_la_informare": true,
-      "accepta_pachet_salariu": true
+      "prag_castig_plecare_ron": 11300.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -627,9 +626,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 12700.0,
-      "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "prag_castig_plecare_ron": 8900.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -643,7 +642,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 15800.0,
+      "prag_castig_plecare_ron": 5500.0,
       "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": true
     }
@@ -659,8 +658,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "restructurare veche, fără risc activ",
     "comportament": {
-      "prag_castig_plecare_ron": 20900.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 15600.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
   },
@@ -675,7 +674,7 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "restructurare veche",
     "comportament": {
-      "prag_castig_plecare_ron": 16900.0,
+      "prag_castig_plecare_ron": 5100.0,
       "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": false
     }
@@ -691,8 +690,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 13400.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 8200.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
   },
@@ -707,8 +706,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "",
     "comportament": {
-      "prag_castig_plecare_ron": 16200.0,
-      "reactioneaza_la_informare": false,
+      "prag_castig_plecare_ron": 22800.0,
+      "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": false
     }
   },
@@ -721,8 +720,8 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "credit nou, tânăr fără istoric: eligibil la grila standard",
     "comportament": {
-      "prag_castig_plecare_ron": 12400.0,
-      "reactioneaza_la_informare": true,
+      "prag_castig_plecare_ron": 3100.0,
+      "reactioneaza_la_informare": false,
       "accepta_pachet_salariu": null
     }
   },
@@ -735,9 +734,9 @@
     "verificare_picata_asteptata": "biroul_credit",
     "nota_model_final": "credit nou; BC: întârziere de 95 de zile la un IFN",
     "comportament": {
-      "prag_castig_plecare_ron": 22700.0,
+      "prag_castig_plecare_ron": 7600.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -749,7 +748,7 @@
     "verificare_picata_asteptata": "crc",
     "nota_model_final": "majorare card; CRC: garant pe un credit cu restanțe",
     "comportament": {
-      "prag_castig_plecare_ron": 8500.0,
+      "prag_castig_plecare_ron": 19600.0,
       "reactioneaza_la_informare": true,
       "accepta_pachet_salariu": null
     }
@@ -763,9 +762,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "actualizare date",
     "comportament": {
-      "prag_castig_plecare_ron": 8600.0,
+      "prag_castig_plecare_ron": 9800.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": false
+      "accepta_pachet_salariu": true
     }
   },
   {
@@ -779,9 +778,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "simulare rambursare anticipată pe variabilă (comision 0)",
     "comportament": {
-      "prag_castig_plecare_ron": 6400.0,
-      "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "prag_castig_plecare_ron": 6000.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
     }
   },
   {
@@ -793,9 +792,9 @@
     "verificare_picata_asteptata": null,
     "nota_model_final": "capcana c: nu apare în coadă",
     "comportament": {
-      "prag_castig_plecare_ron": 17200.0,
+      "prag_castig_plecare_ron": 12100.0,
       "reactioneaza_la_informare": false,
-      "accepta_pachet_salariu": true
+      "accepta_pachet_salariu": false
     }
   }
 ]

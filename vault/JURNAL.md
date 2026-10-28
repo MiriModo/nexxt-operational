@@ -16,3 +16,12 @@
   ponderile legăturilor însumează 1, semnalele referite există, nivelurile au buget în priority.yaml.
 - 5 teste în `tests/test_config_final.py` (copie a config-ului în tmp + rescriere YAML pentru cazurile negative).
 - `checks.yaml` se adaugă la M2-T1 (câmp nou în `Config`, cu același tipar).
+
+## M1-T3 — scenariul 14 = cazul opus lui C0013 (done)
+- `S.ani_client` (vechimea relației, aplicată după apelul rng ca fluxul aleator să rămână identic),
+  `plant.cont_nefolosit` (ieșirile din ultimele 2 luni se filtrează în `tx()`, tot fără să atingă rng),
+  scenariul 14: salariu mutat la altă bancă, standard, 1 produs, 1,5 ani vechime → GT `nu_interveni`.
+- ANAF pentru C0014 arată salariul în continuare (`anaf: salariu_continua`); `venit_disparut` plantat la 2 clienți.
+- Metricile Modulului 1 rămân 100% (verificat cu `evaluate`); suita completă verde.
+- Lecție: orice plantare nouă în generator trebuie să nu schimbe numărul de apeluri rng, altfel se mută
+  valorile tuturor clienților următori.

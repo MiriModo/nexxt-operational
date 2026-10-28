@@ -83,7 +83,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   (ponderi, `min_pentru_oferta`), `valoare.produse_ron_pe_an`, `piata[produs] → cheie`, meniul de 12
   intervenții (nu_interveni, informare, scutire_comision, reducere 0,2/0,4/0,6, fix 1/3/5 ani,
   pachet_salariu, ajustare_maturitate, pauza_rata) cu cost/efect/necesita, `oug50`.
-- [ ] M1-T3 Date: scenariul 14 = caz opus (salariu mutat, fără legături), câmp `S.ani_client`, etalon
+- [x] M1-T3 Date: scenariul 14 = caz opus (salariu mutat, fără legături), câmp `S.ani_client`, etalon
   `FINAL[14] = nu_interveni`, `FINAL[13] = oferta_produs`; `tests/test_data_ext.py` actualizat —
   Acceptance criteria: `generate` produce 50 clienți; C0014 are `salariu_mutat` = 1.0 și **nu** are
   `venit_disparut`; C0014 are `nivel_relatie = standard`, un singur produs atașat, `client_din` ≤ 2 ani;
