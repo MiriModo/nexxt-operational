@@ -1,0 +1,26 @@
+# Limite BNR și plafoane interne. Nu sunt o etapă vizibilă: elimină opțiunile înainte de optimizare
+# (MODEL_FINAL §3). Valorile sunt sintetice / ilustrative — de validat cu mentorul.
+
+dti:
+  max: 0.40                      # grad maxim de îndatorare (BNR: 40% pentru credite în lei)
+  max_valuta: 0.20               # 20% pentru credite în valută (portofoliul e în RON)
+  bonus_prima_locuinta: 0.05     # +5 pp pentru prima locuință
+  venit_minim_lunar_ron: 1500    # sub acest venit lunar nu se dă nicio ofertă nouă
+
+ltv:
+  max:                           # se aplică la refinanțare / credit nou pe garanție, nu la repricing-ul creditului existent
+    ipotecar: 0.85
+    imobiliar: 0.85
+
+varsta:
+  max_la_scadenta: 70            # o prelungire de maturitate nu poate duce clientul peste această vârstă
+  min_la_acordare: 18
+
+marja_minima_pp: 1.5             # marja băncii după reducere nu poate coborî sub acest nivel
+
+# Bugetul de retenție (reducerea maximă de marjă, pp) pe nivel de relație: priority.yaml → buget_retentie_pp.
+
+restructurare:
+  prelungire_maxima_luni: 60
+  pauza_rata_maxima_luni: 6
+  dti_tinta: 0.40                # restructurarea urmărește să readucă DTI sub acest prag

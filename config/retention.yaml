@@ -1,0 +1,127 @@
+# Modelul de retenție: cea mai ieftină implicare a băncii care păstrează clientul (MODEL_FINAL §3).
+# Tot ce e parametru, meniu sau prag stă aici. O intervenție nouă = o intrare nouă în `interventii`.
+
+p_tinta: 0.20                    # probabilitatea de plecare sub care considerăm clientul păstrat
+
+# p = sigmoid(a·B_norm + b·semnale_active − c − d·legaturi)
+sigmoid:
+  a: 3.0
+  b: 0.8
+  c: 2.5
+  d: 1.5
+B_referinta_ron: 15000           # B_norm = min(B / B_referinta_ron, B_norm_max)
+B_norm_max: 2.0
+
+# Semnalele „active" care intră în termenul b·semnale_active (câte 1 pentru fiecare prezent la scorul minim).
+semnale_active:
+  cerere_adeverinta_sold: 1.0
+  salariu_mutat: 1.0
+  expirare_dobanda_fixa: 1.0
+  simulare_in_app: 0.5
+  rata_alt_creditor: 0.9         # credit nou la alt creditor
+interogari_bc_min_pentru_activ: 2   # ≥ 2 interogări la Biroul de Credit în 6 luni = își caută bancă (+1 activ)
+
+# Legăturile clientului cu banca (0..1). Oferta depinde de ele: un client fără legături nu primește reducere
+# „pe gratis", doar informare sau o ofertă condiționată de aducerea salariului (pachet).
+legaturi:
+  ponderi:
+    produse: 0.35                # produse atașate active (fără cont_salariu dacă salariul nu mai vine) / produse_max
+    vechime: 0.25                # ani de când e client / vechime_max_ani (plafonat la 1)
+    nivel: 0.20                  # standard 0 · gold 0.5 · platinum 1
+    activitate: 0.20             # contul e folosit: intrări în ultimele 2 luni ≥ activitate_min_ron
+  produse_max: 4
+  vechime_max_ani: 10
+  nivel_scor: { standard: 0.0, gold: 0.5, platinum: 1.0 }
+  activitate_min_ron: 1000
+  min_pentru_oferta: 0.30        # sub acest nivel: doar informare sau pachet condiționat de salariu
+
+# Valoarea clientului dacă rămâne: V = marjă × sold × ani rămași + Σ produse atașate × ani (plafonat)
+valoare:
+  ani_max_produse: 10
+  produse_ron_pe_an:
+    cont_curent: 120
+    cont_salariu: 240
+    economii: 200
+    depozit: 250
+    card_debit: 60
+    asigurare_viata: 300
+    pensie_privata: 150
+
+# Dobânda pieței la care se compară creditul (market.json → dobanzi_piata[produs][cheie]).
+piata:
+  ipotecar: fixa_3_ani
+  imobiliar: fixa_3_ani
+  refinantare: fixa_3_ani
+  nevoi_personale: fixa_toata_durata
+  card_credit: fixa_toata_durata
+
+# Meniul de intervenții. cost = ce pierde banca; efect = ce se schimbă pentru client.
+#   tip: nimic | informare | comision | reducere_marja | fix_piata | pachet | restructurare
+#   efect_scor: se adaugă la argumentul sigmoidei (negativ = scade p)
+#   efect_legaturi: se adaugă la legături (pachetul aduce salariul la noi)
+#   necesita: condiții — salariu_la_alta_banca | risc | fara_risc
+interventii:
+  - id: nu_interveni
+    tip: nimic
+    eticheta: "nu interveni"
+    cost_fix: 0
+  - id: informare
+    tip: informare
+    eticheta: "informare + simulare personalizată"
+    cost_fix: 50
+    efect_scor: -0.6
+  - id: scutire_comision
+    tip: comision
+    eticheta: "scutire comision / evaluare gratuită"
+    cost_fix: 650
+    efect_scor: -0.3
+  - id: reducere_marja_0_2
+    tip: reducere_marja
+    eticheta: "reducere marjă 0,2 pp pe toată durata"
+    reducere_pp: 0.2
+  - id: reducere_marja_0_4
+    tip: reducere_marja
+    eticheta: "reducere marjă 0,4 pp pe toată durata"
+    reducere_pp: 0.4
+  - id: reducere_marja_0_6
+    tip: reducere_marja
+    eticheta: "reducere marjă 0,6 pp pe toată durata"
+    reducere_pp: 0.6
+  - id: fix_1_an
+    tip: fix_piata
+    eticheta: "nouă perioadă fixă 1 an la dobânda pieței"
+    ani: 1
+    cheie_piata: fixa_1_an
+  - id: fix_3_ani
+    tip: fix_piata
+    eticheta: "nouă perioadă fixă 3 ani la dobânda pieței"
+    ani: 3
+    cheie_piata: fixa_3_ani
+  - id: fix_5_ani
+    tip: fix_piata
+    eticheta: "nouă perioadă fixă 5 ani la dobânda pieței"
+    ani: 5
+    cheie_piata: fixa_5_ani
+  - id: pachet_salariu
+    tip: pachet
+    eticheta: "pachet: salariul la noi + reducere marjă 0,2 pp"
+    reducere_pp: 0.2
+    cost_fix: 100
+    efect_legaturi: 0.4
+    necesita: [salariu_la_alta_banca]
+  - id: ajustare_maturitate
+    tip: restructurare
+    eticheta: "prelungirea maturității (rată mai mică)"
+    cost_fix: 200
+    necesita: [risc]
+  - id: pauza_rata
+    tip: restructurare
+    eticheta: "pauză de rată (până la 6 luni, dobânda se capitalizează)"
+    cost_fix: 150
+    necesita: [risc]
+
+# Comision de rambursare anticipată (OUG 50/2010), folosit la simulări.
+oug50:
+  fixa_peste_1_an_pct: 1.0
+  fixa_sub_1_an_pct: 0.5
+  variabila_pct: 0.0

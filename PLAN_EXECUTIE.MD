@@ -74,7 +74,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   variabilă; la fixă 1% peste 1 an rămas / 0,5% sub), `dti`, `varsta_la`; teste `tests/test_finance.py`:
   anuitatea pe un caz cunoscut (±0,01), graficul stinge soldul, dobânda totală = suma coloanei din grafic,
   schimbarea de dobândă re-amortizează, comisionul 0 la variabilă.
-- [ ] M1-T2 `config/constraints.yaml` + `config/retention.yaml` + modele pydantic în `config_loader.py`
+- [x] M1-T2 `config/constraints.yaml` + `config/retention.yaml` + modele pydantic în `config_loader.py`
   (`Config` primește `constraints`, `retention`, `checks`; `load_config` le încarcă; validări: intervenții cu
   id unic, `p_tinta ∈ (0,1)`, chei de piață existente) — Acceptance criteria: `load_config()` întoarce cele
   3 config-uri noi; un YAML cu id duplicat de intervenție ridică `ValueError`; testele existente rămân verzi.

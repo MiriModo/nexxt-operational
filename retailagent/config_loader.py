@@ -135,9 +135,120 @@ class PriorityConfig(BaseModel):
         return self
 
 
+# ---------------------------------------------------------------- constraints.yaml
+
+class DtiCfg(BaseModel):
+    max: float
+    max_valuta: float = 0.20
+    bonus_prima_locuinta: float = 0.0
+    venit_minim_lunar_ron: float = 0.0
+
+
+class LtvCfg(BaseModel):
+    max: dict[str, float]
+
+
+class VarstaCfg(BaseModel):
+    max_la_scadenta: int
+    min_la_acordare: int = 18
+
+
+class RestructurareCfg(BaseModel):
+    prelungire_maxima_luni: int
+    pauza_rata_maxima_luni: int
+    dti_tinta: float
+
+
+class ConstraintsConfig(BaseModel):
+    dti: DtiCfg
+    ltv: LtvCfg
+    varsta: VarstaCfg
+    marja_minima_pp: float
+    restructurare: RestructurareCfg
+
+
+# ---------------------------------------------------------------- retention.yaml
+
+TipInterventie = Literal["nimic", "informare", "comision", "reducere_marja", "fix_piata", "pachet", "restructurare"]
+Conditie = Literal["salariu_la_alta_banca", "risc", "fara_risc"]
+CHEI_PIATA = ("fixa_1_an", "fixa_3_ani", "fixa_5_ani", "fixa_toata_durata", "marja_variabila")
+
+
+class InterventieCfg(BaseModel):
+    id: str
+    tip: TipInterventie
+    eticheta: str
+    cost_fix: float = 0.0
+    reducere_pp: float = 0.0
+    ani: int = 0
+    cheie_piata: str | None = None
+    efect_scor: float = 0.0
+    efect_legaturi: float = 0.0
+    necesita: list[Conditie] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _check(self) -> "InterventieCfg":
+        if self.tip == "reducere_marja" and self.reducere_pp <= 0:
+            raise ValueError(f"intervenția {self.id}: reducere_marja fără reducere_pp")
+        if self.tip == "fix_piata" and (self.ani <= 0 or self.cheie_piata not in CHEI_PIATA):
+            raise ValueError(f"intervenția {self.id}: fix_piata cere ani > 0 și cheie_piata din {CHEI_PIATA}")
+        return self
+
+
+class LegaturiCfg(BaseModel):
+    ponderi: dict[str, float]
+    produse_max: int
+    vechime_max_ani: float
+    nivel_scor: dict[str, float]
+    activitate_min_ron: float
+    min_pentru_oferta: float
+
+
+class ValoareClientCfg(BaseModel):
+    ani_max_produse: float
+    produse_ron_pe_an: dict[str, float]
+
+
+class RetentionConfig(BaseModel):
+    p_tinta: float = Field(gt=0.0, lt=1.0)
+    sigmoid: dict[str, float]
+    B_referinta_ron: float = Field(gt=0.0)
+    B_norm_max: float = 2.0
+    semnale_active: dict[str, float]
+    interogari_bc_min_pentru_activ: int = 2
+    legaturi: LegaturiCfg
+    valoare: ValoareClientCfg
+    piata: dict[str, str]
+    interventii: list[InterventieCfg]
+    oug50: dict[str, float]
+
+    @model_validator(mode="after")
+    def _check(self) -> "RetentionConfig":
+        ids = [i.id for i in self.interventii]
+        dup = {i for i in ids if ids.count(i) > 1}
+        if dup:
+            raise ValueError(f"intervenții duplicate în retention.yaml: {sorted(dup)}")
+        for k in ("a", "b", "c", "d"):
+            if k not in self.sigmoid:
+                raise ValueError(f"retention.yaml: sigmoid.{k} lipsește")
+        for produs, cheie in self.piata.items():
+            if cheie not in CHEI_PIATA:
+                raise ValueError(f"retention.yaml: piata.{produs} = {cheie!r} nu e o cheie cunoscută {CHEI_PIATA}")
+        if abs(sum(self.legaturi.ponderi.values()) - 1.0) > 1e-6:
+            raise ValueError("retention.yaml: legaturi.ponderi trebuie să însumeze 1.0")
+        return self
+
+    def by_id(self) -> dict[str, InterventieCfg]:
+        return {i.id: i for i in self.interventii}
+
+
+# ---------------------------------------------------------------- agregare
+
 class Config(BaseModel):
     signals: SignalsConfig
     priority: PriorityConfig
+    constraints: ConstraintsConfig
+    retention: RetentionConfig
 
     @model_validator(mode="after")
     def _cross(self) -> "Config":
@@ -150,6 +261,12 @@ class Config(BaseModel):
         for sid in list(self.priority.semnale_active) + self.priority.blocaj.ordine:
             if sid not in sig:
                 raise ValueError(f"priority.yaml referă semnalul necunoscut {sid!r}")
+        for sid in self.retention.semnale_active:
+            if sid not in sig:
+                raise ValueError(f"retention.yaml referă semnalul necunoscut {sid!r}")
+        for tier in self.retention.legaturi.nivel_scor:
+            if tier not in self.priority.buget_retentie_pp:
+                raise ValueError(f"retention.yaml: nivelul {tier!r} nu are buget în priority.yaml")
         return self
 
 
@@ -161,4 +278,6 @@ def _load_yaml(path: Path) -> dict:
 def load_config(config_dir: Path | str = CONFIG_DIR) -> Config:
     config_dir = Path(config_dir)
     return Config(signals=SignalsConfig(**_load_yaml(config_dir / "signals.yaml")),
-                  priority=PriorityConfig(**_load_yaml(config_dir / "priority.yaml")))
+                  priority=PriorityConfig(**_load_yaml(config_dir / "priority.yaml")),
+                  constraints=ConstraintsConfig(**_load_yaml(config_dir / "constraints.yaml")),
+                  retention=RetentionConfig(**_load_yaml(config_dir / "retention.yaml")))
