@@ -59,7 +59,7 @@ export default function Desk() {
             <span id="act">[02] Your activity</span>
             <span>/ {activitate.decizii} decisions</span>
           </div>
-          <div className="win activity" style={{ marginTop: 16 }}>
+          <div className="win activity accent" style={{ marginTop: 16 }}>
             <dl className="stats">
               <div>
                 <dd>{activitate.decizii_azi}</dd>

@@ -508,3 +508,21 @@ dl.stats dt { font-size: 12px; color: var(--body-2); margin-bottom: 6px; line-he
 .hero p:not(.hero-kicker) { color: #3a3c42; }
 @media (max-width: 760px) { .hero .glow { top: 30px; height: 220px; } }
 .hero .glow { top: 60px; height: 230px; }
+
+/* ---------- dashboards: blue → Raiffeisen yellow details (My desk, Overview, Reports) ---------- */
+:root { --grad-by: linear-gradient(90deg, #2867e4 0%, #6aa0ff 45%, #fee600 100%); }
+/* the rule above the big figures becomes a thin blue → yellow line */
+.day .figures { border-top: 0; position: relative; }
+.day .figures::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--grad-by); border-radius: 2px; transform: scaleX(0); transform-origin: left; animation: marker 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; }
+/* linked figures: a small blue → yellow underline under the number on hover */
+.figure.link b { position: relative; display: inline-block; }
+.figure.link b::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px; border-radius: 2px; background: var(--grad-by); transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.figure.link:hover b::after { transform: scaleX(1); }
+.figure.link:hover b { color: var(--ink); }
+/* cards on the dashboards: a 3 px blue → yellow strip along the top edge */
+.win.accent { position: relative; overflow: hidden; }
+.win.accent::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--grad-by); }
+/* the agent's bar and the budget bar in Reports */
+.hbars .b i.grad, .budget i { background: var(--grad-by); }
+.budget { height: 12px; }
+@media (prefers-reduced-motion: reduce) { .day .figures::before { animation: none; transform: none; } .figure.link b::after { transition: none; } }

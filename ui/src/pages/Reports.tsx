@@ -59,9 +59,9 @@ export default function Reports() {
       </section>
 
       <div className="grid c2">
-        <section className="win">
+        <section className="win accent">
           <p className="mono" style={{ marginBottom: 12 }}>[01] Cost of retention · agent vs. uniform cut</p>
-          <Bars rows={strategies.map(([k, s]) => ({ k, v: s.cost, text: `${ron(s.cost)} · ${pct(s.rata_ramanere, 0)} stay`, kind: k === "the agent" ? "brand" : "" }))} />
+          <Bars rows={strategies.map(([k, s]) => ({ k, v: s.cost, text: `${ron(s.cost)} · ${pct(s.rata_ramanere, 0)} stay`, kind: k === "the agent" ? "grad" : "" }))} />
           <p className="meta" style={{ margin: "12px 0 0" }}>{cv.concluzie}</p>
           {b && (
             <>
@@ -76,7 +76,7 @@ export default function Reports() {
           )}
         </section>
 
-        <section className="win">
+        <section className="win accent">
           <p className="mono" style={{ marginBottom: 12 }}>[02] What the agent recommended</p>
           <Bars
             rows={Object.entries(m.data.distributie)
@@ -90,7 +90,7 @@ export default function Reports() {
       </div>
 
       <div className="grid c2" style={{ marginTop: 16 }}>
-        <section className="win">
+        <section className="win accent">
           <p className="mono" style={{ marginBottom: 12 }}>[03] How well the model predicts leaving</p>
           {met ? (
             <>
@@ -128,7 +128,7 @@ export default function Reports() {
           )}
         </section>
 
-        <section className="win">
+        <section className="win accent">
           <p className="mono" style={{ marginBottom: 12 }}>[04] Advisors vs. the agent</p>
           {fb.data && fb.data.decizii > 0 ? (
             <>
