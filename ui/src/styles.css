@@ -316,3 +316,90 @@ pre.text { white-space: pre-wrap; font: 13px/1.5 var(--font-sans); margin: 0; }
 .files button:hover { background: var(--muted); }
 .files button.on { background: var(--ink); color: #fff; }
 .files .desc { font-size: 12px; color: var(--muted-foreground); padding: 2px 10px 8px; }
+
+/* ---------- motion: one load sequence in the hero, reveal on scroll, press and float ---------- */
+.rise { opacity: 0; transform: translateY(14px); animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal.in { opacity: 1; transform: none; }
+.btn { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease; }
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
+.btn.primary:hover:not(:disabled) { box-shadow: 0 6px 16px rgba(12, 13, 15, 0.22); }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); box-shadow: none; transition-duration: 0.05s; }
+.segmented button, .chip, .files button, label.opt { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease; }
+.segmented button:active, .chip:active { transform: scale(0.96); }
+.row, .win.float { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease; }
+.row:hover, .win.float:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 22px 44px rgba(15, 23, 42, 0.14); }
+.row:active { transform: translateY(0) scale(0.995); }
+.figure.link { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.figure.link:hover { transform: translateX(3px); }
+.figure.link b { transition: color 0.2s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .rise, .reveal { opacity: 1; transform: none; animation: none; transition: none; }
+  .btn, .row, .win.float, .figure.link { transition: none; }
+  .btn:hover, .row:hover, .win.float:hover { transform: none; }
+}
+
+/* ---------- hero: kicker, decorative orbit, product mockup in the gradient frame ---------- */
+.hero { overflow: visible; padding-top: 48px; }
+.hero-kicker { margin: 0 0 18px; color: var(--brand); }
+.hero .orbit { position: absolute; right: -120px; top: -40px; width: 400px; height: 400px; z-index: -1; opacity: 0.9; animation: spin 90s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 1000px) { .hero .orbit { width: 260px; height: 260px; right: -90px; top: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero .orbit { animation: none; } }
+.mock { position: relative; margin: 52px auto 0; max-width: 980px; padding: 20px; text-align: left; }
+.mock-win { padding: 0; overflow: hidden; margin: 0 110px 0 0; }
+.mock-top { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.mock-dots { display: inline-flex; gap: 5px; }
+.mock-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); display: block; }
+.mock-stepper { margin-left: auto; font: 11.5px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--body-2); }
+.mock-stepper b { color: var(--ink); font-weight: 400; }
+.mock-body { display: grid; grid-template-columns: 1fr 180px; gap: 16px; padding: 14px 16px 18px; }
+.mock-list { display: flex; flex-direction: column; gap: 6px; }
+.mock-row { display: grid; grid-template-columns: auto 130px 1fr auto; gap: 10px; align-items: center; padding: 9px 12px; border-radius: 10px; background: var(--muted); font-size: 13px; }
+.mock-row.dim { opacity: 0.55; }
+.mock-name { font: 500 14px var(--font-display); color: var(--ink); letter-spacing: -0.01em; }
+.mock-sig { color: var(--body-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mock-gauge { display: flex; flex-direction: column; align-items: center; gap: 4px; justify-content: center; }
+.mock-big { font: 500 22px var(--font-display); fill: var(--ink); letter-spacing: -0.03em; }
+.mock-small { font: 9.5px var(--font-mono); fill: var(--body-2); letter-spacing: 0.04em; text-transform: uppercase; }
+.mock-arc { animation: arc 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
+@keyframes arc { from { stroke-dasharray: 0 1000; } }
+.mock-card { position: absolute; right: 8px; bottom: 28px; width: 320px; padding: 16px 18px; animation: floaty 6s ease-in-out infinite; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 24px 56px rgba(15, 23, 42, 0.22); }
+.mock-card .checks { margin-top: 8px; }
+.mock-card .check { grid-template-columns: 16px 120px 1fr; font-size: 12px; padding: 5px 0; }
+.mock-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.mock-score { margin: 10px 0 2px; }
+.mock-score b { display: block; font: 500 26px/1 var(--font-display); letter-spacing: -0.03em; color: var(--ink); }
+.mock-score span { font-size: 12px; color: var(--body-2); }
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) { .mock-card { animation: none; } .mock-arc { animation: none; } }
+@media (max-width: 900px) {
+  .mock-win { margin-right: 0; }
+  .mock-body { grid-template-columns: 1fr; }
+  .mock-gauge { display: none; }
+  .mock-card { position: static; width: auto; margin-top: 14px; animation: none; }
+  .mock-row { grid-template-columns: auto 1fr auto; }
+  .mock-sig { display: none; }
+  .mock-stepper { display: none; }
+}
+
+/* hero fixes: the kicker keeps the mono size (the .hero p rule is more specific), the orbit never widens the page */
+.hero p.hero-kicker { font-size: 11.5px; letter-spacing: 0.06em; max-width: none; margin: 0 0 18px; }
+.hero { overflow: clip; }
+.hero .dots { inset: -40px 0 0; }
+
+/* mockup layout v2: the window on the left, the case card floating beside it (nothing hidden) */
+.mock-win { margin: 0 330px 0 0; min-height: 340px; }
+.mock-list { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 18px; }
+.mock-body { display: none; }
+.mock-card { position: absolute; right: 22px; top: 36px; bottom: auto; width: 320px; }
+.mock-gauge { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; margin: 10px 0 4px; }
+.mock-score { margin: 0; }
+.mock-score .mono { display: block; margin-bottom: 4px; font-size: 10.5px; }
+.mock-score b { font-size: 22px; }
+.mock-big { font-size: 20px; }
+@media (max-width: 900px) {
+  .mock-win { margin-right: 0; min-height: 0; }
+  .mock-card { position: static; width: auto; margin-top: 14px; }
+}
