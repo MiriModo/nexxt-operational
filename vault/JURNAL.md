@@ -59,3 +59,12 @@
 - `finance.cost_mutare_total` extras din checks (un singur loc). Pe date: B(C0001 ipotecar) > 50k, B(card) < 500,
   legături C0013 = suficiente, C0014 = sub prag.
 - 6 teste în `tests/test_retention_model.py`.
+
+## M3-T2 — retention_menu.py: meniu + constrângeri + optimizare (done)
+- `_fezabilitate` (necesita, risc, legături, buget pe nivel, marjă minimă, chei de piață, vârstă la noua scadență,
+  DTI pentru pachet), `_cost_si_castig` (cost bancă pe toată durata / câștig client pe orizont), `evalueaza_interventii`,
+  `alege_interventie` (regula din plan), `evalueaza_caz`. `finance.dobanda_perioada` nou.
+- Distribuție pe date: ajustare_maturitate 22, pauza_rata 10, fix_3_ani 5, pachet_salariu 1, informare 3,
+  nu_interveni 15, blocate 11. 8 teste în `tests/test_retention_menu.py`. Suita: 111 verzi.
+- Lecție: calibrarea modelului trebuie verificată pe toate cazurile (tabel cu B, V, legături, p, alegere) înainte de
+  a fixa etalonul; heredoc-urile bash lungi pică — patch-urile se scriu în fișier și se rulează.

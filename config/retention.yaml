@@ -3,6 +3,11 @@
 
 p_tinta: 0.20                    # probabilitatea de plecare sub care considerăm clientul păstrat
 
+# Orizontul de decizie al clientului (ani): B și câștigul lui dintr-o ofertă se calculează pe primii `orizont_ani`
+# ani ai graficului (cât durează de obicei o perioadă fixă / cât vede clientul înainte). Costul băncii rămâne
+# pe toată durata pentru care acordă intervenția. Fără orizont, B pe 20+ ani ar face orice ofertă inutilă.
+orizont_ani: 3
+
 # p = sigmoid(a·B_norm + b·semnale_active − c − d·legaturi)
 sigmoid:
   a: 3.0
@@ -34,6 +39,7 @@ legaturi:
   nivel_scor: { standard: 0.0, gold: 0.5, platinum: 1.0 }
   activitate_min_ron: 1000
   min_pentru_oferta: 0.30        # sub acest nivel: doar informare sau pachet condiționat de salariu
+  min_pentru_pachet: 0.15        # sub acest nivel nici pachetul nu se oferă: clientul nu mai are nicio legătură
 
 # Valoarea clientului dacă rămâne: V = marjă × sold × ani rămași + Σ produse atașate × ani (plafonat)
 valoare:
@@ -108,16 +114,18 @@ interventii:
     reducere_pp: 0.2
     cost_fix: 100
     efect_legaturi: 0.4
+    efect_scor: -2.5              # salariul la noi e cel mai puternic ancoraj (a muta din nou și salariul, și creditul
+                                  # e costisitor pentru client); parametru de calibrat cu date istorice
     necesita: [salariu_la_alta_banca]
   - id: ajustare_maturitate
     tip: restructurare
     eticheta: "prelungirea maturității (rată mai mică)"
-    cost_fix: 200
+    cost_fix: 150                 # restructurarea „normală"; pauza de rată e temporară și mai scumpă de administrat
     necesita: [risc]
   - id: pauza_rata
     tip: restructurare
     eticheta: "pauză de rată (până la 6 luni, dobânda se capitalizează)"
-    cost_fix: 150
+    cost_fix: 200
     necesita: [risc]
 
 # Comision de rambursare anticipată (OUG 50/2010), folosit la simulări.

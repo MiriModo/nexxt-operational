@@ -63,6 +63,11 @@ def dobanda_totala(sold: float, segmente: list[tuple[int, float]]) -> float:
     return sum(d for _, d, *_ in _iter_scenariu(sold, segmente))
 
 
+def dobanda_perioada(sold: float, segmente: list[tuple[int, float]], luni: int) -> float:
+    """Dobânda plătită în primele `luni` ale scenariului (orizontul de decizie al clientului)."""
+    return sum(d for nr, d, *_ in _iter_scenariu(sold, segmente) if nr <= luni)
+
+
 def segmente_credit(loan: dict, today: date, market: dict, luni: int | None = None) -> list[tuple[int, float]]:
     """Scenariul „rămâi așa": dobânda curentă până la expirarea perioadei fixe, apoi IRCC + marjă."""
     luni = luni or luni_ramase(loan, today)

@@ -120,7 +120,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   `prob_plecare(B, semnale_active, legaturi, cfg)` cu sigmoid; teste: B > 0 pentru C0001 (gap 3 pp pe
   400k) și B ≈ 0 pentru un card; legături mai mari pentru C0013 decât pentru C0014; p crește cu B și
   scade cu legăturile.
-- [ ] M3-T2 `retailagent/retention.py` — meniu + constrângeri + optimizare — Acceptance criteria:
+- [x] M3-T2 `retailagent/retention.py` — meniu + constrângeri + optimizare — Acceptance criteria:
   `evalueaza_interventii(...)` întoarce pentru fiecare intervenție `{id, fezabil, motiv_infezabil, cost,
   B_dupa, p_dupa, respecta_tinta, merita (cost ≤ p×V)}`; costul reducerii de marjă și al perioadei fixe
   noi se calculează din grafice; constrângerile (marjă minimă, buget pe nivel, vârstă la scadență pentru

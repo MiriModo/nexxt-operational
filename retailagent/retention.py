@@ -1,8 +1,8 @@
 """Modelul de retenție: cea mai ieftină implicare a băncii care păstrează clientul (MODEL_FINAL §3).
 
 Partea de model (funcții pure, parametri din config/retention.yaml):
-    B  = câștigul clientului dacă pleacă = dobânda rămasă la noi − dobânda rămasă la dobânda pieței − costul mutării
-         (toate pe graficul de rambursare, nu „gap × sold × ani")
+    B  = câștigul clientului dacă pleacă = dobânda la noi − dobânda la dobânda pieței − costul mutării,
+         pe graficul de rambursare, în orizontul de decizie (retention.yaml → orizont_ani), nu „gap × sold × ani"
     legături ∈ [0,1] = produse active, vechime, nivel, activitate pe cont
     V  = valoarea clientului dacă rămâne = marjă × sold × ani rămași + produse atașate × ani
     p  = sigmoid(a·B_norm + b·semnale_active − c − d·legături)
@@ -16,7 +16,7 @@ from datetime import date
 
 from .common import parse_date, years_between
 from .config_loader import Config
-from .finance import cost_mutare_total, dobanda_totala, luni_ramase, segmente_credit
+from .finance import cost_mutare_total, dobanda_perioada, luni_ramase, segmente_credit
 from .signals.util import ani_ramasi, marja_efectiva
 
 
@@ -27,15 +27,16 @@ def dobanda_piata(loan: dict, market: dict, cfg: Config) -> float:
 def castig_plecare(loan: dict, today: date, market: dict, cfg: Config, cost_mutare: float | None = None) -> dict:
     """B și descompunerea lui. `cost_mutare` poate veni din verificări; altfel se calculează din market.json."""
     luni = luni_ramase(loan, today)
-    la_noi = dobanda_totala(loan["sold_ramas"], segmente_credit(loan, today, market))
+    orizont = min(luni, round(cfg.retention.orizont_ani * 12))
+    la_noi = dobanda_perioada(loan["sold_ramas"], segmente_credit(loan, today, market), orizont)
     piata_pct = dobanda_piata(loan, market, cfg)
-    piata = dobanda_totala(loan["sold_ramas"], [(luni, piata_pct)])
+    piata = dobanda_perioada(loan["sold_ramas"], [(luni, piata_pct)], orizont)
     if cost_mutare is None:
         cost_mutare = cost_mutare_total(loan, market)[0]
     brut = la_noi - piata - cost_mutare
     return {"B": round(max(0.0, brut), 2), "B_brut": round(brut, 2), "dobanda_la_noi": round(la_noi, 2),
             "dobanda_piata": round(piata, 2), "dobanda_pct_piata": piata_pct, "cost_mutare": round(cost_mutare, 2),
-            "luni_ramase": luni}
+            "luni_ramase": luni, "orizont_luni": orizont}
 
 
 def legaturi(client: dict, transactions: list[dict], salariu_la_alta_banca: bool, today: date, cfg: Config) -> dict:

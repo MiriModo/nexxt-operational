@@ -202,6 +202,7 @@ class LegaturiCfg(BaseModel):
     nivel_scor: dict[str, float]
     activitate_min_ron: float
     min_pentru_oferta: float
+    min_pentru_pachet: float = 0.0
 
 
 class ValoareClientCfg(BaseModel):
@@ -211,6 +212,7 @@ class ValoareClientCfg(BaseModel):
 
 class RetentionConfig(BaseModel):
     p_tinta: float = Field(gt=0.0, lt=1.0)
+    orizont_ani: float = Field(default=3.0, gt=0.0)
     sigmoid: dict[str, float]
     B_referinta_ron: float = Field(gt=0.0)
     B_norm_max: float = 2.0

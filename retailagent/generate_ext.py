@@ -61,8 +61,8 @@ FINAL: dict[int, tuple[str | None, str | None, dict, str]] = {
     4:  (NU,    None, {}, "capcana b: sold mic, an rămas → câștigul plecării nu acoperă costul unei intervenții"),
     5:  (RESP,  "garantie", {"cf": "litigiu"}, "platinum, 750k; extrasul CF arată un litigiu notat → escaladat"),
     6:  (NU,    None, {}, "nevoi personale 40k, gap mic după expirare"),
-    7:  (MIN,   None, {}, "pensionar, imobiliar 150k, expiră în 120 zile"),
-    8:  (PROD,  None, {"pachet": True}, "salariul vine la altă bancă → pachet salariu la noi + reducere"),
+    7:  (NU,    None, {}, "pensionar, imobiliar 150k, expiră în 120 zile: câștig mic la plecare, p la prag → doar informare"),
+    8:  (NU,    None, {"pachet": True}, "salariul vine la altă bancă, dar gap-ul e mic: informarea îl aduce la țintă"),
     9:  (NU,    None, {}, "card + credit nou la alt creditor; nimic de reținut"),
     10: (NU,    None, {}, "rată veche la alt creditor"),
     11: (NU,    None, {}, "rată veche la alt creditor"),
@@ -76,7 +76,8 @@ FINAL: dict[int, tuple[str | None, str | None, dict, str]] = {
          "dar fără legături rămase: standard, client de 1,5 ani, un singur produs, contul nu mai e folosit "
          "→ nu merită reducere; doar informare"),
     15: (RESTR, None, {}, "salariul nu mai vine; ANAF confirmă"),
-    16: (PROD,  None, {"pachet": True}, "platinum, adeverință de sold, salariul la altă bancă"),
+    16: (MIN,   None, {"pachet": True}, "platinum, adeverință de sold, 600k: gap-ul e prea mare ca pachetul cu salariul "
+         "să-l aducă sub țintă → nouă perioadă fixă 3 ani (ofertă minimă care păstrează)"),
     17: (BLOC,  None, {}, "capcana d: CI expirată → doar task-ul, verificările așteaptă"),
     18: (RESTR, None, {}, ""), 19: (RESTR, None, {}, ""), 20: (RESTR, None, {}, "cere el restructurare"),
     21: (RESTR, None, {"codebitor_la": 1}, "venit în scădere; e și codebitor pe ipotecarul clientului 1"),

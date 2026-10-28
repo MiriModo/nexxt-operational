@@ -21,7 +21,8 @@ def loan_of(pipeline, cid, produs):
 def test_B_pozitiv_pe_ipotecar_cu_gap_si_aproape_zero_pe_card(pipeline, cfg):
     pf = pipeline["pf"]
     b = castig_plecare(loan_of(pipeline, "C0001", "ipotecar"), TODAY, pf.market, cfg)
-    assert b["B"] > 50_000                                   # 400k, 22 ani, gap ~3 pp după expirare
+    assert 20_000 < b["B"] < 60_000                          # 400k, gap ~3 pp după expirare, orizont 3 ani
+    assert b["orizont_luni"] == 36
     assert b["dobanda_la_noi"] > b["dobanda_piata"] > 0 and b["cost_mutare"] > 0
     assert b["B"] == pytest.approx(b["dobanda_la_noi"] - b["dobanda_piata"] - b["cost_mutare"], abs=1)
     card = castig_plecare(loan_of(pipeline, "C0001", "card_credit"), TODAY, pf.market, cfg)
