@@ -19,7 +19,7 @@ export default function SignIn() {
           <p>Advisors see only their own queue. The administrator sees everything and tunes the rules engine.</p>
         </div>
       </Reveal>
-      <Reveal className="frame" delay={100}>
+      <Reveal className="frame grad signin-frame" delay={100}>
         <Login />
       </Reveal>
     </section>

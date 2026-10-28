@@ -25,6 +25,7 @@ export default function Home() {
     <>
       <section className="hero section" aria-labelledby="title">
         <div className="dots" aria-hidden="true" />
+        <div className="glow" aria-hidden="true" />
         <svg className="orbit" viewBox="0 0 400 400" aria-hidden="true">
           <circle cx="200" cy="200" r="180" fill="none" stroke="#2867e4" strokeWidth="1" strokeDasharray="3 9" opacity="0.5" />
           <circle cx="200" cy="200" r="120" fill="none" stroke="#d5d5da" strokeWidth="1" strokeDasharray="2 8" />
