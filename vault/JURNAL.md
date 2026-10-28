@@ -130,6 +130,16 @@
 - `tests/test_readme.py` (2 teste). Arhiva `NEXXT_retailagent_2026-10-28_final.zip` (87 fișiere, 0,5 MB, cu `out/`,
   fără cache / PDF / .git).
 
+## Upgrade pasul 1 — portofoliu realist la scară (2026-10-28, după loop)
+- `config/portofoliu.yaml` + `profil.py` (pydantic); `generate.sample_scenario` produce obiecte S/L/R din distribuții
+  (triunghiular), semnale cu probabilități și corelații, cereri, plante externe; `Generator` cu RNG separat după cei 50,
+  bazin de angajatori, zgomot de tranzacții din profil; `generate_ext` cu plante per client, comportament cu structură;
+  `evaluate` filtrează pe `etalon`, `--scale N` rulează fluxul complet + metrici; `demo --max-cazuri`; `churn/labels.py`.
+- `checks.build_context` avea o căutare liniară pe toate creditele per caz (81 s la 10.000) → index de codebitori (5,9 s).
+- Plantări corectate: salariu_mutat / venit_scadere doar la SL (tinerii au 4 luni de istoric); cont_nefolosit exclude
+  rata la alt creditor și poprirea (ieșirile dispar). F1 la 10.000: 1,000.
+- Rezultate: generare 31 s, flux 38,5 s, F1 1,000, 0 încălcări, agent 98% vs uniform 79%; 11 teste noi (159 total).
+
 ## Raport final — OBIECTIV ATINS (2026-10-28)
 - 16/16 taskuri done; 148 teste verzi; compileall OK; metricile Modulului 1 neschimbate (F1 1,00, 100%, 708/708, 0, 5/5).
 - Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;

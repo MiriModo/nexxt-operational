@@ -71,6 +71,8 @@ def eval_inflows(pf: Portfolio, cfg: Config) -> dict:
 
 
 def eval_queue(cases: list[dict], gt: list[dict], pf: Portfolio, cfg: Config) -> dict:
+    """Benzi / acțiuni / ordonare doar pe rândurile etalon (clienții statistici n-au așteptări, doar semnale plantate)."""
+    gt = [g for g in gt if g.get("etalon", True)]
     bands = list(cfg.priority.benzi)
     top: dict[str, tuple[int, dict]] = {}
     for pos, c in enumerate(cases):
@@ -151,6 +153,46 @@ def timed_run(data_dir: Path | str, cfg: Config) -> tuple[float, int, int, list[
     return time.perf_counter() - t0, len(pf.clients), len(res.cases), det, res.cases, pf
 
 
+def eval_scale(n: int, today: str, out_dir: Path, config_dir, cfg: Config) -> dict:
+    """Portofoliul realist de n clienți: generare, timpi per pas, F1 detecție pe toți, cerințe dure, cifra-vedetă."""
+    from collections import Counter as _Counter
+    from .evaluate_final import cerinte_dure_final, cifra_vedeta, interogari_evitate
+    from .pipeline import run_full
+    sdir = out_dir / f"scale_{n}"
+    t0 = time.perf_counter()
+    generate(n, 42, today, sdir)
+    gen_s = time.perf_counter() - t0
+    timings: dict[str, float] = {}
+    t0 = time.perf_counter()
+    full = run_full(sdir, sdir / "out", config_dir, cfg=cfg, rescan=True, timings=timings)
+    flux_s = time.perf_counter() - t0
+    gt = read_json(sdir / "ground_truth.json")
+    det = eval_detection(full.detections, gt, cfg)
+    return {"clienti": n, "cazuri": len(full.res.cases), "etalon": sum(1 for g in gt if g.get("etalon", True)),
+            "timp": {"clienti": n, "cazuri": len(full.res.cases), "secunde": round(timings.get("scan", 0) + timings.get("intake", 0) + timings.get("queue", 0), 3),
+                     "generare_secunde": round(gen_s, 3), "secunde_flux_complet": round(flux_s, 3), "pasi": timings},
+            "detectie": det["global"], "cerinte_dure": cerinte_dure_final(full), "cifra_vedeta": cifra_vedeta(full, gt),
+            "interogari_externe": interogari_evitate(full),
+            "distributie_recomandari": dict(_Counter(r["recomandare"] for r in full.recs)),
+            "benzi": dict(_Counter(c["banda"] for c in full.res.cases))}
+
+
+def print_scale(s: dict) -> None:
+    d, h, a = s["detectie"], s["cifra_vedeta"], s["cifra_vedeta"]["agent"]
+    print(f"\n═══ Scalare: {s['clienti']} clienți ({s['etalon']} etalon + {s['clienti'] - s['etalon']} statistici) → {s['cazuri']} cazuri")
+    t = s["timp"]
+    print(f"  timp: generare {t['generare_secunde']:.1f}s · flux complet {t['secunde_flux_complet']:.1f}s ("
+          + ", ".join(f"{k} {v:.1f}s" for k, v in t["pasi"].items()) + ")")
+    print(f"  detecție semnale pe toți: F1 {d['f1']:.3f} (TP {d['tp']}, FP {d['fp']}, FN {d['fn']})")
+    print(f"  benzi: " + ", ".join(f"{k}={v}" for k, v in sorted(s["benzi"].items())) + " · recomandări: "
+          + ", ".join(f"{k}={v}" for k, v in sorted(s["distributie_recomandari"].items(), key=lambda x: -x[1])))
+    q = s["interogari_externe"]
+    print(f"  interogări externe evitate: {q['evitate']}/{q['rulare_tot']} ({q['procent']:.0%})")
+    print(f"  cifra-vedetă: agent {a['cost']:,.0f} RON, rămân {a['retinuti']}/{h['candidati']} ({a['rata_ramanere']:.0%}) · ".replace(",", ".")
+          + " · ".join(f"uniform {pp} pp {u['cost']:,.0f} RON ({u['rata_ramanere']:.0%})".replace(",", ".") for pp, u in h["uniform"].items()))
+    print("  cerințe dure: " + ", ".join(f"{k}={v['incalcari']}" for k, v in s["cerinte_dure"].items()))
+
+
 def main(argv: list[str] | None = None) -> None:
     setup_console()
     ap = argparse.ArgumentParser(description="Evaluează scanarea și coada față de ground truth.")
@@ -170,14 +212,10 @@ def main(argv: list[str] | None = None) -> None:
     traps = check_traps(cases, pf) if len(pf.clients) >= len(SCENARIOS) else {"rezultate": {}}
     timing = {"clienti_50": {"clienti": n_cli, "cazuri": n_cases, "secunde": round(secs, 3)}}
 
+    scalare = None
     if a.scale:
-        sdir = Path(a.out_dir) / f"scale_{a.scale}"
-        t0 = time.perf_counter()
-        generate(a.scale, 42, pf.today.isoformat(), sdir)
-        gen_s = time.perf_counter() - t0
-        s_secs, s_cli, s_cases, *_ = timed_run(sdir, cfg)
-        timing[f"clienti_{a.scale}"] = {"clienti": s_cli, "cazuri": s_cases, "secunde": round(s_secs, 3),
-                                        "generare_secunde": round(gen_s, 3)}
+        scalare = eval_scale(a.scale, pf.today.isoformat(), Path(a.out_dir), a.config_dir, cfg)
+        timing[f"clienti_{a.scale}"] = scalare["timp"]
 
     # ---- modelul final (verificări → retenție → recomandare), pe aceleași date
     from .evaluate_final import print_model_final, raport_model_final
@@ -188,7 +226,7 @@ def main(argv: list[str] | None = None) -> None:
     model_final = raport_model_final(full, gt)
 
     report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing,
-              "model_final": model_final}
+              "model_final": model_final, "scalare": scalare}
     write_json(Path(a.out_dir) / "evaluation.json", report)
 
     # ---------------- consolă
@@ -222,6 +260,8 @@ def main(argv: list[str] | None = None) -> None:
             print(f"  {'✔' if v else '✘'} {k}")
 
     print_model_final(model_final)
+    if scalare:
+        print_scale(scalare)
 
     print("\n═══ Timp (generare exclusă; scan + intake + coadă)")
     for k, v in timing.items():

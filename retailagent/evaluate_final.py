@@ -119,7 +119,7 @@ def eval_recomandari(full, gt: list[dict]) -> dict:
     top = _top_rec(full)
     ok = tot = 0
     gresite = []
-    for g in gt:
+    for g in (g for g in gt if g.get("etalon", True)):
         exp = g.get("recomandare_asteptata") or "—"
         got = top[g["client_id"]]["recomandare"] if g["client_id"] in top else "—"
         conf[exp][got] += 1
@@ -136,9 +136,11 @@ def eval_verificari(full, gt: list[dict]) -> dict:
     for c in full.checks:
         if c["oprit_la"] and c["oprit_la"] != "intern":
             oprit.setdefault(c["client_id"], c["oprit_la"])
+    etalon = {g["client_id"] for g in gt if g.get("etalon", True)}
     ast = [g for g in gt if g.get("verificare_picata_asteptata")]
     corecte = sum(1 for g in ast if oprit.get(g["client_id"]) == g["verificare_picata_asteptata"])
-    fp = [cid for cid in oprit if not any(g["client_id"] == cid and g.get("verificare_picata_asteptata") for g in gt)]
+    asteptate = {g["client_id"] for g in ast}
+    fp = [cid for cid in oprit if cid in etalon and cid not in asteptate]
     return {"asteptate": len(ast), "corecte": corecte, "false_pozitive": len(fp), "false_pozitive_clienti": fp}
 
 

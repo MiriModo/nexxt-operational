@@ -113,12 +113,23 @@ def plan_checks(case: dict, client: dict, loans: list[dict], cereri: list[dict],
 
 # ---------------------------------------------------------------- rulare pe portofoliu + CLI
 
-def build_context(pf: Portfolio, mocks: Mocks, cfg: Config, case: dict, cereri: list[dict], motive: list[str]) -> CheckContext:
+def codebitor_index(pf: Portfolio) -> dict[str, list[dict]]:
+    """client_id -> creditele altora pe care e codebitor (calculat o singură dată pe portofoliu)."""
+    out: dict[str, list[dict]] = {}
+    for l in pf.loans:
+        for c in l.get("codebitori", []):
+            if c.get("client_id") and c["client_id"] != l["client_id"]:
+                out.setdefault(c["client_id"], []).append(l)
+    return out
+
+
+def build_context(pf: Portfolio, mocks: Mocks, cfg: Config, case: dict, cereri: list[dict], motive: list[str],
+                  clients_by_id: dict[str, dict] | None = None, codebitori: dict[str, list[dict]] | None = None) -> CheckContext:
     cid = case["client_id"]
-    client = next(c for c in pf.clients if c["client_id"] == cid)
+    client = (clients_by_id or {}).get(cid) or next(c for c in pf.clients if c["client_id"] == cid)
     loans = pf.loans_by_client.get(cid, [])
     loan = next((l for l in loans if l["loan_id"] == case["loan_id"]), None)
-    codebitor_la = [l for l in pf.loans if l["client_id"] != cid and any(c.get("client_id") == cid for c in l.get("codebitori", []))]
+    codebitor_la = (codebitori if codebitori is not None else codebitor_index(pf)).get(cid, [])
     return CheckContext(pf.today, client, loan, loans, codebitor_la, cereri, motive, pf.market,
                         client_flows(pf, cfg, cid), pf.tx_by_client.get(cid, []),
                         {l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in loans}, mocks, cfg)
@@ -132,11 +143,13 @@ def check_registry(cfg: Config) -> None:
 
 def run_all_checks(pf: Portfolio, mocks: Mocks, cfg: Config, res: QueueResult) -> list[dict]:
     check_registry(cfg)
+    clients_by_id = {c["client_id"]: c for c in pf.clients}
+    codebitori = codebitor_index(pf)
     out = []
     for case in res.cases:
         ci = res.inputs[case["case_id"]]
         plan = plan_checks(case, ci.client, pf.loans_by_client.get(case["client_id"], []), ci.cereri, cfg)
-        ctx = build_context(pf, mocks, cfg, case, ci.cereri, [m["motiv"] for m in plan["motive"]])
+        ctx = build_context(pf, mocks, cfg, case, ci.cereri, [m["motiv"] for m in plan["motive"]], clients_by_id, codebitori)
         out.append(run_checks(plan, ctx))
     return out
 

@@ -24,7 +24,12 @@ from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 
-from .common import add_years, last_months, month_key, parse_date, shift_month, write_json
+from .common import add_years, last_months, month_key, parse_date, shift_month, write_json, years_between
+
+# comportamentul implicit (modul `blocuri`, fără profil): aceleași valori ca în config/portofoliu.yaml
+COMPORTAMENT_IMPLICIT = {"prag_baza_ron": 6000, "c_vechime": 0.8, "c_produse": 0.9, "c_nivel": 0.7, "c_activitate": 0.4,
+                         "zgomot_sigma": 0.45, "prob_reactie_informare": 0.35, "prob_accepta_pachet": 0.45}
+NIVEL_SCOR = {"standard": 0.0, "gold": 0.5, "platinum": 1.0}
 
 # ---------------------------------------------------------------- piață (sintetic, ordin de mărime realist)
 
@@ -124,11 +129,24 @@ class Extension:
             self.tx_by_client[t["client_id"]].append(t)
         self.employer = {e["angajator_id"]: e for e in g.employers}
         self.conturi, self.documente, self.anaf, self.bc, self.crc, self.garantii = [], [], [], [], [], []
+        self.profil = getattr(g, "profil", None)
+        self.plante_ext: dict[str, dict] = getattr(g, "plante_ext", {})
+        c = self.profil.comportament if self.profil else None
+        self.comp = {k: getattr(c, k) for k in COMPORTAMENT_IMPLICIT} if c else dict(COMPORTAMENT_IMPLICIT)
 
     # ---------------- helpers
     def scen(self, idx0: int) -> tuple[int, int]:
         """(numărul scenariului 1..50, blocul) pentru clientul cu indexul 0-based idx0."""
         return idx0 % len(FINAL) + 1, idx0 // len(FINAL)
+
+    def este_etalon(self, c: dict) -> bool:
+        return c["client_id"] not in self.plante_ext
+
+    def plante(self, idx0: int, c: dict) -> dict:
+        """Plantele pentru mock-urile externe: din FINAL pentru etalon, din `sample_scenario` pentru statistici."""
+        if self.este_etalon(c):
+            return FINAL[self.scen(idx0)[0]][2]
+        return self.plante_ext[c["client_id"]]
 
     def d(self, days: int) -> date:
         return self.today + timedelta(days=days)
@@ -145,14 +163,18 @@ class Extension:
         for l in self.g.loans:
             l["prima_locuinta"] = True if l["produs"] == "ipotecar" else (False if l["produs"] == "imobiliar" else None)
         for idx0, c in enumerate(self.g.clients):
+            if not self.este_etalon(c):
+                continue
             nr, block = self.scen(idx0)
             target = FINAL[nr][2].get("codebitor_la")
             if target:
                 owner = self.g.clients[block * len(FINAL) + target - 1]["client_id"]
                 loan = next(l for l in self.loans_by_client[owner] if l["produs"] in SECURED)
                 loan["codebitori"].append({"client_id": c["client_id"], "nume": c["nume"], "rol": "codebitor"})
+        p_cod = self.profil.externe.codebitor_prob if self.profil else 0.3
         for l in self.g.loans:
-            if l["produs"] in SECURED and not l["codebitori"] and self.rng.random() < 0.3:
+            p = 0.3 if l["client_id"] not in self.plante_ext else p_cod       # etalonul rămâne identic byte cu byte
+            if l["produs"] in SECURED and not l["codebitori"] and self.rng.random() < p:
                 nume = f"{self.rng.choice(['Maria', 'Ana', 'Ioana', 'Mihai', 'Andrei', 'Elena'])} " \
                        f"{self.g.clients[int(l['client_id'][1:]) - 1]['nume'].split()[-1]}"
                 l["codebitori"].append({"client_id": None, "nume": nume, "rol": "codebitor"})
@@ -329,19 +351,31 @@ class Extension:
 
     # ---------------- etalon: rezultatul așteptat + comportamentul ascuns
     def extend_ground_truth(self, c: dict, gt: dict, nr: int, plante: dict) -> None:
-        rec, picata, _, nota = FINAL[nr]
-        rng = self.rng
+        """Rezultatul așteptat (doar pentru etalon) + comportamentul ascuns, cu structură (ca eticheta de churn să fie învățabilă).
+
+        prag = prag_baza × (1 + c_vechime·min(vechime,10)/10 + c_produse·produse_active/4 + c_nivel·nivel + c_activitate·activ)
+               × exp(N(0, sigma)).  Agentul nu citește niciodată `comportament`; îl folosesc doar evaluate și antrenarea.
+        """
+        etalon = self.este_etalon(c)
+        rec, picata, _, nota = FINAL[nr] if etalon else (None, None, {}, "statistic")
+        rng, K = self.rng, self.comp
+        txs = self.tx_by_client[c["client_id"]]
         recent = set(self.tx_months[-2:])
-        salariu_aici = any(t["tip_etichetat"] == "salariu" and t["data"][:7] in recent
-                           for t in self.tx_by_client[c["client_id"]])
+        salariu_aici = any(t["tip_etichetat"] == "salariu" and t["data"][:7] in recent for t in txs)
+        produse = [p for p in c.get("produse_atasate", []) if not (p == "cont_salariu" and not salariu_aici)]
+        vechime = years_between(parse_date(c["client_din"]), self.today)
+        activ = 1.0 if sum(t["suma"] for t in txs if t["directie"] == "out" and t["data"][:7] in recent) >= 1000 else 0.0
+        factor = (1 + K["c_vechime"] * min(vechime, 10) / 10 + K["c_produse"] * min(1.0, len(produse) / 4)
+                  + K["c_nivel"] * NIVEL_SCOR.get(c.get("nivel_relatie"), 0.0) + K["c_activitate"] * activ)
+        prag = K["prag_baza_ron"] * factor * math.exp(rng.gauss(0.0, K["zgomot_sigma"]))
         gt["recomandare_asteptata"] = rec
         gt["verificare_picata_asteptata"] = picata
         gt["nota_model_final"] = nota
         gt["comportament"] = {
             # pleacă doar dacă banii câștigați net (după costul mutării și după oferta noastră) depășesc pragul
-            "prag_castig_plecare_ron": round(math.exp(rng.gauss(math.log(12_000), 0.5)), -2),
-            "reactioneaza_la_informare": rng.random() < 0.35,
-            "accepta_pachet_salariu": None if salariu_aici else (True if plante.get("pachet") else rng.random() < 0.4),
+            "prag_castig_plecare_ron": round(prag, -2),
+            "reactioneaza_la_informare": rng.random() < K["prob_reactie_informare"],
+            "accepta_pachet_salariu": None if salariu_aici else (True if plante.get("pachet") else rng.random() < K["prob_accepta_pachet"]),
         }
 
     def run(self) -> "Extension":
@@ -349,7 +383,7 @@ class Extension:
         gt_by_client = {gt["client_id"]: gt for gt in self.g.ground_truth}
         for idx0, c in enumerate(self.g.clients):
             nr, _ = self.scen(idx0)
-            plante = FINAL[nr][2]
+            plante = self.plante(idx0, c)
             self.make_account(c)
             self.make_documents(c)
             self.make_anaf(c, plante)

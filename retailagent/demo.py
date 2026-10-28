@@ -44,15 +44,18 @@ def _case_payload(full: FullRun, case: dict) -> dict:
     }
 
 
-def build_html(full: FullRun, gt: list[dict]) -> str:
+def build_html(full: FullRun, gt: list[dict], max_cazuri: int | None = None) -> str:
+    """Metricile pe tot portofoliul; în pagină intră primele `max_cazuri` din coadă (toate dacă None)."""
     metrici = raport_model_final(full, gt)
+    cazuri = full.res.cases if max_cazuri is None else full.res.cases[:max_cazuri]
     data = {"azi": full.pf.today.isoformat(), "clienti": len(full.pf.clients),
             "metrici": {"cifra_vedeta": metrici["cifra_vedeta"], "nu_interveni": metrici["nu_interveni"],
                         "interogari_externe": metrici["interogari_externe"], "recomandari": {k: metrici["recomandari"][k] for k in ("acuratete", "corecte", "total")},
                         "cerinte_dure": {k: v["incalcari"] for k, v in metrici["cerinte_dure"].items()},
                         "distributie": metrici["distributie_recomandari"]},
             "benzi": list(full.cfg.priority.benzi), "p_tinta": full.cfg.retention.p_tinta,
-            "cazuri": [_case_payload(full, c) for c in full.res.cases]}
+            "total_cazuri": len(full.res.cases),
+            "cazuri": [_case_payload(full, c) for c in cazuri]}
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</script", "<\\/script")
     return TEMPLATE.replace("__DATA__", payload)
 
@@ -131,7 +134,7 @@ function kpis(){const m=D.metrici,h=m.cifra_vedeta,a=h.agent,u=h.uniform_aleasa?
   {l:'Recomandări vs etalon',v:pct(m.recomandari.acuratete),d:`${m.recomandari.corecte}/${m.recomandari.total} clienți`},
   {l:'Cerințe dure',v:Object.values(m.cerinte_dure).reduce((s,x)=>s+x,0)+' încălcări',d:Object.keys(m.cerinte_dure).join(' · ')}];
  document.getElementById('kpis').innerHTML=cards.map(c=>`<div class="kpi"><div class="l">${esc(c.l)}</div><div class="v">${esc(c.v)}</div><div class="d muted">${esc(c.d)}</div></div>`).join('');
- document.getElementById('sub').textContent=`${D.clienti} clienți · ${D.cazuri.length} cazuri · azi ${D.azi} · date 100% sintetice · agentul recomandă, consilierul decide`;}
+ document.getElementById('sub').textContent=`${D.clienti} clienți · ${D.total_cazuri||D.cazuri.length} cazuri${D.total_cazuri&&D.total_cazuri>D.cazuri.length?' (afișate primele '+D.cazuri.length+')':''} · azi ${D.azi} · date 100% sintetice · agentul recomandă, consilierul decide`;}
 function filters(){const el=document.getElementById('filters');const opts=['toate',...D.benzi,'cu ofertă','blocate'];
  el.innerHTML=opts.map(o=>`<button class="${o===band?'on':''}" data-b="${o}">${o}</button>`).join('');
  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{band=b.dataset.b;filters();rows();});}
@@ -193,11 +196,12 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--data-dir", default=str(DATA_DIR))
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--config-dir", default=str(CONFIG_DIR))
+    ap.add_argument("--max-cazuri", type=int, default=200, help="câte cazuri din coadă intră în pagină (0 = toate)")
     a = ap.parse_args(argv)
     t0 = time.perf_counter()
     full = run_full(a.data_dir, a.out_dir, a.config_dir, a.today)
     gt = read_json(Path(a.data_dir) / "ground_truth.json")
-    html = build_html(full, gt)
+    html = build_html(full, gt, a.max_cazuri or None)
     out = Path(a.out_dir) / "demo.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")

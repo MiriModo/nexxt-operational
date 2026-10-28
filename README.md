@@ -44,14 +44,16 @@ recomandare și butoanele de aprobare.
 
 ```bash
 python -m retailagent.generate --n 50 --seed 42   # data/*.json, data/externe/*.json, ground_truth.json
+python -m retailagent.generate --n 10000 --seed 42 --out out/scale_10000   # portofoliu realist: 50 etalon + 9.950 statistici
+python -m retailagent.churn.labels --data-dir out/scale_10000             # eticheta de churn (a_plecat) pentru antrenare
 python -m retailagent.pipeline [--skip-evaluate] [--skip-demo]   # tot fluxul → out/*.json, audit.jsonl, demo.html
 python -m retailagent.explain Q0001               # explicația completă a unui caz (coadă → verificări → retenție → recomandare)
 python -m retailagent.approve Q0001                                   # consilierul aprobă
 python -m retailagent.approve Q0001 --decizie modifica --interventie fix_1_an --motiv "..."
 python -m retailagent.approve Q0001 --decizie respinge --motiv "..."
-python -m retailagent.evaluate [--scale 5000]     # metrici Modul 1 + „Model final" → out/evaluation.json
-python -m retailagent.demo                        # doar pagina out/demo.html
-python -m pytest                                  # 148 teste
+python -m retailagent.evaluate [--scale 10000]    # metrici Modul 1 + „Model final" [+ scalare] → out/evaluation.json
+python -m retailagent.demo [--max-cazuri 200]     # doar pagina out/demo.html
+python -m pytest                                  # 159 teste
 
 # pașii individuali (fiecare scrie fișierul lui în out/ și afișează un rezumat)
 python -m retailagent.scan        # out/signals_detected.json
@@ -69,14 +71,26 @@ Toate comenzile acceptă `--today AAAA-LL-ZZ`, `--data-dir`, `--out-dir`, `--con
 
 | metrică | valoare |
 |---|---|
-| **cifra-vedetă:** cost retenție agent vs. „aceeași reducere pentru toți", la aceeași rată de rămânere | agent **288.544 RON**, reține 20/21 candidați (95%) · uniform 0,6 pp pentru toți: 309.669 RON, reține doar 71% (0,2 pp: 103.948 RON, 67%) |
+| **cifra-vedetă:** cost retenție agent vs. „aceeași reducere pentru toți", la aceeași rată de rămânere | agent **288.544 RON**, reține 20/21 candidați (95%) · uniform 0,6 pp pentru toți: 309.669 RON, reține doar 67% (0,2 pp: 103.948 RON, 67%) |
 | cazuri „nu interveni" (bani necheltuiți) | 15 / 56 cazuri active (27%) |
 | interogări externe evitate prin alegerea verificărilor după motiv | 191 / 289 (66%) față de „rulează tot" |
 | recomandări față de etalon | 48 / 49 (98%) |
 | verificări picate corect (BC / CRC / garanție) | 3 / 3, 0 false pozitive |
 | cerințe dure: oferte către risc activ · în afara limitelor · pe cazuri blocate · expirări < 30 zile nu în P1 | 0 · 0 · 0 · 0 |
 | Modulul 1: F1 detecție semnale · benzi · acțiuni · ordonare · capcane | 1,00 · 100% · 100% · 708/708 · 5/5 |
-| timp: scan + coadă · flux complet până la recomandare | 0,06 s · 0,65 s (5.000 clienți: ~9 s coada) |
+| timp: scan + coadă · flux complet până la recomandare | 0,06 s · 0,65 s |
+
+**La scară — portofoliul realist de 10.000 de clienți** (`evaluate --scale 10000`: 50 etalon + 9.950 statistici, 6.024 cazuri):
+
+| metrică | valoare |
+|---|---|
+| timp | generare 31 s · flux complet 38,5 s (scan 11,4 · coadă 1,1 · verificări 5,9 · retenție 16,9 · recomandare 3,3) |
+| detecție semnale pe toți cei 10.000 (semnalele plantate sunt cunoscute pentru fiecare) | F1 **1,000** (4.845 TP, 0 FP, 0 FN) |
+| cifra-vedetă | agent 27,1 M RON, reține 2.105/2.147 candidați (98%) · uniform 0,6 pp: 28,9 M RON, 79% · 0,2 pp: 9,7 M RON, 75% |
+| interogări externe evitate | 19.236 / 26.260 (73%) |
+| recomandări | restructurare 1.972 · blocat 1.503 · nu interveni 1.476 · ofertă minimă 782 · respins 253 · ofertă + produs 38 |
+| cerințe dure | 0 · 0 · 0 · 0 |
+| eticheta de churn (`churn.labels`, pe 1.500) | fără intervenție pleacă 30% din candidați (50% dintre cei cu legături mici, 30% dintre cei cu legături mari); cu agentul 2% |
 
 > **Atenție la interpretare.** Datele, etalonul și comportamentul clienților sunt generate de noi. Rata de
 > rămânere din cifra-vedetă e simulată cu `ground_truth → comportament` (pragul de câștig la care clientul
@@ -170,6 +184,31 @@ lipsă din dosar (reguli în `checks.yaml → documente_necesare`), explicația 
 `approve` validează decizia consilierului: `modifica` și `respinge` cer motiv; intervenția aleasă de om trebuie
 să existe în meniu și să fie fezabilă (altfel refuz cu motivul constrângerii); override-ul intră în audit.
 
+## Portofoliul realist la scară (`config/portofoliu.yaml`, `retailagent/profil.py`)
+
+Pentru `--n > 50` generatorul nu mai repetă cele 50 de scenarii în blocuri: primii 50 rămân scenariile de mână
+(etalonul, identic byte cu byte), iar restul se construiesc **statistic** din profilul YAML. Conceptul, pe scurt:
+
+* **Distribuție în loc de valoare fixă.** Nu „soldul e 400.000", ci „soldul unui ipotecar e între 80.000 și 900.000,
+  cel mai des în jur de 250.000" (triunghiular). La fel vechimea, marja, durata, numărul de produse. Fiecare client
+  e unic, portofoliul arată plauzibil.
+* **Semnalele apar cu o probabilitate, corelat.** „12% din creditele cu dobândă fixă expiră în 120 de zile; 4,5%
+  au întârzieri; cine are întârzieri are de 3 ori mai des venit în scădere." Apar combinații pe care nu le-am scris
+  de mână — exact ce trebuie să învețe un model. Corelațiile se aplică în ordinea trasării (per credit, apoi per client).
+* **Comportamentul ascuns are structură.** Pragul la care clientul pleacă depinde de vechime, produse, nivel și
+  activitatea pe cont, plus zgomot lognormal: `prag = prag_baza × (1 + 0,8·vechime/10 + 0,9·produse/4 + 0,7·nivel + 0,4·activ) × e^N(0, 0,45)`.
+  Agentul nu îl vede. `python -m retailagent.churn.labels` simulează pentru fiecare candidat la retenție dacă a
+  rămas sau a plecat — fără intervenție și cu intervenția agentului — și scrie `churn_labels.json`, setul de
+  antrenare pentru modelul de churn (pasul următor).
+* **Mock-urile externe** (ANAF, BC, CRC, garanție) se generează cu aceleași reguli de consistență; eșecurile
+  (întârziere ≥ 90 zile la un IFN, garant cu restanțe, litigiu în CF) apar cu probabilități mici din profil.
+* **Seed-ul.** Tot ce e „la sorți" pleacă din seed 42; RNG-ul clienților statistici e separat de cel al etalonului.
+  Aceeași comandă → aceleași 10.000 de clienți (test de determinism).
+* **Etalonul în metrici.** `ground_truth.json` marchează `etalon: true/false`. Benzile, acțiunile, ordonarea,
+  recomandările și verificările picate se evaluează doar pe etalon; F1 de detecție pe toți.
+
+`--profil blocuri` păstrează comportamentul vechi (repetarea blocurilor); `--profil-file` ia alt profil.
+
 ## Date (`retailagent/generate.py`, `retailagent/generate_ext.py`)
 
 50 de scenarii explicite cu semnale plantate și etalon: `ground_truth.json` conține semnalele plantate, banda și
@@ -180,7 +219,7 @@ costurile mutării), `conturi`, `documente`, `externe/{anaf, biroul_credit, crc,
 aceeași poveste ca portofoliul (rata la alt creditor apare în BC cu aceeași sumă, expunerile ≥ 20.000 RON în CRC,
 LTV-ul depășit e confirmat de reevaluare). Situații plantate: C0005 litigiu în CF, C0046 întârziere de 95 de
 zile la un IFN, C0047 garant pe un credit cu restanțe, C0013 / C0014 salariu mutat cu / fără legături, C0027
-pensionar care ar avea 86 de ani la o prelungire. `--n 5000` repetă blocurile pentru testul de scalare.
+pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Portofoliul realist la scară".
 
 ## Cum adaugi ceva nou (configurație, nu cod)
 
@@ -213,7 +252,8 @@ pensionar care ar avea 86 de ani la o prelungire. `--n 5000` repetă blocurile p
 
 ```
 retailagent/
-  generate.py, generate_ext.py   # date sintetice + etalon (50 scenarii explicite; --n > 50 repetă blocuri)
+  generate.py, generate_ext.py   # date sintetice + etalon (50 scenarii explicite; --n > 50 = profil statistic)
+  profil.py, churn/labels.py     # profilul portofoliului realist (pydantic); eticheta de churn simulată
   common.py, config_loader.py    # utilitare; validare pydantic a celor 5 YAML-uri + verificări încrucișate
   signals/                       # registru, inflows (deducerea încasărilor), plecare, risc_credit, blocaj_proces
   scan.py, intake.py, queue.py   # Modulul 1: semnale → cazuri → coadă (schema queue.json stabilă)
@@ -222,8 +262,8 @@ retailagent/
   retention.py, retention_menu.py# B, legături, V, p; meniu, constrângeri, optimizare; CLI
   recommend.py, approve.py       # cele 6 stări, ofertă, grafic, documente, audit; aprobarea consilierului
   explain.py, evaluate.py, evaluate_final.py, demo.py, pipeline.py
-config/                          # signals, priority, checks, constraints, retention
+config/                          # signals, priority, checks, constraints, retention, portofoliu
 data/                            # portofoliul + externe/ (mock-uri)         out/   # artefactele rulării
-tests/                           # 148 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo)
+tests/                           # 159 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)
 vault/                           # jurnalul deciziilor și al taskurilor (autobot)
 ```

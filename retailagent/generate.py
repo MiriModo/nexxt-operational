@@ -195,11 +195,152 @@ PRODUSE_NON_CREDIT = ["cont_curent", "economii", "card_debit", "asigurare_viata"
 # ---------------------------------------------------------------- generator
 
 
+# ---------------------------------------------------------------- generatorul statistic (clienții de după cele 50)
+
+def _tri(rng: random.Random, t: list[float]) -> float:
+    return rng.triangular(t[0], t[2], t[1])          # random.triangular(low, high, mode)
+
+
+def _wchoice(rng: random.Random, weights: dict[str, float]) -> str:
+    return rng.choices(list(weights), weights=list(weights.values()))[0]
+
+
+def _hit(rng: random.Random, prob: float, drawn: set[str], efect: str, corelatii) -> bool:
+    """Trage la sorți semnalul `efect` cu probabilitatea de bază înmulțită cu factorii cauzelor deja trase."""
+    for c in corelatii:
+        if c.efect == efect and c.cauza in drawn:
+            prob *= c.factor
+    return rng.random() < min(1.0, prob)
+
+
+def sample_scenario(rng: random.Random, profil, today: date) -> tuple[S, dict]:
+    """Un client statistic: tipologie → nivel → credite → semnale (cu corelații) → cereri. Întoarce (S, plante externe).
+
+    Produce aceleași obiecte S/L/R ca scenariile de mână, deci construcția creditelor, a plăților și a
+    tranzacțiilor e identică; `planted_signals(S)` dă etalonul de semnale și pentru clienții statistici.
+    """
+    P = profil
+    typ = _wchoice(rng, P.tipologii)
+    v = P.vechime_client_ani
+    vechime = rng.uniform(0.3, 1.5) if typ == "TAN" else _tri(rng, [v.min, v.mod, v.max])
+    bonus = P.niveluri_bonus_vechime * max(0.0, vechime - 5)
+    w = {"standard": max(0.01, P.niveluri["standard"] - 1.5 * bonus), "gold": P.niveluri["gold"] + bonus,
+         "platinum": P.niveluri["platinum"] + bonus / 2}
+    tier = _wchoice(rng, w)
+
+    SC, drawn = P.semnale.per_credit, set()
+    nr = rng.choices([0, 1, 2, 3], weights=P.credite.nr_credite[typ])[0]
+    loans: list[L] = []
+    for _ in range(nr):
+        weights = dict(P.credite.produse[typ])
+        if any(l.produs in ("ipotecar", "imobiliar") for l in loans):
+            weights["ipotecar"] = weights["imobiliar"] = 0.0
+        if any(l.produs == "card_credit" for l in loans):
+            weights["card_credit"] = 0.0
+        if sum(weights.values()) <= 0:
+            break
+        produs = _wchoice(rng, weights)
+        if produs == "card_credit":
+            spec = L("card_credit")
+            if _hit(rng, SC["card_stres"].prob, drawn, "card_stres", P.corelatii):
+                spec.card_stres = True
+                drawn.add("card_stres")
+        else:
+            pp = P.credite.parametri[produs]
+            rata = "fixa" if rng.random() < pp.fixa_prob else "variabila"
+            spec = L(produs, rata, sold=round(_tri(rng, pp.sold), -2), ani_ramasi=round(_tri(rng, pp.ani_ramasi), 1),
+                     ani_vechime=round(_tri(rng, pp.ani_vechime), 1), marja=round(_tri(rng, pp.marja), 2))
+            secured = produs in ("ipotecar", "imobiliar")
+            if secured and rata == "fixa" and _hit(rng, SC["expirare_dobanda_fixa"].prob, drawn, "expirare_dobanda_fixa", P.corelatii):
+                spec.exp_zile = rng.randint(*SC["expirare_dobanda_fixa"].get("zile", [1, 120]))
+                drawn.add("expirare_dobanda_fixa")
+            if secured and _hit(rng, SC["ltv_depasit"].prob, drawn, "ltv_depasit", P.corelatii):
+                spec.ltv_depasit = True
+                drawn.add("ltv_depasit")
+            if secured and _hit(rng, SC["asigurare_expirata"].prob, drawn, "asigurare_expirata", P.corelatii):
+                spec.asigurare = True
+                drawn.add("asigurare_expirata")
+            if _hit(rng, SC["restructurare_anterioara"].prob, drawn, "restructurare_anterioara", P.corelatii):
+                spec.restructurat = True
+                drawn.add("restructurare_anterioara")
+        i_cfg = SC["intarziere_noua"]
+        if _hit(rng, i_cfg.prob, drawn, "intarziere_noua", P.corelatii):
+            grav = rng.random() < i_cfg.get("prob_grav", 0.3)
+            spec.intarziere = rng.randint(*(i_cfg.get("zile_grav", [32, 60]) if grav else i_cfg.get("zile", [3, 25])))
+            drawn.add("intarziere_noua")
+        loans.append(spec)
+
+    PC, plant = P.semnale.per_client, {}
+    if loans and _hit(rng, PC["rata_alt_creditor"].prob, drawn, "rata_alt_creditor", P.corelatii):
+        plant["rata_alt"] = "nou" if rng.random() < PC["rata_alt_creditor"].get("prob_nou", 0.5) else "vechi"
+        drawn.add("rata_alt_creditor")
+    # salariu mutat / venit în scădere au nevoie de istoric de salariu: doar SL (tinerii au doar 4 luni de încasări)
+    if typ == "SL" and loans and _hit(rng, PC["salariu_mutat"].prob, drawn, "salariu_mutat", P.corelatii):
+        alta = rng.random() < PC["salariu_mutat"].get("prob_alta_banca", 0.5)
+        plant["salariu_mutat"] = "alta_banca" if alta else True
+        drawn.add("salariu_mutat")
+        if alta and _hit(rng, PC["cont_nefolosit"].prob, drawn, "cont_nefolosit", P.corelatii):
+            plant["cont_nefolosit"] = True
+            plant.pop("rata_alt", None)                    # ieșirile din ultimele 2 luni dispar: rata n-ar mai fi vizibilă
+    if typ == "SL" and "salariu_mutat" not in drawn and loans \
+            and _hit(rng, PC["venit_scadere"].prob, drawn, "venit_scadere", P.corelatii):
+        plant["venit_scadere"] = round(rng.uniform(*PC["venit_scadere"].get("factor", [0.5, 0.75])), 2)
+        drawn.add("venit_scadere")
+    if _hit(rng, PC["ci_expirata"].prob, drawn, "ci_expirata", P.corelatii):
+        plant["ci"] = True
+    if _hit(rng, PC["consimtamant_lipsa"].prob, drawn, "consimtamant_lipsa", P.corelatii):
+        plant["consimtamant"] = rng.choice(["anaf", "bc"])
+    if _hit(rng, PC["kyc_vechi"].prob, drawn, "kyc_vechi", P.corelatii):
+        plant["kyc"] = True
+    if _hit(rng, PC["flag_blocant"].prob, drawn, "flag_blocant", P.corelatii):
+        plant["flag"] = "pep"
+    if loans and not plant.get("cont_nefolosit") and _hit(rng, PC["poprire_activa"].prob, drawn, "poprire_activa", P.corelatii):
+        plant["poprire"] = True
+        drawn.add("poprire_activa")
+
+    req: list[R] = []
+    produse_detinute = {l.produs for l in loans}
+    for tip, c in P.cereri.items():
+        if rng.random() >= c.prob:
+            continue
+        if tip == "credit_nou":
+            produs = rng.choice(c.produse)
+        elif tip == "actualizare_date":
+            produs = None
+        else:
+            cand = [p for p in c.produse if p in produse_detinute]
+            if not cand:
+                continue
+            produs = rng.choice(cand)
+        suma = round(rng.uniform(*c.suma), -2) if c.suma else None
+        req.append(R(tip, produs, rng.randint(1, 20), suma))
+        break                                              # o singură cerere per client
+
+    pa = P.produse_atasate
+    nprod = rng.randint(int(pa.min), int(pa.max))
+    E = P.externe
+    plante_ext = {}
+    if plant.get("salariu_mutat") == "alta_banca":
+        plante_ext["anaf"] = "salariu_continua"
+    if rng.random() < E.bc_negativ:
+        plante_ext["bc"] = "negativ"
+    if rng.random() < E.crc_garant_restante:
+        plante_ext["crc"] = "garant_restante"
+    if any(l.produs in ("ipotecar", "imobiliar") for l in loans) and rng.random() < E.cf_litigiu:
+        plante_ext["cf"] = "litigiu"
+    sc = S(typ, tier, loans, plant=plant, req=req, exp=None, produse=nprod, ani_client=round(vechime, 1), nota="statistic")
+    return sc, plante_ext
+
+
 class Generator:
-    def __init__(self, n: int, seed: int, today: date):
+    def __init__(self, n: int, seed: int, today: date, profil=None, mod: str = "blocuri"):
         self.n = n
+        self.seed = seed
         self.rng = random.Random(seed)
         self.today = today
+        self.profil, self.mod = profil, mod
+        self.tx_profile = None                      # None = zgomotul tranzacțiilor ca la cele 50 de scenarii
+        self.plante_ext: dict[str, dict] = {}       # client_id -> plante pentru mock-urile externe (clienți statistici)
         self.cur_month = month_key(today)
         self.tx_months = last_months(self.cur_month, 12)                  # tranzacții: 12 luni, inclusiv luna curentă
         self.ph_months = last_months(shift_month(self.cur_month, -1), 24)  # istoric plăți: 24 luni închise
@@ -245,6 +386,26 @@ class Generator:
                           "status": "activ", "trend_plati_salarii_3l": round(self.rng.uniform(-0.10, 0.15), 2)}
         self.employers.extend(emps.values())
         return emps
+
+    def make_employer_pool(self) -> list[dict]:
+        """Bazinul de angajatori pentru clienții statistici: nume cu SRL/SA (regex-ul `firma`), câțiva în dificultate."""
+        A, rng = self.profil.angajatori, self.rng
+        tipuri = ["TRADING", "LOGISTIC", "SERVICES", "TECH", "CONSTRUCT", "MEDICAL", "AGRO", "SOFTWARE", "RETAIL", "ENERGY"]
+        pool, seen = [], set()
+        start = len(self.employers)
+        while len(pool) < A.bazin:
+            name = f"{rng.choice(NUME).upper()} {rng.choice(tipuri)}"
+            if name in seen:
+                continue
+            seen.add(name)
+            r = rng.random()
+            status = "insolventa" if r < A.prob_insolventa else ("dizolvare" if r < A.prob_insolventa + A.prob_dizolvare else "activ")
+            pool.append({"angajator_id": f"F{start + len(pool) + 1:04d}",
+                         "nume": f"{name} {'SA' if len(pool) % 5 == 4 else 'SRL'}",
+                         "client_al_bancii": rng.random() < A.prob_client_al_bancii, "status": status,
+                         "trend_plati_salarii_3l": -0.35 if status != "activ" else round(rng.uniform(-0.10, 0.15), 2)})
+        self.employers.extend(pool)
+        return pool
 
     # ---------------- credite
     def make_loan(self, cid: str, spec: L, tier: str) -> dict:
@@ -381,19 +542,21 @@ class Generator:
             for m in months:
                 self.tx(cid, m, rng.randint(1, 27), rng.uniform(800, 2_500), "in", f"SEPA TRANSFER {nume.upper()} DE", "extern")
 
-        if typ not in ("TAN",) and rng.random() < 0.2:
+        tp = self.tx_profile                       # zgomotul extrasului: valorile celor 50 sau cele din profil
+        if typ not in ("TAN",) and rng.random() < (tp.prob_chirie_in if tp else 0.2):
             chirias, amt = self.person().upper(), rng.choice([1_500, 2_000, 2_500])
             for m in months:
                 self.tx(cid, m, rng.randint(1, 5), amt, "in", f"CHIRIE {chirias}", "chirie_in")
 
         # ieșiri
-        util = rng.sample(UTILITATI, 2)
+        util = rng.sample(UTILITATI, tp.nr_utilitati if tp else 2)
+        lo, hi = tp.cumparaturi_pe_luna if tp else (3, 6)
         for m in months:
             for u in util:
                 self.tx(cid, m, rng.randint(15, 25), rng.uniform(80, 450), "out", u, "utilitati")
-            for _ in range(rng.randint(3, 6)):
+            for _ in range(rng.randint(lo, hi)):
                 self.tx(cid, m, rng.randint(1, 28), rng.uniform(30, 900), "out", rng.choice(CUMPARATURI), "altele")
-        if typ in ("SE", "TAN") and rng.random() < 0.5:
+        if typ in ("SE", "TAN") and rng.random() < (tp.prob_chirie_out if tp else 0.5):
             proprietar, amt = self.person().upper(), rng.choice([1_800, 2_200, 2_800])
             for m in months:
                 self.tx(cid, m, rng.randint(1, 5), amt, "out", f"{proprietar} CHIRIE", "chirie_out")
@@ -410,7 +573,8 @@ class Generator:
                 self.tx(cid, m, rng.randint(5, 15), rng.uniform(600, 1_500), "out", bej, "poprire")
 
     # ---------------- client
-    def make_client(self, idx: int, sc: S, employers: dict[str, dict], free_emps: list[dict]) -> None:
+    def make_client(self, idx: int, sc: S, employers: dict[str, dict], free_emps: list[dict],
+                    employer_fix: dict | None = None, etalon: bool = True) -> None:
         rng = self.rng
         cid = f"C{idx:04d}"
         nume = self.person()
@@ -419,7 +583,9 @@ class Generator:
         plant = sc.plant
 
         employer = None
-        if sc.typ in ("SL", "SE", "TAN"):
+        if employer_fix is not None:
+            employer = employer_fix
+        elif sc.typ in ("SL", "SE", "TAN"):
             if plant.get("angajator"):
                 employer = employers[FIRME[-2] if plant["angajator"] == "insolventa" else FIRME[-1]]
                 employer.update(status=plant["angajator"], trend_plati_salarii_3l=-0.35)
@@ -470,19 +636,35 @@ class Generator:
             self.requests.append({"request_id": f"R{self._req_seq:04d}", "client_id": cid,
                                   "data": self.d(-rq.zile_in_urma).isoformat(), "tip": rq.tip, "detalii": det})
 
-        self.ground_truth.append({"client_id": cid, "semnale_plantate": planted_signals(sc),
+        self.ground_truth.append({"client_id": cid, "etalon": etalon, "semnale_plantate": planted_signals(sc),
                                   "banda_asteptata": sc.exp[0] if sc.exp else None,
                                   "actiune_asteptata": sc.exp[1] if sc.exp else None})
 
     def run(self) -> None:
         employers = {}
-        for idx in range(1, self.n + 1):
+        n_etalon = self.n if self.mod == "blocuri" else min(self.n, len(SCENARIOS))
+        for idx in range(1, n_etalon + 1):
             pos = (idx - 1) % len(SCENARIOS)
             if pos == 0:
                 employers = self.make_employers((idx - 1) // len(SCENARIOS))
                 planted_names = {FIRME[-2], FIRME[-1]}
                 free = [e for k, e in employers.items() if k not in planted_names]
             self.make_client(idx, SCENARIOS[pos], employers, free)
+        if self.n <= n_etalon:
+            return
+        # clienții statistici: RNG separat (cei 50 rămân identici byte cu byte), zgomot din profil, bazin de angajatori
+        self.rng = random.Random(self.seed * 7919 + 1)
+        self.tx_profile = self.profil.tranzactii
+        pool = self.make_employer_pool()
+        for idx in range(n_etalon + 1, self.n + 1):
+            sc, plante_ext = sample_scenario(self.rng, self.profil, self.today)
+            employer = None
+            if sc.typ in ("SL", "SE", "TAN"):
+                employer = self.rng.choice(pool)
+                if employer["status"] != "activ":
+                    sc.plant["angajator"] = employer["status"]
+            self.make_client(idx, sc, {}, [], employer_fix=employer, etalon=False)
+            self.plante_ext[f"C{idx:04d}"] = plante_ext
 
     def write(self, out: Path, extra_market: dict | None = None) -> None:
         write_json(out / "clients.json", self.clients)
@@ -534,9 +716,14 @@ def planted_signals(sc: S) -> list[str]:
     return sorted(set(out))
 
 
-def generate(n: int = 50, seed: int = 42, today: str = DEFAULT_TODAY, out: Path | str = DATA_DIR) -> Generator:
+def generate(n: int = 50, seed: int = 42, today: str = DEFAULT_TODAY, out: Path | str = DATA_DIR,
+             mod: str | None = None, profil_file: Path | str | None = None) -> Generator:
+    """mod: 'realist' (implicit pentru n > 50: primii 50 = etalon, restul din config/portofoliu.yaml) sau 'blocuri'."""
     from .generate_ext import extend
-    g = Generator(n, seed, date.fromisoformat(today))
+    from .profil import PROFIL_PATH, load_profil
+    mod = mod or ("realist" if n > len(SCENARIOS) else "blocuri")
+    profil = load_profil(profil_file or PROFIL_PATH) if mod == "realist" else None
+    g = Generator(n, seed, date.fromisoformat(today), profil, mod)
     g.run()
     g.ext = extend(g, seed)              # date pentru modelul final: verificări, retenție, recomandare
     g.write(Path(out), g.ext.market())
@@ -552,14 +739,18 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--today", default=DEFAULT_TODAY)
     ap.add_argument("--out", default=str(DATA_DIR))
     ap.add_argument("--log-dir", default=str(OUT_DIR))
+    ap.add_argument("--profil", choices=["realist", "blocuri"], default=None,
+                    help="realist (implicit pentru n > 50): primii 50 = scenariile etalon, restul din profilul statistic")
+    ap.add_argument("--profil-file", default=None, help="implicit config/portofoliu.yaml")
     a = ap.parse_args(argv)
-    g = generate(a.n, a.seed, a.today, a.out)
+    g = generate(a.n, a.seed, a.today, a.out, a.profil, a.profil_file)
 
     from collections import Counter
     prod = Counter(l["produs"] for l in g.loans)
     tip = Counter(c["tipologie_declarata"] for c in g.clients)
     sig = Counter(s for gt in g.ground_truth for s in gt["semnale_plantate"])
-    print(f"Generat în {a.out}/  (seed={a.seed}, azi={a.today})")
+    print(f"Generat în {a.out}/  (seed={a.seed}, azi={a.today}, mod={g.mod}"
+          + (f": {min(a.n, len(SCENARIOS))} etalon + {max(0, a.n - len(SCENARIOS))} statistici" if g.mod == "realist" else "") + ")")
     print(f"  clienți: {len(g.clients)}  credite: {len(g.loans)}  istoric plăți: {len(g.payments)}  "
           f"tranzacții: {len(g.transactions)}  cereri: {len(g.requests)}  angajatori: {len(g.employers)}")
     print("  tipologii: " + ", ".join(f"{k}={v}" for k, v in tip.most_common()))
