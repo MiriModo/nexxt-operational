@@ -74,3 +74,11 @@
   meniul complet), `explicatie_oferta` (text pentru consilier, 4 forme: ofertă / informare / nu interveni / restructurare
   / blocat), `print_offer`, `main` (`--case`, `--top`). 4 teste în `tests/test_retention_cli.py`.
 - Modulele de retenție: `retention.py` (model + CLI), `retention_menu.py` (meniu, constrângeri, optimizare).
+
+## M4-T1 — recommend.py (done)
+- `recomanda` (ordinea: blocat → verificare picată → risc/cerere restructurare → cerere produs nou → nu_interveni /
+  oferta_minima / oferta_produs), `oferta_din_interventie` (dobândă nouă, rată nouă, perioadă, grafic 12 luni + totaluri;
+  pauza de rată capitalizează dobânda), `oferta_produs_nou`, `documente_lipsa` (reguli din checks.yaml), `explicatie`
+  (română, cu cifre și sursa), `audit_rows` (semnal / verificare / retentie / decizie), CLI → recommendations.json + audit.jsonl.
+- 8 teste în `tests/test_recommend.py` (schemă, acuratețe ≥ 90% vs etalon, respins la verificări picate, 0 oferte la risc/blocat,
+  grafic, documente lipsă, audit, CLI).

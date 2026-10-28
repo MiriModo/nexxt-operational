@@ -135,7 +135,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   C0014 → `informare`, C0004 → `nu_interveni`, cazurile cu risc → restructurare; timp < 1 s.
 
 ## Milestone 4: Recomandare, aprobare, audit
-- [ ] M4-T1 `retailagent/recommend.py` — Acceptance criteria: `recomanda(case, checks, offer, cfg)` →
+- [x] M4-T1 `retailagent/recommend.py` — Acceptance criteria: `recomanda(case, checks, offer, cfg)` →
   una din cele 6 stări (vezi Decizii) + `oferta` (dobândă nouă, rată nouă, perioadă, cost bancă, economie
   client), `grafic` (primele 12 rânduri + total), `documente_lipsa` (din `documente.json` vs
   `checks.documente_necesare`), `explicatie` în română cu cifre și sursa; `out/recommendations.json`;
