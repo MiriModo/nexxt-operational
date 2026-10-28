@@ -7,7 +7,8 @@ import { State, decisionName } from "../components/State";
 import { useToast } from "../components/Toast";
 import { Band, Loading } from "../components/ui";
 import { date, label, pct, ron } from "../format";
-import { proposal } from "../proposal";
+import { PartnerBenefits } from "../components/PartnerBenefits";
+import { bankProductExamples, proposal } from "../proposal";
 import type { Caz, Decizie, DecizieInput, PropunereLLM } from "../types/api";
 
 const OPTIONS: { id: Decizie; title: string; desc: string }[] = [
@@ -31,6 +32,7 @@ export default function Decision() {
   const [ai, setAI] = useState<PropunereLLM | null>(null);
   const [aiBusy, setAIBusy] = useState(false);
   const [aiError, setAIError] = useState<string | null>(null);
+  const [benefit, setBenefit] = useState("");
   const [attempt, setAttempt] = useState(0);
   const { eu } = useEu();
   const team = useEchipa();
@@ -40,7 +42,7 @@ export default function Decision() {
   useEffect(() => {
     let active = true;
     const previous = getDeciziiLocale()[id];
-    setC(undefined); setErr(null);
+    setC(undefined); setErr(null); setBenefit("");
     setDecision(previous?.decizie ?? "aproba"); setIntervention(previous?.interventie ?? "");
     setReason(previous?.motiv ?? ""); setAdvisor(previous?.consilier ?? "");
     getCaz(id).then(x => { if (active) setC(x ?? null); }).catch(e => { if (active) setErr(String(e)); });
@@ -72,9 +74,10 @@ export default function Decision() {
       interventie: decision === "modifica" || override ? final || undefined : undefined,
       motiv: reason.trim() || (override || (decision === "aproba" && noOffer) ? ai?.motiv : undefined),
       consilier: advisor || undefined,
+      loyalty_offer_id: decision !== "respinge" ? benefit || undefined : undefined,
       propunere_id: ai?.interventie && decision !== "respinge" && final === ai.interventie ? ai.id : undefined,
     };
-  }, [decision, intervention, reason, advisor, ai, c, recommended]);
+  }, [decision, intervention, reason, advisor, ai, c, recommended, benefit]);
   const valid = decision === "aproba" || (reason.trim().length > 0 && (decision !== "modifica" || intervention));
 
   if (c === undefined) return <Loading err={err} />;
@@ -116,30 +119,32 @@ export default function Decision() {
       <div className="grid c2">
         <section className="sec">
           <div className="sec-label">
-            <span>[01] Recomandarea agentului</span>
+            <span>[01] Agent recommendation</span>
           </div>
           <p style={{ marginBottom: 10 }}>
             <State r={rec.recomandare} lg long />
           </p>
           <div aria-live="polite" aria-busy={aiBusy}>
-            {aiBusy && <p className="meta" role="status">Se pregătește recomandarea…</p>}
+            {aiBusy && <p className="meta" role="status">Preparing the recommendation…</p>}
             {aiError && <div className="notice warn" role="alert">
-              <p>Recomandarea AI nu este disponibilă. Poți folosi recomandarea existentă.</p>
-              <button type="button" className="btn ghost sm" disabled={busy} onClick={() => setAttempt(x => x + 1)}>Încearcă din nou</button>
-              <details className="meta"><summary>Detalii eroare</summary><p>{aiError}</p></details>
+              <p>The AI recommendation is unavailable. You can use the calculated recommendation.</p>
+              <button type="button" className="btn ghost sm" disabled={busy} onClick={() => setAttempt(x => x + 1)}>Try again</button>
+              <details className="meta"><summary>Error details</summary><p>{aiError}</p></details>
             </div>}
             {ai ? <>
               <h3>{ai.titlu}</h3>
               <p>{ai.motiv}</p>
               <div style={{ borderLeft: "2px solid var(--line)", paddingLeft: 16, marginTop: 20 }}>
-                <span className="meta">Mesaj pentru client · propunere</span>
+                <span className="meta">Client message · draft</span>
                 <p style={{ whiteSpace: "pre-wrap" }}>{ai.mesaj_client}</p>
               </div>
-              {ai.interventie && <p className="meta">{label(ai.interventie)} · Cost bancă {ron(offer.interventii.find(i => i.id === ai.interventie)?.cost ?? 0)}</p>}
+              {ai.interventie && <p className="meta">{label(ai.interventie)} · Bank cost {ron(offer.interventii.find(i => i.id === ai.interventie)?.cost ?? 0)}</p>}
               {ai.atentionari.map((x, i) => <p className="notice warn" key={i}>{x}</p>)}
             </> : <p className="lead" style={{ color: "var(--foreground)", fontSize: 15.5 }}>{proposal(rec)}</p>}
           </div>
           {rec.oferta?.amanata_buget && <p className="meta">Deferred: this month's retention cap is used up; approving it does so explicitly.</p>}
+          {!!bankProductExamples(rec).length && <p className="meta"><b>Example:</b> {bankProductExamples(rec).join(" ")}</p>}
+          <PartnerBenefits loyalty={c.loyalty} selected={decision === "respinge" ? "" : benefit} onSelect={setBenefit} disabled={busy || decision === "respinge"} />
           {existing && (
             <div className="notice warn" style={{ marginTop: 12 }}>
               Existing decision from {date(existing.la)}: <b>{decisionName(existing.decizie)}</b>

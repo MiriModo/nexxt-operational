@@ -7,7 +7,8 @@ import { CATEGORIES, categoryName } from "../components/Categories";
 import { State, decisionName } from "../components/State";
 import { Band, Loading } from "../components/ui";
 import { label, num, pct, pp, ron } from "../format";
-import { proposal } from "../proposal";
+import { PartnerBenefits } from "../components/PartnerBenefits";
+import { bankProductExamples, offerPeriod, proposal } from "../proposal";
 import type { Caz, CheckInfo, Cheltuieli, OfferInfo, Reverificare, VerificareRezultat } from "../types/api";
 
 const STAGES = ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"];
@@ -294,11 +295,13 @@ export default function Case() {
             <span id="prop">[02] What the agent proposes</span>
           </div>
           <p className="lead">{proposal(rec)}</p>
+          {!!bankProductExamples(rec).length && <p className="meta"><b>Example:</b> {bankProductExamples(rec).join(" ")}</p>}
+          <PartnerBenefits loyalty={c.loyalty} />
           {of && (
             <dl className="offer">
               <div>
                 <dd>{pp(of.dobanda_noua)}</dd>
-                <dt>new rate, {of.perioada.replace(/ ani$/, " years").replace(/ an$/, " year")}</dt>
+                <dt>new rate, {offerPeriod(of.perioada)}</dt>
               </div>
               <div>
                 <dd>
@@ -331,12 +334,6 @@ export default function Case() {
                 ))}
               </ul>
             </div>
-          )}
-          {rec.llm && (
-            <>
-              <p className="mono" style={{ margin: "14px 0 6px" }}>Text for the client</p>
-              <pre className="text">{rec.llm.text_client}</pre>
-            </>
           )}
         </section>
       </div>

@@ -235,3 +235,50 @@ def test_propunere_respecta_accesul(client, monkeypatch):
     assert calls == []
     assert client.post(f'/api/cazuri/{own}/propunere', headers=ana).status_code == 200
     assert calls == [own]
+
+
+def test_partner_benefit_validated_and_saved(client, monkeypatch):
+    from datetime import date
+    from functools import partial
+    from retailagent.loyalty import recommend_benefits
+    from retailagent.cheltuieli import luni_recente
+    rows = client.get('/api/cazuri?compact=false').json()
+    from copy import deepcopy
+    c = deepcopy(next(c for c in rows if c['rec']['recomandare'] == 'oferta_minima'))
+    # Construct a clean, eligible server-side fixture without mutating other tests.
+    c['case']['scoruri']['risc_credit'] = 0
+    c['case']['blocaje'] = []
+    c['rec']['documente_lipsa'] = []
+    c['rec']['incertitudini'] = []
+    c['check']['verificare_picata'] = None
+    state = client.app.state.stare
+    monkeypatch.setitem(state.cazuri, c['case']['case_id'], c)
+    months = sorted(luni_recente(state.full.pf.today, 3))
+    tx = [{'directie': 'out', 'data': months[n % 3] + '-01', 'suma': 100,
+           'categorie': 'appliances_it'} for n in range(5)]
+    monkeypatch.setitem(state.full.pf.tx_by_client, c['case']['client_id'], tx)
+    monkeypatch.setattr('retailagent.api.recommend_benefits', partial(recommend_benefits, pricing_date=date(2026, 10, 29)))
+    c = client.get(f"/api/cazuri/{c['case']['case_id']}").json()
+
+    cid = c['case']['case_id']
+    benefit = c['loyalty']['offers'][0]
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'loyalty_offer_id': 'invented'}).status_code == 400
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'respinge', 'motiv': 'No', 'loyalty_offer_id': benefit['id']}).status_code == 400
+    r = client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'loyalty_offer_id': benefit['id']})
+    assert r.status_code == 200
+    saved = client.get('/api/decizii').json()[-1]
+    assert saved['loyalty_benefit'] == benefit
+    assert benefit['id'] in (client.out / 'audit.jsonl').read_text()
+    # A price change/expiry invalidates both the attached catalogue and generated copy.
+    monkeypatch.setattr('retailagent.api.genereaza', lambda _: {
+        'interventie': c['rec']['interventie'], 'titlu': 'Title', 'motiv': 'Reason',
+        'indicii': [], 'mesaj_client': 'Message', 'atentionari': [], 'model': 'test'})
+    proposal = client.post(f'/api/cazuri/{cid}/propunere').json()
+    monkeypatch.setattr('retailagent.api.recommend_benefits', partial(recommend_benefits, pricing_date=date(2026, 11, 1)))
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'loyalty_offer_id': benefit['id']}).status_code == 400
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'propunere_id': proposal['id']}).status_code == 400

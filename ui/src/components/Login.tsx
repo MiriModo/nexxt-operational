@@ -1,3 +1,4 @@
+import { englishError } from "../language";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSursa } from "../api/client";
@@ -57,7 +58,7 @@ export function Login() {
       {offline && <p className="meta">The server isn't responding: you'll enter demo mode, any password works.</p>}
       {error && (
         <div className="notice fail" role="alert">
-          {error}
+          {englishError(error)}
         </div>
       )}
       <button type="submit" className="btn primary" disabled={!picked || (!password && !offline) || busy}>

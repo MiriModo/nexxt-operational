@@ -10,6 +10,15 @@ from datetime import date
 
 
 
+def transaction_category(transaction: dict) -> str:
+    """Use stored categories; classify legacy rows without mutating the source data."""
+    if transaction.get("categorie"):
+        return transaction["categorie"]
+    from .generate import categoria
+    return categoria(transaction.get("platitor_beneficiar", ""), transaction.get("tip_etichetat", ""),
+                     transaction.get("directie", "out"))
+
+
 def luni_recente(today: date, luni: int) -> set[str]:
     """Cheile YYYY-MM ale ultimelor `luni` luni, inclusiv luna curentă."""
     y, m, out = today.year, today.month, set()
@@ -29,7 +38,7 @@ def profil_cheltuieli(transactions: list[dict], today: date, luni: int = 3) -> d
     suma: dict[str, float] = defaultdict(float)
     nr: dict[str, int] = defaultdict(int)
     for t in out:
-        cat = t.get("categorie") or "other"
+        cat = transaction_category(t)
         suma[cat] += t["suma"]
         nr[cat] += 1
     total_out = sum(suma.values())

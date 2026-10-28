@@ -39,6 +39,7 @@ export function CaseCard({ c, today, decision }: { c: Caz; today: string; decisi
           <span className="name">{client.nume}</span>
           <span className="id">{cs.case_id}</span>
           {decision && <span className={`tag ${decision.decizie === "respinge" ? "bad" : "ok"}`}>decided · {decisionName(decision.decizie)}</span>}
+          {!!c.loyalty_offer_count && <span className="tag">partner benefit</span>}
           {!decision && toConfirm && <span className="tag warn">to confirm</span>}
           {!decision && rec.oferta?.amanata_buget && <span className="tag">deferred · over cap</span>}
         </div>

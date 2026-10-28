@@ -102,6 +102,8 @@ def persist(d: dict, out_dir: Path | str = OUT_DIR) -> None:
            "tip": "override" if d["override"] else "aprobare", "cheie": "interventie", "valoare": d["interventie_finala"],
            "sursa": "consilier", "consilier": d.get("consilier"), "decizie": d["decizie"], "motiv": d["motiv"],
            "versiune": d.get("versiune")}
+    if d.get("loyalty_benefit"):
+        row["loyalty_benefit"] = d["loyalty_benefit"]
     if d.get("propunere_llm"):
         row["propunere_llm"] = d["propunere_llm"]
     with open(out / "audit.jsonl", "a", encoding="utf-8") as f:

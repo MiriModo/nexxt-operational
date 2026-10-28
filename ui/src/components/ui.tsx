@@ -1,3 +1,4 @@
+import { englishError } from "../language";
 import type { ReactNode } from "react";
 import type { Banda } from "../types/api";
 
@@ -36,7 +37,7 @@ export function Loading({ err }: { err?: string | null }) {
   if (err)
     return (
       <div className="notice fail" role="alert">
-        Couldn't load the data ({err}). Check that the server is running and reload.
+        Couldn't load the data ({englishError(err)}). Check that the server is running and reload.
       </div>
     );
   return (

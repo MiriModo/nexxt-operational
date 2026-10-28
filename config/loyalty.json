@@ -1,0 +1,80 @@
+{
+  "lookback_months": 3,
+  "minimum_transactions": 5,
+  "minimum_active_months": 2,
+  "minimum_spend_ron": 200,
+  "maximum_offers": 2,
+  "partners": {
+    "groceries": [
+      "Selgros Cash & Carry"
+    ],
+    "appliances_it": [
+      "eMAG",
+      "Altex",
+      "Media Galaxy",
+      "AVstore",
+      "F64",
+      "Rombiz"
+    ],
+    "home_diy": [
+      "Dedeman",
+      "Mobexpert",
+      "Arabesque"
+    ],
+    "shopping": [
+      "WatchShop",
+      "B&B - Swarovski",
+      "Fashion Days",
+      "Intersport",
+      "SMYK",
+      "Collective",
+      "KIX",
+      "Sport Loft",
+      "Noriel",
+      "Musette",
+      "Humanic"
+    ]
+  },
+  "bank_subsidy_budget_ron": 0,
+  "max_price_age_days": 1,
+  "partner_domains": {
+    "Altex": "altex.ro",
+    "Dedeman": "dedeman.ro",
+    "Noriel": "noriel.ro"
+  },
+  "products": [
+    {
+      "id": "jbl-tune-520bt2-black",
+      "name": "JBL Tune 520BT2 wireless on-ear headphones, black",
+      "category": "appliances_it",
+      "partner": "Altex",
+      "price_ron": 199.99,
+      "source_url": "https://altex.ro/casti-telefon/cpl/filtru/brand-3334/jbl/",
+      "checked_on": "2026-10-29",
+      "valid_until": "2026-10-30",
+      "merchant_price_verified": true
+    },
+    {
+      "id": "bosch-extra-hard-44",
+      "name": "Bosch Extra Hard screwdriver and 44-bit set",
+      "category": "home_diy",
+      "partner": "Dedeman",
+      "price_ron": 133.0,
+      "source_url": "https://www.dedeman.ro/ro/surubelnite/c/292",
+      "checked_on": "2026-10-29",
+      "valid_until": "2026-10-30",
+      "merchant_price_verified": true
+    },
+    {
+      "id": "lego-city-60312",
+      "name": "LEGO City Police Car 60312",
+      "category": "shopping",
+      "partner": "Noriel",
+      "price_ron": 44.99,
+      "source_url": "https://noriel.ro/lego-city-masina-de-politie-60312",
+      "checked_on": "2026-10-29",
+      "valid_until": "2026-10-30",
+      "merchant_price_verified": true
+    }
+  ]
+}

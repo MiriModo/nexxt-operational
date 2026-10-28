@@ -445,10 +445,13 @@ vault/                           # jurnalul deciziilor și al taskurilor (autobo
 
 Din Coadă, deschide un caz → Ia decizia. Propunerea AI se generează automat
 în caseta „Recomandarea agentului”.
-Asistentul interpretează indiciile și recomandarea, selectează o intervenție fezabilă
-și redactează un mesaj scurt pentru client. Consilierul verifică și alege Aprobă,
-Modifică sau Respinge, apoi apasă „Trimite decizia”. Aprobarea unei alternative AI
-se înregistrează ca modificare față de motorul inițial, cu justificarea AI. Propunerea aplicată se păstrează în
+Motorul financiar stabilește recomandarea și intervenția. Haiku selectează și ordonează
+fraze controlate, construite pe server din valorile calculate, pentru operator și client.
+Modelul returnează doar ID-uri de fraze; textul final este asamblat pe server. Nu poate
+introduce nume de bănci, cifre sau alte afirmații în textul afișat și nu schimbă oferta.
+ID-urile necunoscute, repetițiile și răspunsurile incomplete sunt refuzate; în interfață
+rămâne recomandarea motorului. Consilierul verifică și alege Aprobă, Modifică sau Respinge,
+apoi apasă „Trimite decizia”. Propunerea aplicată se păstrează în
 approvals.json și audit.jsonl. Dacă schimbi intervenția sau respingi, textul AI nu se
 atașează drept ofertă aprobată. Propunerile nesalvate expiră la restart/rescan.
 
@@ -472,10 +475,10 @@ python3 -m retailagent.api --reload
 ```
 
 Integrarea apelează Bedrock InvokeModel cu API key și Anthropic Messages, forțează
-un răspuns prin tool-ul `propune_oferta` și validează schema plus eligibilitatea
-intervenției pe server. Textul rămâne o propunere care trebuie verificată de consilier.
-Profilul fără nume/identificatori, semnalele, verificările și recomandarea sunt trimise
-către serviciul configurat. Fără cheie sau la indisponibilitate, interfața afișează
+un răspuns prin tool-ul `propune_oferta` și validează ID-urile de fraze pe server.
+Sunt trimise exclusiv frazele controlate și cifrele selectate din rezultate structurate,
+fără nume, dovezi sau explicații libere din datele de intrare. Datele sursă și calculele
+pot avea propriile erori; textul rămâne o propunere de verificat de consilier. Fără cheie sau la indisponibilitate, interfața afișează
 eroarea și permite decizia manuală; nu simulează un răspuns LLM.
 
 OpenAI rămâne disponibil opțional prin `RETAILAGENT_LLM_PROVIDER=openai`,
@@ -483,3 +486,43 @@ OpenAI rămâne disponibil opțional prin `RETAILAGENT_LLM_PROVIDER=openai`,
 Cazurile blocate/respinse sau „nu interveni” nu primesc o intervenție comercială.
 Catalogul actual conține intervențiile motorului de retenție, fără oferte cashback
 inventate sau deducții despre comercianți pentru care nu există date.
+
+
+## English interface and priced partner products
+
+The React interface and controlled AI facts are in English. Loan recommendations are rendered
+from structured values, not free-form backend text. Haiku only selects fact IDs; it cannot
+invent product names, prices, bank discounts, cashback or finance terms.
+
+`config/loyalty.json` contains the supplied list of 21 partners and a small reviewed product
+catalogue. Product prices are observed public merchant prices, not bank offers, and include
+source URLs, check dates and expiry dates. Current entries were checked on 2026-10-29:
+JBL Tune 520BT2 headphones at Altex (199.99 RON), Bosch Extra Hard screwdriver/44-bit set at
+Dedeman (133 RON), LEGO City Police Car 60312 at Noriel (44.99 RON). Product names in the UI
+are English descriptions of the source items. Recheck the merchant for current price, stock,
+shipping and eligibility. These are not automatically refreshed live prices.
+
+A current price requires a reviewed source on the configured merchant domain, a valid date
+range, and an age no greater than `max_price_age_days` (default 1). Expired, unverified,
+future-dated or off-domain records are excluded, including on case reads and decision saves.
+Where no official merchant price was verified (currently groceries/Selgros), the UI asks for a
+price check and does not invent a product price. Update and review the catalogue before
+extending check dates. A recommendation generated against a changed catalogue must be refreshed.
+
+Matching requires at least 5 positive RON outflows in the same category across at least
+2 of the last 3 calendar months, totalling 200 RON or more. Future payments, income, cash,
+transfers and debt payments do not qualify. Risk, blocked/escalated/restructuring cases,
+missing documents and unresolved uncertainties prevent suggestions. Missing legacy categories
+are derived with `generate.categoria` at read time; source transactions are not modified.
+
+Products are optional category matches, not proof of specific needs or affordability.
+The customer pays the merchant. Bank promotional subsidy is constrained to **0 RON**;
+no bank-funded cashback, gift, credit or instalment commitment is created. Operational costs
+and any separate loan-retention offer remain outside this figure. No merchant-funded campaign
+is claimed without verified campaign terms. The earlier demo cashback mechanism is disabled.
+
+An advisor may attach the current product suggestions to the decision. The API validates
+eligibility and current quotes again, then stores the exact products, prices, sources and
+zero-subsidy terms in approvals and audit. This neither places an order nor activates a campaign.
+
+Validation: `python -m pytest`; frontend: `cd ui && npm test && npm run build`.

@@ -1,3 +1,4 @@
+import { englishError } from "../language";
 import { useEffect, useState } from "react";
 import { getSursa } from "../api/client";
 import { useConfigDiff, useConfigFisier, useConfigLista, useContext, useRescan, useSalveazaConfig } from "../api/hooks";
@@ -109,7 +110,7 @@ export default function RulesEngine() {
                 </div>
                 {error && (
                   <div className="notice fail" role="alert" style={{ marginTop: 12 }}>
-                    {error}
+                    {englishError(error)}
                   </div>
                 )}
                 <details style={{ marginTop: 14 }} onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && diff.refetch()}>

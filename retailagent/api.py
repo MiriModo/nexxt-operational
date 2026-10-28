@@ -17,6 +17,8 @@ Fluxul rulează o dată la pornire și stă în memorie; deciziile se scriu pe d
 from __future__ import annotations
 
 import os
+import json
+import hashlib
 from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -34,6 +36,7 @@ from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, read_json
 from .demo import build_data
 from .pipeline import run_full
 from .llm import LLMError, genereaza
+from .loyalty import recommend_benefits
 
 
 class DecizieInput(BaseModel):
@@ -42,6 +45,7 @@ class DecizieInput(BaseModel):
     motiv: str | None = None
     consilier: str | None = None
     propunere_id: str | None = None
+    loyalty_offer_id: str | None = None
 
 
 class RezultatInput(BaseModel):
@@ -68,6 +72,7 @@ def compact_caz(c: dict) -> dict:
     """Aceeași formă ca un caz complet (contractul UI), dar fără listele mari — pentru coadă și pagina de start."""
     o, ch, r = c["offer"], c["check"], c["rec"]
     return {
+        "loyalty_offer_count": len(c.get("loyalty", {}).get("offers", [])),
         "case": c["case"], "client": c["client"], "loan": c["loan"], "consilier": c.get("consilier"), "versiune": c.get("versiune"),
         "check": {"motive": ch["motive"], "plan": [], "omise": [], "rezultate": [], "oprit_la": ch["oprit_la"],
                   "verificare_picata": ch["verificare_picata"], "interogari": ch["interogari"], "concluzii": ch["concluzii"]},
@@ -143,7 +148,13 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
             raise HTTPException(404, f"cazul {case_id} nu există")
         if eu["rol"] != "admin" and c.get("consilier") != eu["id"]:
             raise HTTPException(403, f"cazul {case_id} nu e în coada ta")
+        # Prices expire on wall-clock dates, independently of the synthetic portfolio date.
+        c["loyalty"] = recommend_benefits(stare.full.pf.tx_by_client.get(c["case"]["client_id"], []),
+                                           stare.full.pf.today, c["case"], c["check"], c["rec"])
         return c
+
+    def catalog_fingerprint(c: dict) -> str:
+        return hashlib.sha256(json.dumps(c.get("loyalty", {}), sort_keys=True).encode()).hexdigest()
 
     def aprobarile(eu: dict) -> list[dict]:
         p = stare.out_dir / "approvals.json"
@@ -306,19 +317,26 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
             result = genereaza(c)
         except LLMError as exc:
             raise HTTPException(503, str(exc)) from exc
-        result = {**result, "id": str(uuid4()), "case_id": case_id}
+        result = {**result, "id": str(uuid4()), "case_id": case_id, "catalog_fingerprint": catalog_fingerprint(c)}
         stare.propuneri[result["id"]] = result
         return result
 
     @app.post("/api/cazuri/{case_id}/decizie")
     def decizie(case_id: str, d: DecizieInput, eu: dict = Depends(utilizator_curent)):
         """Decizia poartă consilierul autentificat; doar administratorul poate decide în numele altcuiva."""
-        al_meu(case_id, eu)
+        current_case = al_meu(case_id, eu)
+        benefit = None
+        if d.loyalty_offer_id:
+            benefit = next((o for o in current_case.get("loyalty", {}).get("offers", []) if o["id"] == d.loyalty_offer_id), None)
+            if benefit is None or d.decizie == "respinge":
+                raise HTTPException(400, "The selected partner benefit is not eligible for this decision.")
         suggestion = None
         if d.propunere_id:
             suggestion = stare.propuneri.get(d.propunere_id)
             if suggestion is None or suggestion["case_id"] != case_id:
                 raise HTTPException(400, "Propunerea LLM a expirat. Generează din nou.")
+            if suggestion.get("catalog_fingerprint") != catalog_fingerprint(current_case):
+                raise HTTPException(400, "The product catalogue or price verification has changed. Refresh the recommendation.")
             final = d.interventie if d.decizie == "modifica" else stare.recs[case_id]["interventie"]
             if d.decizie == "respinge" or suggestion["interventie"] != final:
                 raise HTTPException(400, "Propunerea LLM nu corespunde intervenției alese.")
@@ -330,6 +348,8 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
             raise HTTPException(400, str(e)) from e
         if suggestion:
             rec["propunere_llm"] = suggestion
+        if benefit:
+            rec["loyalty_benefit"] = benefit
         persist(rec, stare.out_dir)
         return {"decizie": d.decizie, "interventie": rec["interventie_finala"], "motiv": rec["motiv"], "case_id": case_id,
                 "la": rec["timestamp"], "sursa": "api", "override": rec["override"], "oferta": rec["oferta"],

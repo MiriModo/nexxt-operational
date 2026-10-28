@@ -1,3 +1,5 @@
+import { englishData, englishCheck } from "../presentation";
+import { englishError } from "../language";
 // Strat de acces la date, organizat pe resursele API-ului (retailagent/api.py):
 //   GET /api/metrici/context, GET /api/cazuri, GET /api/cazuri/{id}, POST /api/cazuri/{id}/decizie, GET /api/metrici
 // Sursa: API-ul (implicit /api, proxy-at de Vite către 127.0.0.1:8000; se poate schimba cu VITE_API_URL).
@@ -87,16 +89,16 @@ async function req(path: string, init: RequestInit = {}): Promise<Response> {
   const r = await fetch(`${API}${path}`, { ...init, headers });
   if (r.status === 401) {
     deconecteaza();
-    throw new EroareHttp(401, "sesiunea a expirat, intră din nou în cont");
+    throw new EroareHttp(401, "Your session has expired. Please sign in again.");
   }
-  if (r.status === 403 || r.status === 400) throw new EroareHttp(r.status, ((await r.json()) as { detail?: string }).detail ?? `${path}: ${r.status}`);
+  if (r.status === 403 || r.status === 400) throw new EroareHttp(r.status, englishError(((await r.json()) as { detail?: string }).detail ?? `${path}: ${r.status}`));
   return r;
 }
 
 /** Încearcă API-ul; la eroare de rețea sau 5xx cade pe snapshot (404 rămâne 404: cazul chiar nu există;
  *  401 / 403 / 400 sunt răspunsuri, nu căderi, și se propagă). */
 async function viaApi<T>(path: string, fallback: () => Promise<T>): Promise<T> {
-  if (sursa === "static") return fallback();
+  if (sursa === "static") return englishData(await fallback());
   try {
     const r = await req(path);
     if (r.status === 404) {
@@ -105,11 +107,11 @@ async function viaApi<T>(path: string, fallback: () => Promise<T>): Promise<T> {
     }
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     setSursa("api");
-    return (await r.json()) as T;
+    return englishData((await r.json()) as T);
   } catch (e) {
     if (e instanceof EroareHttp) throw e;
     setSursa("static");
-    return fallback();
+    return englishData(await fallback());
   }
 }
 
@@ -137,16 +139,17 @@ export async function postVerifica(id: string): Promise<Reverificare> {
       const r = await req(`/cazuri/${id}/verifica`, { method: "POST" });
       if (r.ok) {
         setSursa("api");
-        return (await r.json()) as Reverificare;
+        const result = (await r.json()) as Reverificare;
+        return { ...result, trepte: result.trepte.map(t => ({ ...t, rezultate: t.rezultate.map(englishCheck) })) };
       }
-      if (r.status === 404) throw new Error(`cazul ${id} nu există`);
+      if (r.status === 404) throw new Error(`Case ${id} does not exist`);
     } catch (e) {
-      if (e instanceof EroareHttp || (e instanceof Error && e.message.startsWith("cazul"))) throw e;
+      if (e instanceof EroareHttp || (e instanceof Error && e.message.startsWith("Case"))) throw e;
       setSursa("static");
     }
   }
   const c = await getCaz(id);
-  if (!c) throw new Error(`cazul ${id} nu există`);
+  if (!c) throw new Error(`Case ${id} does not exist`);
   const ordine = ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"];
   const trepte = ordine
     .map((t) => ({ treapta: t, rezultate: c.check.rezultate.filter((r) => r.treapta === t) }))
@@ -178,7 +181,7 @@ export async function getIstoric(id: string): Promise<DecizieServer[]> {
 
 export async function postRezultat(id: string, rezultat: "ramas" | "plecat"): Promise<DecizieServer> {
   const r = await req(`/cazuri/${id}/rezultat`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rezultat }) });
-  if (!r.ok) throw new Error(`rezultat: ${r.status} (rezultatul la 90 de zile se înregistrează doar prin API)`);
+  if (!r.ok) throw new Error(`Outcome: ${r.status}. Recording a 90-day outcome requires the API.`);
   return (await r.json()) as DecizieServer;
 }
 
@@ -278,7 +281,7 @@ export async function getBirou(): Promise<Birou> {
 async function cereJson<T>(path: string, init: RequestInit = {}): Promise<T> {
   const r = await req(path, init);
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
-  return (await r.json()) as T;
+  return englishData((await r.json()) as T);
 }
 export const getConfigLista = () => cereJson<ConfigFisier[]>("/config");
 export const getConfig = (nume: string) => cereJson<{ nume: string; text: string }>(`/config/${nume}`);
@@ -391,7 +394,7 @@ export async function postDecizie(caseId: string, d: DecizieInput): Promise<Deci
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(d),
       });
-      if (!r.ok) throw new Error(`decizie: ${r.status}`);
+      if (!r.ok) throw new Error(`Decision: ${r.status}`);
       setSursa("api");
       const srv = (await r.json()) as { consilier?: string | null };
       const rec: DecizieRecord = { ...d, consilier: srv.consilier ?? d.consilier, case_id: caseId, la: new Date().toISOString(), sursa: "api" };
@@ -421,7 +424,7 @@ export async function postPropunere(caseId: string): Promise<import("../types/ap
   const r = await req(`/cazuri/${encodeURIComponent(caseId)}/propunere`, { method: "POST" });
   if (!r.ok) {
     const body = await r.json().catch(() => ({}));
-    throw new Error(body.detail ?? "Recomandarea AI nu este disponibilă.");
+    throw new Error(englishError(body.detail ?? "The AI recommendation is unavailable."));
   }
   return r.json();
 }

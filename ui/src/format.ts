@@ -1,3 +1,4 @@
+import { englishLabel } from "./language";
 // Number and date formatting for the English interface. Amounts are RON (the data is a Romanian portfolio).
 export const ron = (v: number | null | undefined, d = 0) =>
   v == null ? "–" : new Intl.NumberFormat("en-US", { maximumFractionDigits: d, minimumFractionDigits: d }).format(v) + " RON";
@@ -20,7 +21,7 @@ export const dateLong = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date(iso.length === 10 ? iso + "T12:00:00" : iso));
 
 /** Backend ids (snake_case) shown as words. The backend's own sentences stay as produced. */
-export const label = (s: string | null | undefined) => (s ?? "–").replace(/_/g, " ");
+export const label = englishLabel;
 
 /** Compact amount for big figures: 3,188,389 → { n: "3.19", unit: "M RON" }. */
 export const ronShort = (v: number | null | undefined): { n: string; unit: string } => {

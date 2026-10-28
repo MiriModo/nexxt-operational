@@ -221,7 +221,23 @@ export interface Cheltuieli {
   internal_transfers: number;
 }
 
+export interface PricedPartnerProduct {
+  id: string; name: string; category: string; partner: string; price_ron: number;
+  source_url: string; checked_on: string; valid_until: string; merchant_price_verified: boolean;
+}
+export interface PartnerBenefit {
+  id: string; category: string; partners: string[]; products: PricedPartnerProduct[];
+  transaction_count: number; active_months: number; spend_ron: number;
+  maximum_cost_ron: number; bank_subsidy_ron: number; kind: "product_recommendation";
+  funding: "customer_purchase"; status: "draft"; terms: string;
+}
+export interface Loyalty {
+  offers: PartnerBenefit[]; lookback_months: number; status: string; reason: string;
+  categories_needing_price_check?: string[];
+}
 export interface Caz {
+  loyalty?: Loyalty;
+  loyalty_offer_count?: number;
   case: CaseInfo;
   client: ClientInfo;
   cheltuieli?: Cheltuieli;
@@ -422,6 +438,7 @@ export interface PropunereLLM {
 
 export interface DecizieInput {
   propunere_id?: string;
+  loyalty_offer_id?: string;
   decizie: Decizie;
   interventie?: string;
   motiv?: string;
