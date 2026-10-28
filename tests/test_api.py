@@ -64,6 +64,24 @@ def test_decizie_aproba_si_override(client):
     assert any('"override"' in l for l in audit)
 
 
+def test_coada_paginata_si_sumar(client, pipeline):
+    n = len(pipeline["cases"])
+    p = client.get("/api/coada?limit=10").json()
+    assert p["total"] == n and len(p["items"]) == 10 and p["items"][0]["compact"] and sum(p["pe_banda"].values()) == n
+    p2 = client.get("/api/coada?limit=10&offset=10").json()
+    assert p2["items"][0]["case"]["case_id"] != p["items"][0]["case"]["case_id"]
+    p1 = client.get("/api/coada?banda=P1&limit=500").json()
+    assert p1["total"] == p1["pe_banda"]["P1"] and all(c["case"]["banda"] == "P1" for c in p1["items"])
+    t = client.get("/api/coada?sort=termen&limit=50").json()["items"]
+    assert [c["case"]["deadline"] for c in t] == sorted(c["case"]["deadline"] for c in t)
+    assert client.get("/api/coada?q=C0013").json()["total"] >= 1
+    s = client.get("/api/cazuri/sumar").json()
+    assert s["total"] == n and s["deschise"] + s["decise"] == n and len(s["primele"]) == 5
+    assert s["blocate"] > 0 and s["p1"] > 0
+    # „ascunde decise” folosește approvals.json scris de deciziile din testul anterior
+    assert client.get("/api/coada?ascunde_decise=true&limit=1").json()["total"] == s["deschise"]
+
+
 def test_rescan(client):
     r = client.post("/api/rescan").json()
     assert r["cazuri"] > 0

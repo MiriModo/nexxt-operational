@@ -55,7 +55,9 @@ deciziile rămân în `localStorage` și ecranul arată comanda `approve` echiva
 `GET /api/cazuri/{id}`, `GET /api/metrici`, `POST /api/cazuri/{id}/decizie`, `GET /api/decizii`, `POST /api/rescan`;
 documentația OpenAPI la `http://127.0.0.1:8000/docs`. `GET /api/cazuri` întoarce coada **compact** (fără meniu,
 verificări detaliate, grafic — la 10.000 de clienți lista completă ar avea ~60 MB) cu `?limit=`, `?banda=`, `?q=`;
-`GET /api/cazuri/{id}` dă detaliul complet. API-ul rulează fluxul la pornire (~45 s pe 10.000). Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
+`GET /api/cazuri/{id}` dă detaliul complet. Coada din interfață folosește `GET /api/coada` (filtre pe bandă,
+căutare, sortare, paginare pe server, `ascunde_decise`) și `GET /api/cazuri/sumar` (contoarele paginii de start pe
+toată coada), deci la 6.000 de cazuri încarcă câte 60 odată. API-ul rulează fluxul la pornire (~45 s pe 10.000). Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
 bandă, filtre, căutare), Caz (semnale, verificări, model de retenție cu p-ul din modelul antrenat și contribuțiile
 lui, recomandare, grafic, documente), Decizie (aprobă / modifică / respinge cu motiv), Dashboard (metrici).
 Variabile de mediu pentru API: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`.

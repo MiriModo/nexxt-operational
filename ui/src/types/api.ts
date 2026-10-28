@@ -220,6 +220,36 @@ export interface Snapshot {
   cazuri: Caz[];
 }
 
+/** O pagină din coadă (GET /api/coada): filtrată, sortată și paginată pe server. */
+export interface PaginaCoada {
+  total: number;
+  offset: number;
+  limit: number;
+  pe_banda: Record<string, number>;
+  items: Caz[];
+}
+
+/** Contoarele paginii de start (GET /api/cazuri/sumar), pe toată coada. */
+export interface Sumar {
+  total: number;
+  deschise: number;
+  p1: number;
+  scadente_azi: number;
+  blocate: number;
+  decise: number;
+  pe_banda: Record<string, number>;
+  primele: Caz[];
+}
+
+export interface ParametriCoada {
+  benzi?: Banda[];
+  q?: string;
+  sort?: "prioritate" | "termen" | "client";
+  ascundeDecise?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
 export interface DecizieInput {
   decizie: Decizie;
   interventie?: string;

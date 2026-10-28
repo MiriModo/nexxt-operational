@@ -15,6 +15,7 @@ Fluxul rulează o dată la pornire și stă în memorie; deciziile se scriu pe d
 from __future__ import annotations
 
 import os
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
@@ -91,7 +92,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "total_cazuri": d["total_cazuri"]}
 
     @app.get("/api/cazuri")
-    def cazuri(limit: int = 0, compact: bool = True, banda: str | None = None, q: str | None = None):
+    def cazuri(limit: int = 500, compact: bool = True, banda: str | None = None, q: str | None = None):
         """Coada, în ordinea priorității. Implicit compactă (fără verificări detaliate, meniu, grafic): la 10.000 de
         clienți lista completă ar avea ~60 MB; detaliul unui caz vine din GET /api/cazuri/{id}."""
         rows = stare.data["cazuri"]
@@ -104,6 +105,50 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         if limit:
             rows = rows[:limit]
         return [compact_caz(c) for c in rows] if compact else rows
+
+    def _decise() -> dict[str, dict]:
+        p = stare.out_dir / "approvals.json"
+        out: dict[str, dict] = {}
+        for d in (read_json(p) if p.exists() else []):
+            out[d["case_id"]] = d                                   # ultima decizie per caz
+        return out
+
+    @app.get("/api/coada")
+    def coada(limit: int = 60, offset: int = 0, banda: str | None = None, q: str | None = None,
+              sort: str = "prioritate", ascunde_decise: bool = False):
+        """Pagina de coadă: filtre + sortare + paginare pe server (UI-ul nu încarcă toate cazurile)."""
+        rows = stare.data["cazuri"]
+        benzi = set(banda.split(",")) if banda else None
+        decise = _decise() if ascunde_decise else {}
+        if benzi:
+            rows = [c for c in rows if c["case"]["banda"] in benzi]
+        if ascunde_decise:
+            rows = [c for c in rows if c["case"]["case_id"] not in decise]
+        if q:
+            ql = q.lower()
+            rows = [c for c in rows if ql in " ".join([c["case"]["case_id"], c["case"]["client_id"], c["client"]["nume"], c["case"]["produs"] or "",
+                                                       c["case"]["actiune_propusa"], c["rec"]["recomandare"], *c["case"]["motive_top3"]]).lower()]
+        if sort == "termen":
+            rows = sorted(rows, key=lambda c: (c["case"]["deadline"], -c["case"]["scoruri"]["prioritate"]))
+        elif sort == "client":
+            rows = sorted(rows, key=lambda c: c["client"]["nume"])
+        return {"total": len(rows), "offset": offset, "limit": limit,
+                "pe_banda": dict(Counter(c["case"]["banda"] for c in rows)),
+                "items": [compact_caz(c) for c in rows[offset:offset + limit]]}
+
+    @app.get("/api/cazuri/sumar")
+    def sumar():
+        """Contoarele paginii de start, pe toată coada: deschise, cu termen azi, blocate, decise, primele 5."""
+        rows = stare.data["cazuri"]
+        azi = stare.data["azi"]
+        decise = _decise()
+        deschise = [c for c in rows if c["case"]["case_id"] not in decise]
+        primele = sorted(deschise, key=lambda c: (c["case"]["deadline"], -c["case"]["scoruri"]["prioritate"]))[:5]
+        return {"total": len(rows), "deschise": len(deschise), "p1": sum(1 for c in deschise if c["case"]["banda"] == "P1"),
+                "scadente_azi": sum(1 for c in deschise if c["case"]["deadline"] <= azi),
+                "blocate": sum(1 for c in deschise if c["case"]["blocaje"] or c["rec"]["recomandare"] == "blocat"),
+                "decise": len(rows) - len(deschise), "pe_banda": dict(Counter(c["case"]["banda"] for c in rows)),
+                "primele": [compact_caz(c) for c in primele]}
 
     @app.get("/api/cazuri/{case_id}")
     def caz(case_id: str):

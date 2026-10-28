@@ -3,7 +3,7 @@
 // Sursa: API-ul (implicit /api, proxy-at de Vite către 127.0.0.1:8000; se poate schimba cu VITE_API_URL).
 // Dacă API-ul nu răspunde, cade pe snapshot-ul static public/data/demo.json (scris de `python -m retailagent.demo`),
 // iar deciziile se țin în localStorage. `getSursa()` spune ce sursă e activă (pentru antet).
-import type { Caz, DecizieInput, DecizieRecord, Metrici, Snapshot } from "../types/api";
+import type { Caz, DecizieInput, DecizieRecord, Metrici, PaginaCoada, ParametriCoada, Snapshot, Sumar } from "../types/api";
 
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? "/api";
 const LS_KEY = "retailagent.decizii";
@@ -75,6 +75,57 @@ export async function getCazuri(): Promise<Caz[]> {
 
 export async function getCaz(id: string): Promise<Caz | undefined> {
   return viaApi<Caz | undefined>(`/cazuri/${id}`, async () => (await loadSnapshot()).cazuri.find((c) => c.case.case_id === id));
+}
+
+/** Filtrare + sortare + paginare: pe server cu API, în memorie pe snapshot (aceeași semantică). */
+export async function getCoada(p: ParametriCoada = {}): Promise<PaginaCoada> {
+  const limit = p.limit ?? 60;
+  const offset = p.offset ?? 0;
+  const qs = new URLSearchParams({ limit: String(limit), offset: String(offset), sort: p.sort ?? "prioritate" });
+  if (p.benzi && p.benzi.length) qs.set("banda", p.benzi.join(","));
+  if (p.q?.trim()) qs.set("q", p.q.trim());
+  if (p.ascundeDecise) qs.set("ascunde_decise", "true");
+  return viaApi<PaginaCoada>(`/coada?${qs}`, async () => {
+    const decizii = getDeciziiLocale();
+    const needle = (p.q ?? "").trim().toLowerCase();
+    let rows = (await loadSnapshot()).cazuri.filter((c) => {
+      if (p.benzi && p.benzi.length && !p.benzi.includes(c.case.banda)) return false;
+      if (p.ascundeDecise && decizii[c.case.case_id]) return false;
+      if (!needle) return true;
+      return [c.case.case_id, c.case.client_id, c.client.nume, c.case.produs, c.case.actiune_propusa, c.rec.recomandare, ...c.case.motive_top3]
+        .join(" ")
+        .toLowerCase()
+        .includes(needle);
+    });
+    if (p.sort === "termen") rows = [...rows].sort((a, b) => a.case.deadline.localeCompare(b.case.deadline) || b.case.scoruri.prioritate - a.case.scoruri.prioritate);
+    if (p.sort === "client") rows = [...rows].sort((a, b) => a.client.nume.localeCompare(b.client.nume));
+    const pe_banda: Record<string, number> = {};
+    rows.forEach((c) => (pe_banda[c.case.banda] = (pe_banda[c.case.banda] ?? 0) + 1));
+    return { total: rows.length, offset, limit, pe_banda, items: rows.slice(offset, offset + limit) };
+  });
+}
+
+/** Contoarele paginii de start: pe toată coada cu API, pe snapshot (primele N cazuri) fără. */
+export async function getSumar(): Promise<Sumar> {
+  return viaApi<Sumar>("/cazuri/sumar", async () => {
+    const s = await loadSnapshot();
+    const decizii = getDeciziiLocale();
+    const deschise = s.cazuri.filter((c) => !decizii[c.case.case_id]);
+    const pe_banda: Record<string, number> = {};
+    s.cazuri.forEach((c) => (pe_banda[c.case.banda] = (pe_banda[c.case.banda] ?? 0) + 1));
+    return {
+      total: s.cazuri.length,
+      deschise: deschise.length,
+      p1: deschise.filter((c) => c.case.banda === "P1").length,
+      scadente_azi: deschise.filter((c) => c.case.deadline <= s.azi).length,
+      blocate: deschise.filter((c) => c.case.blocaje.length > 0 || c.rec.recomandare === "blocat").length,
+      decise: s.cazuri.length - deschise.length,
+      pe_banda,
+      primele: [...deschise]
+        .sort((a, b) => a.case.deadline.localeCompare(b.case.deadline) || b.case.scoruri.prioritate - a.case.scoruri.prioritate)
+        .slice(0, 5),
+    };
+  });
 }
 
 export async function getMetrici(): Promise<Metrici> {

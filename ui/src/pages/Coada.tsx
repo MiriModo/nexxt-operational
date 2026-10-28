@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { getCazuri, getContext, getDeciziiLocale } from "../api/client";
+import { useEffect, useState } from "react";
+import { getCoada, getContext, getDeciziiLocale } from "../api/client";
 import { CaseCard } from "../components/CaseCard";
 import { Loading } from "../components/ui";
-import type { Banda, Caz } from "../types/api";
+import type { Banda, Caz, ParametriCoada } from "../types/api";
 
-type SortKey = "prioritate" | "termen" | "client";
+type SortKey = NonNullable<ParametriCoada["sort"]>;
+const PAGINA = 60;
 
 const GRUPE: { b: Banda; titlu: string; desc: string }[] = [
   { b: "P1", titlu: "Acționează azi", desc: "Termen apropiat sau semnal puternic. Fiecare zi contează." },
@@ -12,60 +13,74 @@ const GRUPE: { b: Banda; titlu: string; desc: string }[] = [
   { b: "P3", titlu: "Poate aștepta", desc: "Monitorizare sau sarcini administrative." },
 ];
 
+/** Coada e filtrată, sortată și paginată pe server (sau pe snapshot, cu aceeași semantică): la 10.000 de clienți
+ *  sunt ~6.000 de cazuri, deci se încarcă câte PAGINA odată și se cere „încă o pagină" la nevoie. */
 export default function Coada() {
-  const [cazuri, setCazuri] = useState<Caz[] | null>(null);
+  const [items, setItems] = useState<Caz[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [peBanda, setPeBanda] = useState<Record<string, number>>({});
   const [azi, setAzi] = useState("");
   const [err, setErr] = useState<string | null>(null);
+  const [incarca, setIncarca] = useState(false);
   const [benzi, setBenzi] = useState<Set<Banda>>(new Set(["P1", "P2", "P3"]));
   const [q, setQ] = useState("");
+  const [qAplicat, setQAplicat] = useState("");
   const [sort, setSort] = useState<SortKey>("prioritate");
   const [ascundeDecise, setAscundeDecise] = useState(false);
   const decizii = getDeciziiLocale();
 
   useEffect(() => {
-    Promise.all([getCazuri(), getContext()])
-      .then(([c, ctx]) => {
-        setCazuri(c);
-        setAzi(ctx.azi);
-      })
-      .catch((e) => setErr(String(e)));
+    getContext().then((ctx) => setAzi(ctx.azi)).catch(() => undefined);
   }, []);
 
-  const vizibile = useMemo(() => {
-    if (!cazuri) return [];
-    const needle = q.trim().toLowerCase();
-    const f = cazuri.filter((c) => {
-      if (!benzi.has(c.case.banda)) return false;
-      if (ascundeDecise && decizii[c.case.case_id]) return false;
-      if (!needle) return true;
-      const hay = [c.case.case_id, c.case.client_id, c.client.nume, c.case.produs, c.case.actiune_propusa, c.rec.recomandare, ...c.case.motive_top3]
-        .join(" ")
-        .toLowerCase();
-      return hay.includes(needle);
-    });
-    f.sort((a, b) => {
-      switch (sort) {
-        case "prioritate":
-          return b.case.scoruri.prioritate - a.case.scoruri.prioritate || a.case.deadline.localeCompare(b.case.deadline);
-        case "termen":
-          return a.case.deadline.localeCompare(b.case.deadline) || b.case.scoruri.prioritate - a.case.scoruri.prioritate;
-        case "client":
-          return a.client.nume.localeCompare(b.client.nume);
-      }
-    });
-    return f;
-  }, [cazuri, benzi, q, sort, ascundeDecise, decizii]);
+  // căutarea se aplică după o scurtă pauză de tastare, ca să nu lovească serverul la fiecare literă
+  useEffect(() => {
+    const t = setTimeout(() => setQAplicat(q), 250);
+    return () => clearTimeout(t);
+  }, [q]);
 
-  if (!cazuri) return <Loading err={err} />;
+  const parametri = (offset: number): ParametriCoada => ({ benzi: [...benzi], q: qAplicat, sort, ascundeDecise, limit: PAGINA, offset });
 
-  const count = (b: Banda) => cazuri.filter((c) => c.case.banda === b).length;
+  useEffect(() => {
+    let activ = true;
+    setIncarca(true);
+    getCoada(parametri(0))
+      .then((p) => {
+        if (!activ) return;
+        setItems(p.items);
+        setTotal(p.total);
+        setPeBanda(p.pe_banda);
+      })
+      .catch((e) => activ && setErr(String(e)))
+      .finally(() => activ && setIncarca(false));
+    return () => {
+      activ = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [benzi, qAplicat, sort, ascundeDecise]);
+
+  const incaOPagina = async () => {
+    if (!items) return;
+    setIncarca(true);
+    try {
+      const p = await getCoada(parametri(items.length));
+      setItems([...items, ...p.items]);
+      setTotal(p.total);
+    } catch (e) {
+      setErr(String(e));
+    } finally {
+      setIncarca(false);
+    }
+  };
+
+  if (!items) return <Loading err={err} />;
+
   const toggle = (b: Banda) => {
     const s = new Set(benzi);
     if (s.has(b)) s.delete(b);
     else s.add(b);
     setBenzi(s);
   };
-  const deschise = cazuri.filter((c) => !decizii[c.case.case_id]).length;
 
   return (
     <>
@@ -73,7 +88,7 @@ export default function Coada() {
         <div>
           <h1>Coada de cazuri</h1>
           <p className="muted" style={{ margin: 0 }}>
-            {deschise} deschise din {cazuri.length}. Apasă pe un caz pentru detalii, semnale și oferta propusă.
+            {total} cazuri după filtre, afișate {items.length}. Apasă pe un caz pentru detalii, semnale și oferta propusă.
           </p>
         </div>
       </div>
@@ -81,7 +96,7 @@ export default function Coada() {
       <div className="filters" role="group" aria-label="Filtre">
         {(["P1", "P2", "P3"] as Banda[]).map((b) => (
           <button key={b} type="button" className={`chip ${benzi.has(b) ? "on" : ""}`} aria-pressed={benzi.has(b)} onClick={() => toggle(b)}>
-            {b} <span className="chip-n">{count(b)}</span>
+            {b} <span className="chip-n">{peBanda[b] ?? 0}</span>
           </button>
         ))}
         <button type="button" className={`chip ${ascundeDecise ? "on" : ""}`} aria-pressed={ascundeDecise} onClick={() => setAscundeDecise(!ascundeDecise)}>
@@ -110,35 +125,44 @@ export default function Coada() {
       </div>
 
       <p className="sr-only" role="status">
-        {vizibile.length} cazuri afișate
+        {items.length} cazuri afișate din {total}
       </p>
 
-      {vizibile.length === 0 && (
-        <div className="empty">
-          Niciun caz nu se potrivește filtrelor. Șterge căutarea sau reactivează o bandă.
-        </div>
+      {items.length === 0 && !incarca && (
+        <div className="empty">Niciun caz nu se potrivește filtrelor. Șterge căutarea sau reactivează o bandă.</div>
       )}
 
       {GRUPE.filter((g) => benzi.has(g.b)).map((g) => {
-        const items = vizibile.filter((c) => c.case.banda === g.b);
-        if (items.length === 0) return null;
+        const grup = items.filter((c) => c.case.banda === g.b);
+        if (grup.length === 0) return null;
         return (
           <section key={g.b} className="queue-group" aria-labelledby={`g-${g.b}`}>
             <div className="group-head">
               <h2 id={`g-${g.b}`}>
                 {g.titlu} <span className="group-band">{g.b}</span>
               </h2>
-              <span className="group-count">{items.length}</span>
+              <span className="group-count">
+                {grup.length}
+                {peBanda[g.b] && peBanda[g.b] > grup.length ? ` din ${peBanda[g.b]}` : ""}
+              </span>
               <p className="muted small">{g.desc}</p>
             </div>
             <div className="case-list">
-              {items.map((c) => (
+              {grup.map((c) => (
                 <CaseCard key={c.case.case_id} c={c} azi={azi} decizie={decizii[c.case.case_id]} />
               ))}
             </div>
           </section>
         );
       })}
+
+      {items.length < total && (
+        <div className="actions" style={{ justifyContent: "center", margin: "16px 0" }}>
+          <button type="button" className="btn secondary" disabled={incarca} onClick={incaOPagina}>
+            {incarca ? "Se încarcă…" : `Încă ${Math.min(PAGINA, total - items.length)} cazuri (${items.length} din ${total})`}
+          </button>
+        </div>
+      )}
     </>
   );
 }
