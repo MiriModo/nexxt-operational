@@ -70,6 +70,8 @@ def persist(d: dict, out_dir: Path | str = OUT_DIR) -> None:
     row = {"timestamp": d["timestamp"], "case_id": d["case_id"], "client_id": d["client_id"],
            "tip": "override" if d["override"] else "aprobare", "cheie": "interventie", "valoare": d["interventie_finala"],
            "sursa": "consilier", "decizie": d["decizie"], "motiv": d["motiv"]}
+    if d.get("propunere_llm"):
+        row["propunere_llm"] = d["propunere_llm"]
     with open(out / "audit.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
 

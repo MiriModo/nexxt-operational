@@ -184,3 +184,13 @@ export function comandaApprove(caseId: string, d: DecizieInput): string {
   if (d.motiv) p.push(`--motiv "${d.motiv.replace(/"/g, "'")}"`);
   return p.join(" ");
 }
+
+/** Generare exclusiv prin server; nu simulăm un LLM când API-ul lipsește. */
+export async function postPropunere(caseId: string): Promise<import("../types/api").PropunereLLM> {
+  const r = await fetch(`${API}/cazuri/${encodeURIComponent(caseId)}/propunere`, { method: "POST" });
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    throw new Error(body.detail ?? "Generarea LLM necesită API-ul pornit și configurat.");
+  }
+  return r.json();
+}

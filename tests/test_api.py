@@ -101,3 +101,25 @@ def test_sync_ui_scrie_snapshotul(pipeline, tmp_path):
     dest = sync_ui(data, tmp_path / "out", ui)
     assert dest and (dest / "demo.json").exists() and (dest / "queue.json").exists()
     assert json.loads((dest / "demo.json").read_text(encoding="utf-8"))["clienti"] == 50
+
+
+def test_propunere_llm_si_audit(client, monkeypatch):
+    rows = client.get('/api/cazuri?compact=false').json()
+    c = next(c for c in rows if c['rec']['recomandare'] == 'oferta_minima')
+    cid = c['case']['case_id']
+    from retailagent import llm
+    monkeypatch.setattr('retailagent.api.genereaza', lambda _: {
+        'interventie': c['rec']['interventie'], 'titlu': 'Propunere', 'motiv': 'Motiv',
+        'indicii': ['Semnal'], 'mesaj_client': 'Mesaj', 'atentionari': [], 'model': 'test'})
+    p = client.post(f'/api/cazuri/{cid}/propunere').json()
+    assert p['case_id'] == cid
+    assert client.post('/api/cazuri/Q9999/propunere').status_code == 404
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'respinge', 'motiv': 'x', 'propunere_id': p['id']}).status_code == 400
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'propunere_id': p['id']}).status_code == 200
+    assert client.get('/api/decizii').json()[-1]['propunere_llm']['id'] == p['id']
+    assert p['id'] in (client.out / 'audit.jsonl').read_text()
+    monkeypatch.setattr('retailagent.api.genereaza', llm.genereaza)
+    monkeypatch.setattr('retailagent.llm.configurare', lambda: {'RETAILAGENT_LLM_PROVIDER': 'bedrock'})
+    assert client.post(f'/api/cazuri/{cid}/propunere').status_code == 503

@@ -8,3 +8,8 @@ out/
 .playwright-mcp/
 data/
 models/labels_din_approvals.json
+
+# Chei locale pentru furnizorul LLM
+.env
+.env.*
+!.env.example

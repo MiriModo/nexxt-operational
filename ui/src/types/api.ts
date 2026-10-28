@@ -250,7 +250,20 @@ export interface ParametriCoada {
   offset?: number;
 }
 
+export interface PropunereLLM {
+  id: string;
+  case_id: string;
+  interventie: string | null;
+  titlu: string;
+  motiv: string;
+  indicii: string[];
+  mesaj_client: string;
+  atentionari: string[];
+  model: string;
+}
+
 export interface DecizieInput {
+  propunere_id?: string;
   decizie: Decizie;
   interventie?: string;
   motiv?: string;

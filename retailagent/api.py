@@ -19,6 +19,7 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
+from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,12 +29,14 @@ from .approve import ApprovalError, decide, persist
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, read_json
 from .demo import build_data
 from .pipeline import run_full
+from .llm import LLMError, genereaza
 
 
 class DecizieInput(BaseModel):
     decizie: Literal["aproba", "modifica", "respinge"]
     interventie: str | None = None
     motiv: str | None = None
+    propunere_id: str | None = None
 
 
 def compact_caz(c: dict) -> dict:
@@ -57,6 +60,7 @@ class Stare:
         self.refresh()
 
     def refresh(self) -> None:
+        self.propuneri = {}
         self.full = run_full(self.data_dir, self.out_dir, self.config_dir, rescan=True)
         gt = read_json(self.data_dir / "ground_truth.json")
         self.data = build_data(self.full, gt, None)
@@ -161,15 +165,38 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     def metrici():
         return stare.data["metrici"]
 
+    @app.post("/api/cazuri/{case_id}/propunere")
+    def propunere(case_id: str):
+        c = stare.cazuri.get(case_id)
+        if c is None:
+            raise HTTPException(404, "Cazul nu există.")
+        try:
+            result = genereaza(c)
+        except LLMError as exc:
+            raise HTTPException(503, str(exc)) from exc
+        result = {**result, "id": str(uuid4()), "case_id": case_id}
+        stare.propuneri[result["id"]] = result
+        return result
+
     @app.post("/api/cazuri/{case_id}/decizie")
     def decizie(case_id: str, d: DecizieInput):
         if case_id not in stare.recs:
             raise HTTPException(404, f"cazul {case_id} nu există")
+        suggestion = None
+        if d.propunere_id:
+            suggestion = stare.propuneri.get(d.propunere_id)
+            if suggestion is None or suggestion["case_id"] != case_id:
+                raise HTTPException(400, "Propunerea LLM a expirat. Generează din nou.")
+            final = d.interventie if d.decizie == "modifica" else stare.recs[case_id]["interventie"]
+            if d.decizie == "respinge" or suggestion["interventie"] != final:
+                raise HTTPException(400, "Propunerea LLM nu corespunde intervenției alese.")
         try:
             rec = decide(stare.recs[case_id], stare.offers[case_id], d.decizie, d.interventie, d.motiv, stare.full.cfg,
                          datetime.now(), stare.data_dir)
         except ApprovalError as e:
             raise HTTPException(400, str(e)) from e
+        if suggestion:
+            rec["propunere_llm"] = suggestion
         persist(rec, stare.out_dir)
         return {"decizie": d.decizie, "interventie": rec["interventie_finala"], "motiv": rec["motiv"], "case_id": case_id,
                 "la": rec["timestamp"], "sursa": "api", "override": rec["override"], "oferta": rec["oferta"],

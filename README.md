@@ -326,3 +326,46 @@ data/                            # portofoliul + externe/ (mock-uri)         out
 tests/                           # 167 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)
 vault/                           # jurnalul deciziilor și al taskurilor (autobot)
 ```
+
+## Asistent LLM în „Ia decizia”
+
+Din Coadă, deschide un caz → Ia decizia. Propunerea AI se generează automat
+în caseta „Recomandarea agentului”.
+Asistentul interpretează indiciile și recomandarea, selectează o intervenție fezabilă
+și redactează un mesaj scurt pentru client. Consilierul verifică și alege Aprobă,
+Modifică sau Respinge, apoi apasă „Trimite decizia”. Aprobarea unei alternative AI
+se înregistrează ca modificare față de motorul inițial, cu justificarea AI. Propunerea aplicată se păstrează în
+approvals.json și audit.jsonl. Dacă schimbi intervenția sau respingi, textul AI nu se
+atașează drept ofertă aprobată. Propunerile nesalvate expiră la restart/rescan.
+
+Configurare: completează fișierul `.env` din rădăcina proiectului (model în `.env.example`):
+
+```dotenv
+RETAILAGENT_LLM_PROVIDER=bedrock
+AWS_REGION=us-east-1
+BEDROCK_MODEL_ID=us.anthropic.claude-haiku-4-5-20251001-v1:0
+AWS_BEARER_TOKEN_BEDROCK="cheia-ta-api-amazon-bedrock"
+```
+
+Cheia trebuie să fie o cheie API **Amazon Bedrock**, nu o cheie Anthropic directă
+și nici un AWS Access Key ID. Alege regiunea în care ai acces la model/profilul US.
+Fișierul `.env` este exclus din Git; este citit automat la generare, fără dependențe
+suplimentare. Format acceptat: KEY=VALUE, cu ghilimele opționale și comentarii pe
+linii separate. Variabilele exportate în terminal au prioritate față de fișier.
+
+```bash
+python3 -m retailagent.api --reload
+```
+
+Integrarea apelează Bedrock InvokeModel cu API key și Anthropic Messages, forțează
+un răspuns prin tool-ul `propune_oferta` și validează schema plus eligibilitatea
+intervenției pe server. Textul rămâne o propunere care trebuie verificată de consilier.
+Profilul fără nume/identificatori, semnalele, verificările și recomandarea sunt trimise
+către serviciul configurat. Fără cheie sau la indisponibilitate, interfața afișează
+eroarea și permite decizia manuală; nu simulează un răspuns LLM.
+
+OpenAI rămâne disponibil opțional prin `RETAILAGENT_LLM_PROVIDER=openai`,
+`OPENAI_API_KEY` și `RETAILAGENT_LLM_MODEL` (implicit `gpt-4.1-mini`).
+Cazurile blocate/respinse sau „nu interveni” nu primesc o intervenție comercială.
+Catalogul actual conține intervențiile motorului de retenție, fără oferte cashback
+inventate sau deducții despre comercianți pentru care nu există date.
