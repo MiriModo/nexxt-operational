@@ -98,3 +98,14 @@
   legături pe componente, semnale active, formula p, V, tabel intervenții cu ► pe cea aleasă), `explain_recommendation`
   (stare, motiv, ofertă, grafic, documente, text); `explain_full`; CLI cu `--scurt` pentru varianta veche.
 - 4 teste în `tests/test_explain_full.py` (toate cazurile au cele 6 secțiuni).
+
+## M5-T2 — evaluate extins: secțiunea „Model final" (done)
+- `evaluate_final.py`: `ramane` (simularea comportamentului ascuns), `candidati_retentie`, `cifra_vedeta` (agent vs uniform
+  0,2/0,4/0,6 pp la aceeași rată de rămânere), `procent_nu_interveni`, `interogari_evitate`, `eval_recomandari` (matrice 7×7),
+  `eval_verificari`, `cerinte_dure_final` (oferte către risc, în afara limitelor — re-verificate din date —, pe cazuri blocate,
+  expirări < 30 zile), `raport_model_final`, `print_model_final`. `evaluate.main` rulează `run_full` și scrie `model_final`.
+- Rezultat pe date: agent 288.544 RON, 20/21 reținuți (95%); uniform 0,6 pp 309.669 RON, 71%; nu interveni 27%;
+  interogări evitate 66%; recomandări 98%; verificări picate 3/3; 0 încălcări; flux complet 0,48 s.
+- 6 teste în `tests/test_evaluate_final.py`.
+- Lecție: `\n` în heredoc-uri bash se transformă în newline real chiar cu delimitator quotat → pentru patch-uri cu `\n`
+  se folosește Edit, nu heredoc.

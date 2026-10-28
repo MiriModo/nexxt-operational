@@ -154,7 +154,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   (plan cu motive, rezultate, unde s-a oprit), `── Retenție` (B descompus, legături, p, V, tabel cu
   intervențiile: cost / p_după / fezabil / motiv), `── Recomandare` (textul final + documente lipsă);
   rulează pentru orice caz din coadă fără excepție (test existent extins).
-- [ ] M5-T2 `evaluate` extins — Acceptance criteria: secțiune nouă „Model final” cu: cifra-vedetă (cost
+- [x] M5-T2 `evaluate` extins — Acceptance criteria: secțiune nouă „Model final” cu: cifra-vedetă (cost
   agent vs. cost reducere uniformă la aceeași rată de rămânere, cu rata simulată din `comportament`),
   procent cazuri `nu_interveni`, interogări externe evitate (total și %), acuratețe recomandări (matrice
   de confuzie 6×6), verificări picate corect, cerințe dure noi (0 oferte către risc activ, 0 oferte în

@@ -179,7 +179,16 @@ def main(argv: list[str] | None = None) -> None:
         timing[f"clienti_{a.scale}"] = {"clienti": s_cli, "cazuri": s_cases, "secunde": round(s_secs, 3),
                                         "generare_secunde": round(gen_s, 3)}
 
-    report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing}
+    # ---- modelul final (verificări → retenție → recomandare), pe aceleași date
+    from .evaluate_final import print_model_final, raport_model_final
+    from .pipeline import run_full
+    t0 = time.perf_counter()
+    full = run_full(a.data_dir, a.out_dir, a.config_dir, rescan=True)
+    timing["clienti_50"]["secunde_flux_complet"] = round(time.perf_counter() - t0, 3)
+    model_final = raport_model_final(full, gt)
+
+    report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing,
+              "model_final": model_final}
     write_json(Path(a.out_dir) / "evaluation.json", report)
 
     # ---------------- consolă
@@ -212,9 +221,12 @@ def main(argv: list[str] | None = None) -> None:
         for k, v in traps["rezultate"].items():
             print(f"  {'✔' if v else '✘'} {k}")
 
+    print_model_final(model_final)
+
     print("\n═══ Timp (generare exclusă; scan + intake + coadă)")
     for k, v in timing.items():
         extra = f", generare {v['generare_secunde']:.1f}s" if "generare_secunde" in v else ""
+        extra += f"; flux complet până la recomandare {v['secunde_flux_complet']:.2f}s" if "secunde_flux_complet" in v else ""
         print(f"  {v['clienti']:>5} clienți → {v['cazuri']:>5} cazuri în {v['secunde']:.2f}s{extra}")
     print(f"\n→ {a.out_dir}/evaluation.json")
     log_event(a.out_dir, "evaluate", "done", f1=round(g["f1"], 4), acuratete_benzi=queue["benzi"]["acuratete"],
