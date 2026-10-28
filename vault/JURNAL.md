@@ -82,3 +82,11 @@
   (română, cu cifre și sursa), `audit_rows` (semnal / verificare / retentie / decizie), CLI → recommendations.json + audit.jsonl.
 - 8 teste în `tests/test_recommend.py` (schemă, acuratețe ≥ 90% vs etalon, respins la verificări picate, 0 oferte la risc/blocat,
   grafic, documente lipsă, audit, CLI).
+- Pe date: 98% (48/49) vs etalon; diferența C0049 (diaspora, variabil cu gap 3 pp → agentul propune fixă 3 ani) e lăsată
+  vizibilă, de discutat cu mentorul.
+
+## M4-T2 — approve.py (done)
+- `decide` (pur: validează decizia, motivul obligatoriu la modifica/respinge, intervenția din meniu + fezabilă, recalculează
+  oferta și graficul pentru intervenția aleasă de om), `persist` (approvals.json + rând `aprobare`/`override` în audit.jsonl),
+  CLI cu afișarea ofertei, graficului și documentelor lipsă; `ApprovalError` → `SystemExit` cu mesaj clar.
+- `recommend` scrie acum și `offers.json`. 7 teste în `tests/test_approve.py`.

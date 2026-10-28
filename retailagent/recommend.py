@@ -267,6 +267,7 @@ def main(argv: list[str] | None = None) -> None:
     offers = build_offers(pf, cfg, res, checks)
     rows, audit = build_recommendations(pf, cfg, res, checks, offers, mocks)
     out = Path(a.out_dir)
+    write_json(out / "offers.json", offers)
     write_json(out / "recommendations.json", rows)
     out.mkdir(parents=True, exist_ok=True)
     import json

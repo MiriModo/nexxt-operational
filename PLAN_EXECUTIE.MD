@@ -143,7 +143,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   teste: acuratețea recomandării față de `recomandare_asteptata` ≥ 90% pe cei 49 de clienți din coadă;
   `verificare_picata_asteptata` corectă pentru C0005/C0046/C0047; 0 oferte pentru risc ≥ 0.7; 0 oferte pe
   cazuri blocate.
-- [ ] M4-T2 `python -m retailagent.approve <case_id> [--decizie aproba|modifica|respinge]
+- [x] M4-T2 `python -m retailagent.approve <case_id> [--decizie aproba|modifica|respinge]
   [--interventie id] [--motiv "..."]` — Acceptance criteria: `aproba` fără motiv merge; `modifica` /
   `respinge` fără `--motiv` ies cu eroare clară; scrie `out/approvals.json` (append, idempotent pe
   `case_id` + timestamp real) și un rând `override` / `aprobare` în `audit.jsonl`; afișează oferta,
