@@ -41,6 +41,22 @@ A treia comandă rulează tot fluxul (sub o secundă pe 50 de clienți), evaluar
 Deschide `out/demo.html` în browser: coada, fiecare caz cu semnale / verificări / meniu de intervenții /
 recomandare și butoanele de aprobare.
 
+## Interfața React + API
+
+```bash
+uvicorn retailagent.api:app --reload --port 8000     # API-ul (FastAPI) peste fluxul din memorie
+cd ui && npm install && VITE_API_URL=/api npm run dev # http://localhost:5173 (Vite proxy-ază /api → 8000)
+```
+
+Fără API, `cd ui && npm run dev` folosește snapshot-ul static din `ui/public/data` (scris de `demo` / `pipeline`);
+deciziile rămân în `localStorage` și ecranul arată comanda `approve` echivalentă. Cu API, deciziile intră în
+`out/approvals.json` + `out/audit.jsonl`. Rute: `GET /api/metrici/context`, `GET /api/cazuri`,
+`GET /api/cazuri/{id}`, `GET /api/metrici`, `POST /api/cazuri/{id}/decizie`, `GET /api/decizii`, `POST /api/rescan`;
+documentația OpenAPI la `http://127.0.0.1:8000/docs`. Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
+bandă, filtre, căutare), Caz (semnale, verificări, model de retenție cu p-ul din modelul antrenat și contribuțiile
+lui, recomandare, grafic, documente), Decizie (aprobă / modifică / respinge cu motiv), Dashboard (metrici).
+Variabile de mediu pentru API: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`.
+
 ## Comenzi
 
 ```bash
@@ -299,6 +315,8 @@ models/                          # churn_v1.pkl (joblib) + churn_v1.json (featur
   retention.py, retention_menu.py# B, legături, V, p; meniu, constrângeri, optimizare; CLI
   recommend.py, approve.py       # cele 6 stări, ofertă, grafic, documente, audit; aprobarea consilierului
   explain.py, evaluate.py, evaluate_final.py, demo.py, pipeline.py
+  api.py                         # FastAPI pe contractul din ui/src/types/api.ts (snapshot comun cu demo.py → build_data)
+ui/                              # interfața React (Vite + TS): Acasă, Coadă, Caz, Decizie, Dashboard; public/data e generat
 config/                          # signals, priority, checks, constraints, retention, portofoliu
 data/                            # portofoliul + externe/ (mock-uri)         out/   # artefactele rulării
 tests/                           # 167 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)

@@ -148,6 +148,13 @@
 - Test de aur: cu `sigmoid`, cifrele sunt identice. Model v1: logistic, AUC 0,98, Brier 0,045, ECE 0,024 (învață generatorul).
 - Lecție: `build_offers` copiază explicit câmpurile din evaluare; un câmp nou în `evalueaza_interventii` trebuie adăugat și acolo.
 
+## Upgrade pasul 4 + merge UI (2026-10-28)
+- Utilizatorul a adus `ui/` (Vite + React + TS, 5 ecrane) scris pe contractul din demo.html, cu strat `src/api/client.ts`
+  pregătit pentru API. Merge: `demo.build_data` (snapshot comun), `demo.sync_ui` → `ui/public/data`, `api.py` (FastAPI,
+  rutele așteptate de UI, decizii prin `approve.decide/persist`), tipuri + Caz.tsx cu modelul antrenat și contribuțiile,
+  `ui/` intră în git (scos din `.git/info/exclude`; `public/data`, `dist`, `node_modules` ignorate). 5 teste API (TestClient).
+- Dependențe noi: fastapi, uvicorn, httpx (teste).
+
 ## Raport final — OBIECTIV ATINS (2026-10-28)
 - 16/16 taskuri done; 148 teste verzi; compileall OK; metricile Modulului 1 neschimbate (F1 1,00, 100%, 708/708, 0, 5/5).
 - Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;

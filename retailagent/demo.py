@@ -54,20 +54,46 @@ def _case_payload(full: FullRun, case: dict) -> dict:
     }
 
 
-def build_html(full: FullRun, gt: list[dict], max_cazuri: int | None = None) -> str:
-    """Metricile pe tot portofoliul; în pagină intră primele `max_cazuri` din coadă (toate dacă None)."""
+def build_data(full: FullRun, gt: list[dict], max_cazuri: int | None = None) -> dict:
+    """Snapshot-ul comun pentru demo.html, ui/public/data/demo.json și API: metrici pe tot portofoliul + cazuri.
+
+    Contractul (chei, tipuri) e cel din ui/src/types/api.ts; în pagină intră primele `max_cazuri` din coadă.
+    """
     metrici = raport_model_final(full, gt)
     cazuri = full.res.cases if max_cazuri is None else full.res.cases[:max_cazuri]
-    data = {"azi": full.pf.today.isoformat(), "clienti": len(full.pf.clients),
+    mc = full.offers[0].get("model_churn") if full.offers else None
+    return {"azi": full.pf.today.isoformat(), "clienti": len(full.pf.clients),
             "metrici": {"cifra_vedeta": metrici["cifra_vedeta"], "nu_interveni": metrici["nu_interveni"],
                         "interogari_externe": metrici["interogari_externe"], "recomandari": {k: metrici["recomandari"][k] for k in ("acuratete", "corecte", "total")},
                         "cerinte_dure": {k: v["incalcari"] for k, v in metrici["cerinte_dure"].items()},
                         "distributie": metrici["distributie_recomandari"]},
-            "benzi": list(full.cfg.priority.benzi), "p_tinta": full.cfg.retention.p_tinta,
+            "benzi": list(full.cfg.priority.benzi), "p_tinta": full.cfg.retention.p_tinta, "model_churn": mc,
             "total_cazuri": len(full.res.cases),
             "cazuri": [_case_payload(full, c) for c in cazuri]}
+
+
+def build_html(full: FullRun, gt: list[dict], max_cazuri: int | None = None, data: dict | None = None) -> str:
+    data = data or build_data(full, gt, max_cazuri)
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</script", "<\\/script")
     return TEMPLATE.replace("__DATA__", payload)
+
+
+UI_DIR = Path("ui")
+UI_COPII = ("queue.json", "checks.json", "offers.json", "recommendations.json", "evaluation.json")
+
+
+def sync_ui(data: dict, out_dir: Path, ui_dir: Path = UI_DIR) -> Path | None:
+    """Scrie snapshot-ul în ui/public/data/demo.json și copiază out/*.json lângă el (sursa statică a interfeței React)."""
+    if not (ui_dir / "package.json").exists():
+        return None
+    dest = ui_dir / "public" / "data"
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / "demo.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    for name in UI_COPII:
+        src = out_dir / name
+        if src.exists():
+            (dest / name).write_bytes(src.read_bytes())
+    return dest
 
 
 TEMPLATE = r"""<!doctype html>
@@ -208,16 +234,23 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--config-dir", default=str(CONFIG_DIR))
     ap.add_argument("--max-cazuri", type=int, default=200, help="câte cazuri din coadă intră în pagină (0 = toate)")
+    ap.add_argument("--ui-dir", default=str(UI_DIR), help="folderul interfeței React; dacă există, primește snapshot-ul în public/data")
+    ap.add_argument("--fara-ui", action="store_true", help="nu sincroniza ui/public/data")
     a = ap.parse_args(argv)
     t0 = time.perf_counter()
     full = run_full(a.data_dir, a.out_dir, a.config_dir, a.today)
     gt = read_json(Path(a.data_dir) / "ground_truth.json")
-    html = build_html(full, gt, a.max_cazuri or None)
+    data = build_data(full, gt, a.max_cazuri or None)
+    html = build_html(full, gt, data=data)
     out = Path(a.out_dir) / "demo.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     dt = time.perf_counter() - t0
     print(f"Demo: {len(full.res.cases)} cazuri → {out} ({out.stat().st_size / 1024:.0f} KB) în {dt:.2f}s — deschide fișierul în browser")
+    if not a.fara_ui:
+        dest = sync_ui(data, Path(a.out_dir), Path(a.ui_dir))
+        if dest:
+            print(f"  interfața React: snapshot + copii out/*.json → {dest} (cd ui && npm run dev)")
     log_event(a.out_dir, "demo", "done", cazuri=len(full.res.cases), kb=round(out.stat().st_size / 1024), secunde=round(dt, 3))
 
 
