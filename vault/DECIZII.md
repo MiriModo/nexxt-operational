@@ -32,3 +32,18 @@ Aici se consemnează doar deciziile luate de loop în timpul execuției, cu moti
 - **Etalonul recalibrat la ce dă modelul** (interpretare, nu date): C0007 și C0008 → `nu_interveni` (informarea
   aduce p la țintă, câștigul plecării e mic), C0016 → `oferta_minima` (fixă 3 ani; pachetul nu închide un gap de
   55.000 RON). C0013 → `oferta_produs`, C0014 → `nu_interveni` rămân contrastul-cheie.
+
+## Pașii 5–8 (2026-10-28)
+- **Situațiile neașteptate nu adaugă stări noi**: rămân cele 6 recomandări; ce e neobișnuit se exprimă prin
+  `incertitudini` structurate pe caz + ofertă condiționată + escaladare când e critic (`incertitudini_critice`).
+- **`indisponibil` ≠ `fail`**: o sursă căzută nu oprește treptele, dar marchează incertitudinea; creditul nou fără
+  venit confirmat se escaladează, retenția pe creditul existent continuă.
+- **Bugetul de portofoliu nu schimbă recomandarea**: ofertele peste plafon rămân recomandate, dar `amanata_buget`,
+  ca omul să le poată aproba explicit sau să le reia luna următoare.
+- **Versiunea e hash, nu număr**: SHA-256 al YAML-urilor + hash-ul pkl + commit; se schimbă automat la orice
+  modificare și intră în fiecare rând de audit.
+- **Propunerile din feedback nu se aplică automat**: sunt sugestii pentru om; aplicarea se face din Admin cu validare.
+- **Consilierul e configurație** (`echipa.yaml`, alocare hash), nu date generate: același client → același om.
+- **UI: Admin editează prin API, nu fișiere direct**: validarea folosește aceleași modele pydantic ca la pornire,
+  pe o copie temporară; fișierul se scrie doar dacă trece.
+- **Docker montează `config/`**: editările din Admin ajung în YAML-urile reale, iar `data/` / `out/` sunt comune cu rulările locale.

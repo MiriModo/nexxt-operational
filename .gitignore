@@ -8,3 +8,4 @@ out/
 .playwright-mcp/
 data/
 models/labels_din_approvals.json
+*.tsbuildinfo

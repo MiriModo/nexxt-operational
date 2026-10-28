@@ -1,0 +1,16 @@
+.git
+.playwright-mcp
+.pytest_cache
+.venv
+__pycache__
+**/__pycache__
+data
+out
+ui/node_modules
+ui/dist
+ui/public/data
+*.zip
+*.pdf
+vault
+docs
+tests
