@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 
-/** The Keeper mark: a shield with a check, brand blue. Wordmark in Instrument Sans. */
-export function Mark({ size = 22 }: { size?: number }) {
+/** The Keeper mark (logo option A): a Raiffeisen-yellow tile with an ink key, like an app icon. */
+export function Mark({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2.5 4.5 5.3v6.2c0 4.6 3.1 8.6 7.5 9.9 4.4-1.3 7.5-5.3 7.5-9.9V5.3L12 2.5Z" fill="#2867e4" />
-      <path d="m8.6 12.1 2.3 2.3 4.6-4.8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <rect width="24" height="24" rx="6" fill="#fee600" />
+      <circle cx="9.2" cy="9.2" r="3.6" stroke="#0c0d0f" strokeWidth="2" />
+      <circle cx="9.2" cy="9.2" r="1.1" fill="#0c0d0f" />
+      <path d="M11.8 11.8 18 18M15.4 15.4l1.6-1.6M17.1 17.1l1.4-1.4" stroke="#0c0d0f" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }

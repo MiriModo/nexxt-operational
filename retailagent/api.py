@@ -370,7 +370,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         """Metadatele modelului de churn (metrici, calibrare, coeficienți) pentru Dashboard."""
         from .versiune import versiune_model
         ch = stare.full.cfg.retention.churn
-        meta_p = Path(ch.cale).with_suffix(".json")
+        meta_p = _resolve(ch.cale).with_suffix(".json")
         meta = read_json(meta_p) if meta_p.exists() else {}
         return {"activ": versiune_model(stare.full.cfg), "antrenat": meta}
 

@@ -21,3 +21,12 @@ export const dateLong = (iso: string) =>
 
 /** Backend ids (snake_case) shown as words. The backend's own sentences stay as produced. */
 export const label = (s: string | null | undefined) => (s ?? "–").replace(/_/g, " ");
+
+/** Compact amount for big figures: 3,188,389 → { n: "3.19", unit: "M RON" }. */
+export const ronShort = (v: number | null | undefined): { n: string; unit: string } => {
+  if (v == null) return { n: "–", unit: "" };
+  const a = Math.abs(v);
+  if (a >= 1e6) return { n: (v / 1e6).toFixed(2), unit: "M RON" };
+  if (a >= 1e4) return { n: (v / 1e3).toFixed(1), unit: "k RON" };
+  return { n: new Intl.NumberFormat("en-US").format(Math.round(v)), unit: "RON" };
+};

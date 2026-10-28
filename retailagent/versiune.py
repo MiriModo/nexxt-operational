@@ -31,6 +31,8 @@ def versiune_model(cfg) -> dict:
         s = cfg.retention.sigmoid
         return {"model": "sigmoid", "versiune": f"a={s['a']} b={s['b']} c={s['c']} d={s['d']}", "hash": None}
     pkl = Path(ch.cale)
+    if not pkl.is_absolute() and not pkl.exists():            # relativ la proiect, oriunde ar rula serverul
+        pkl = Path(__file__).resolve().parents[1] / pkl
     meta_p = pkl.with_suffix(".json")
     meta = read_json(meta_p) if meta_p.exists() else {}
     return {"model": "antrenat", "versiune": meta.get("versiune"), "tip": meta.get("tip"), "antrenat_la": meta.get("antrenat_la"),
