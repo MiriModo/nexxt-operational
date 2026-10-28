@@ -96,7 +96,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   `baza | produs:<produs> | motiv`, descriere, parametri), maparea `motive` (chei = id-uri de semnale,
   tipuri de cereri, `risc`, `blocaj`) cu `adauga` / `sare`, și `documente_necesare` per tip de
   recomandare; validare: fiecare id din `adauga`/`sare` există; test de încărcare.
-- [ ] M2-T2 `retailagent/checks.py` — planificare — Acceptance criteria: `plan_checks(case, ctx, cfg)`
+- [x] M2-T2 `retailagent/checks.py` — planificare — Acceptance criteria: `plan_checks(case, ctx, cfg)`
   întoarce `{motive, plan: [{id, treapta, externa, motiv_includere}], omise: [{id, motiv_omitere}]}`;
   reguli: baza mereu; strat produs după produsele deținute ale clientului; motivele adaugă/sar
   (`adauga` câștigă în fața lui `sare`); blocaj activ → doar `identitate_kyc`, restul omise cu motivul

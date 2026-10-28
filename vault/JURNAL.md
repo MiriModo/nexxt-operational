@@ -33,3 +33,10 @@
   `blocaj.doar = [identitate_kyc]`; `adauga` câștigă în fața lui `sare` (regula se aplică în M2-T2).
 - `documente_necesare` per tip de recomandare (valabil / max_zile / tipologii / produse).
 - 4 teste noi în `tests/test_config_final.py`.
+
+## M2-T2 — checks.py: plan_checks (done)
+- `motive_caz` (blocaj, risc, cereri, semnale — în această ordine) și `plan_checks(case, client, loans, cereri, cfg)`
+  → `{motive, produse_detinute, plan[{id, treapta, externa, motiv}], omise[...], interogari_externe{planificate,
+  rulare_tot, evitate_vs_tot}}`. Produsele deținute = toate creditele clientului, nu doar cel din caz.
+- Baseline „rulează tot" = toate verificările externe aplicabile (produs + consimțământ).
+- 6 teste în `tests/test_checks_plan.py` (expirare, simulare, credit nou, risc + adauga>sare, blocaj, consimțământ).
