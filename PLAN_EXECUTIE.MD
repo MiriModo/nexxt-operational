@@ -128,7 +128,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   de optimizare din „Decizii”; risc → doar restructurare; legături sub prag → doar informare/pachet;
   teste: C0027 (pensionar, 86 ani la scadență) nu primește `ajustare_maturitate`; un client standard nu
   primește reducere 0,4; un client cu risc nu primește reducere.
-- [ ] M3-T3 CLI `python -m retailagent.retention` → `out/offers.json` — Acceptance criteria: un rând per
+- [x] M3-T3 CLI `python -m retailagent.retention` → `out/offers.json` — Acceptance criteria: un rând per
   caz din coadă cu `{case_id, B, p, V, legaturi, interventie_aleasa, alternative (top 3 după cost),
   explicatie}`; text de forma „Clientul ar câștiga 41.200 RON plecând; p = 68%. Oferta minimă care îl
   aduce sub 20%: … cost … față de … valoare pierdută. Alternativa …”; pe date: C0013 → `pachet_salariu`,

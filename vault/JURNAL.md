@@ -68,3 +68,9 @@
   nu_interveni 15, blocate 11. 8 teste în `tests/test_retention_menu.py`. Suita: 111 verzi.
 - Lecție: calibrarea modelului trebuie verificată pe toate cazurile (tabel cu B, V, legături, p, alegere) înainte de
   a fixa etalonul; heredoc-urile bash lungi pică — patch-urile se scriu în fișier și se rulează.
+
+## M3-T3 — CLI retention → out/offers.json (done)
+- `build_offers` (un rând per caz: B, p, V, legături, semnale active, intervenția aleasă, cost, p după, alternative,
+  meniul complet), `explicatie_oferta` (text pentru consilier, 4 forme: ofertă / informare / nu interveni / restructurare
+  / blocat), `print_offer`, `main` (`--case`, `--top`). 4 teste în `tests/test_retention_cli.py`.
+- Modulele de retenție: `retention.py` (model + CLI), `retention_menu.py` (meniu, constrângeri, optimizare).
