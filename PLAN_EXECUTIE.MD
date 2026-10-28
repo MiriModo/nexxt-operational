@@ -162,7 +162,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   conține secțiunea; metricile Modulului 1 neschimbate; `tests/test_evaluate_final.py`.
 
 ## Milestone 6: Pipeline, demo, documentație
-- [ ] M6-T1 `python -m retailagent.pipeline` (scan → intake → queue → checks → retention → recommend →
+- [x] M6-T1 `python -m retailagent.pipeline` (scan → intake → queue → checks → retention → recommend →
   evaluate → demo, cu `--skip-evaluate`) — Acceptance criteria: o singură comandă produce toate fișierele din
   `out/`; timp total pe 50 de clienți < 5 s fără evaluate; `explain`, `approve`, `evaluate` folosesc
   aceeași funcție `run_full()` ca să nu dubleze logica; test de integrare.

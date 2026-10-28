@@ -109,3 +109,9 @@
 - 6 teste în `tests/test_evaluate_final.py`.
 - Lecție: `\n` în heredoc-uri bash se transformă în newline real chiar cu delimitator quotat → pentru patch-uri cu `\n`
   se folosește Edit, nu heredoc.
+
+## M6-T1 — pipeline CLI (done)
+- `run_full` rulează acum pașii explicit (scan → intake → queue → checks → retention → recommend) cu cronometrare per pas;
+  `ARTEFACTE`, `write_artifacts`, `main` (`--skip-evaluate`, `--skip-demo`; demo se apelează dacă modulul există).
+- Pe 50 de clienți: ~0,6 s fără evaluate (limita: 5 s). 2 teste în `tests/test_pipeline.py` (artefacte + schema queue.json
+  neschimbată + timp; varianta cu evaluate).
