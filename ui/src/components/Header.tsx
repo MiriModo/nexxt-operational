@@ -55,7 +55,7 @@ export function Header({ offline }: { offline: boolean }) {
     ? [{ to: "/desk", t: "My desk" }, { to: "/queue", t: "My queue" }]
     : eu?.rol === "admin"
       ? [{ to: "/overview", t: "Overview" }, { to: "/queue", t: "Queue" }, { to: "/reports", t: "Reports" }, { to: "/rules", t: "Rules engine" }]
-      : [{ to: "/#welcome", t: "Welcome" }, { to: "/#how", t: "How it works" }, { to: "/signin", t: "Sign in" }];
+      : [{ to: "/#welcome", t: "Welcome" }, { to: "/#how", t: "How it works" }];
 
   const Item = ({ to, t, big = false }: { to: string; t: string; big?: boolean }) =>
     to.startsWith("/#") ? (
@@ -94,11 +94,8 @@ export function Header({ offline }: { offline: boolean }) {
             </>
           ) : (
             <>
-              <Link to="/signin" className="btn ghost">
-                Sign in
-              </Link>
               <Link to="/signin" className="btn primary">
-                Open the queue <span className="arrow">→</span>
+                Sign in <span className="arrow">→</span>
               </Link>
             </>
           )}
@@ -126,11 +123,8 @@ export function Header({ offline }: { offline: boolean }) {
             </button>
           ) : (
             <>
-              <Link to="/signin" className="btn secondary lg">
-                Sign in
-              </Link>
               <Link to="/signin" className="btn primary lg">
-                Open the queue <span className="arrow">→</span>
+                Sign in <span className="arrow">→</span>
               </Link>
             </>
           )}

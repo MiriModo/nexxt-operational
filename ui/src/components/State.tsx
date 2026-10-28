@@ -20,3 +20,6 @@ export function State({ r, long = false, lg = false }: { r: Recomandare | string
   const s = STATES[r as Recomandare];
   return <span className={`badge ${s?.badge ?? "neutral"} ${lg ? "lg" : ""}`}>{stateName(r, long)}</span>;
 }
+
+const DECISIONS: Record<string, string> = { aproba: "approved", modifica: "changed", respinge: "rejected" };
+export const decisionName = (d: string | null | undefined) => (d ? DECISIONS[d] ?? d : "–");

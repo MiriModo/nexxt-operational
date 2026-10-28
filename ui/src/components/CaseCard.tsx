@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { days, label, ron } from "../format";
 import type { Caz, DecizieRecord } from "../types/api";
-import { State } from "./State";
+import { State, decisionName } from "./State";
 import { Band } from "./ui";
 
 const WINDOW_DAYS = 14; // the due bar: how much of the working window is left
@@ -38,7 +38,7 @@ export function CaseCard({ c, today, decision }: { c: Caz; today: string; decisi
           <Band b={cs.banda} />
           <span className="name">{client.nume}</span>
           <span className="id">{cs.case_id}</span>
-          {decision && <span className={`tag ${decision.decizie === "respinge" ? "bad" : "ok"}`}>decided · {decision.decizie}</span>}
+          {decision && <span className={`tag ${decision.decizie === "respinge" ? "bad" : "ok"}`}>decided · {decisionName(decision.decizie)}</span>}
           {!decision && toConfirm && <span className="tag warn">to confirm</span>}
           {!decision && rec.oferta?.amanata_buget && <span className="tag">deferred · over cap</span>}
         </div>

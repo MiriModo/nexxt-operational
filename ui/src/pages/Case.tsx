@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { EroareHttp, getCaz, getContext, getDeciziiLocale } from "../api/client";
 import { useVerifica } from "../api/hooks";
 import { Due } from "../components/CaseCard";
-import { State, stateName } from "../components/State";
+import { State, decisionName, stateName } from "../components/State";
 import { Band, Loading } from "../components/ui";
 import { label, num, pct, pp, ron } from "../format";
 import { proposal } from "../proposal";
@@ -205,7 +205,7 @@ export default function Case() {
           <Due deadline={cs.deadline} today={today} />
         </div>
         <div className="go">
-          {dec && <span className={`tag ${dec.decizie === "respinge" ? "bad" : "ok"}`}>decided · {dec.decizie}</span>}
+          {dec && <span className={`tag ${dec.decizie === "respinge" ? "bad" : "ok"}`}>decided · {decisionName(dec.decizie)}</span>}
           <Link to={`/queue/${cs.case_id}/decide`} className="btn primary">
             {dec ? "Revisit the decision" : "Decide"} <span className="arrow">→</span>
           </Link>

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { comandaApprove, getCaz, getDeciziiLocale, getSursa, postDecizie } from "../api/client";
 import { useEchipa, useIstoric, useRezultat } from "../api/hooks";
 import { useEu } from "../auth";
-import { State } from "../components/State";
+import { State, decisionName } from "../components/State";
 import { useToast } from "../components/Toast";
 import { Band, Loading } from "../components/ui";
 import { date, label, pct, ron } from "../format";
@@ -95,7 +95,7 @@ export default function Decision() {
           {rec.oferta?.amanata_buget && <p className="meta">Deferred: this month's retention cap is used up; approving it does so explicitly.</p>}
           {existing && (
             <div className="notice warn" style={{ marginTop: 12 }}>
-              Existing decision from {date(existing.la)}: <b>{existing.decizie}</b>
+              Existing decision from {date(existing.la)}: <b>{decisionName(existing.decizie)}</b>
               {existing.interventie ? ` → ${label(existing.interventie)}` : ""}. Sending replaces it.
             </div>
           )}
@@ -108,7 +108,7 @@ export default function Decision() {
               <div className="history">
                 {history.data.map((d, i) => (
                   <div key={i}>
-                    <b>{d.decizie}</b>
+                    <b>{decisionName(d.decizie)}</b>
                     {d.override && <span className="tag warn" style={{ marginLeft: 6 }}>changed</span>}
                     {d.interventie_finala && d.interventie_finala !== d.interventie_agent ? ` → ${label(d.interventie_finala)}` : ""}
                     <span className="muted">
