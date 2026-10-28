@@ -466,3 +466,14 @@ dl.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; marg
 dl.stats div { display: flex; flex-direction: column-reverse; }
 dl.stats dd { margin: 0; font: 500 26px/1 var(--font-display); letter-spacing: -0.03em; color: var(--ink); }
 dl.stats dt { font-size: 12px; color: var(--body-2); margin-bottom: 6px; line-height: 1.3; }
+
+/* ---------- case page v2: summary line for the checks, roomier columns ---------- */
+.summary { font-size: 14px; color: var(--body-2); margin: 0 0 10px; }
+.summary b { color: var(--ink); font-weight: 500; }
+.summary b.warn { color: var(--amber); }
+.case-grid { gap: 40px; }
+.why li { font-size: 15px; margin-bottom: 6px; }
+.sec details.more { margin-top: 10px; }
+.offer { grid-template-columns: repeat(3, max-content); gap: 14px 32px; }
+.offer dd { white-space: nowrap; font-size: 24px; }
+@media (max-width: 760px) { .offer { grid-template-columns: 1fr 1fr; } }

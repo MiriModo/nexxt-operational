@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { EroareHttp, getCaz, getContext, getDeciziiLocale } from "../api/client";
 import { useVerifica } from "../api/hooks";
 import { Due } from "../components/CaseCard";
-import { State, decisionName, stateName } from "../components/State";
+import { State, decisionName } from "../components/State";
 import { Band, Loading } from "../components/ui";
 import { label, num, pct, pp, ron } from "../format";
 import { proposal } from "../proposal";
@@ -16,6 +16,7 @@ const STAGE_NAME: Record<string, string> = {
 const ICON: Record<string, { cls: string; ch: string }> = {
   ok: { cls: "ok", ch: "✓" }, avertizare: { cls: "wa", ch: "!" }, fail: { cls: "no", ch: "×" }, indisponibil: { cls: "wa", ch: "?" }, neexecutat: { cls: "skip", ch: "–" },
 };
+const PROBLEM = new Set(["avertizare", "fail", "indisponibil"]);
 type Stage = Reverificare["trepte"][number];
 
 function groupStages(check: CheckInfo): Stage[] {
@@ -43,12 +44,13 @@ function Row({ r, live }: { r: VerificareRezultat; live?: boolean }) {
   );
 }
 
-/** Checks, one row each, grouped by stage (guide D3). "Re-check" replays them stage by stage so you can see the flow
- *  stop at the first failure and skip the external sources after it. Skipped checks are not shown. */
+/** Checks: one summary line, then only the rows that need a look (warnings, failures, unavailable sources).
+ *  The full list, by stage, sits under "Show all checks"; "Re-check" replays it stage by stage there. */
 function Checks({ check, caseId }: { check: CheckInfo; caseId: string }) {
   const verify = useVerifica(caseId);
   const [stages, setStages] = useState<Stage[]>(() => groupStages(check));
   const [visible, setVisible] = useState<number>(Infinity);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     if (visible === Infinity) return;
     if (visible >= stages.length) {
@@ -63,41 +65,64 @@ function Checks({ check, caseId }: { check: CheckInfo; caseId: string }) {
     verify.mutate(undefined, {
       onSuccess: (r) => {
         setStages(r.trepte);
+        setOpen(true);
         setVisible(0);
       },
     });
+  const rows = stages.flatMap((s) => s.rezultate);
+  const passed = rows.filter((r) => r.status === "ok").length;
+  const problems = rows.filter((r) => PROBLEM.has(r.status));
+  const skipped = rows.filter((r) => r.status === "neexecutat").length;
   const income = check.concluzii.venit_lunar;
+  const facts = [income ? `income ${ron(income)}/month` : "", check.concluzii.dti_curent ? `DTI ${pct(check.concluzii.dti_curent, 0)}` : ""].filter(Boolean).join(", ");
+
   return (
     <section className="sec" aria-labelledby="checks">
       <div className="sec-label">
-        <span id="checks">
-          [04] Checks
-          {check.oprit_la ? ` · stopped at ${STAGE_NAME[check.oprit_la] ?? check.oprit_la}` : ""}
-          {income ? ` · income ${ron(income)}/month` : ""}
-          {check.concluzii.dti_curent ? `, DTI ${pct(check.concluzii.dti_curent, 0)}` : ""}
-        </span>
+        <span id="checks">[03] Checks</span>
         <button type="button" className="btn secondary sm" disabled={running} onClick={recheck}>
           {running ? "Checking…" : "Re-check"}
         </button>
       </div>
+      <p className="summary">
+        <b>{passed} passed</b>
+        {problems.length > 0 && (
+          <>
+            {" · "}
+            <b className="warn">{problems.length} to review</b>
+          </>
+        )}
+        {skipped > 0 && ` · ${skipped} not needed (stopped at ${STAGE_NAME[check.oprit_la ?? ""] ?? check.oprit_la})`}
+        {facts ? ` · ${facts}` : ""}
+      </p>
       {verify.error && <div className="notice fail">{String(verify.error)}</div>}
-      <div className="checks">
-        {stages.map((t, i) => {
-          if (visible !== Infinity && i > visible) return null;
-          const live = visible !== Infinity && i === visible;
-          return (
-            <div key={t.treapta}>
-              <div className="stage">
-                {STAGE_NAME[t.treapta] ?? t.treapta}
-                {t.stare === "oprita" ? " · stopped here" : t.stare === "neexecutata" ? " · not needed" : ""}
+      {problems.length > 0 && (
+        <div className="checks">
+          {problems.map((r) => (
+            <Row key={r.id} r={r} />
+          ))}
+        </div>
+      )}
+      <details className="more" open={open} onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+        <summary>Show all checks</summary>
+        <div className="checks">
+          {stages.map((t, i) => {
+            if (visible !== Infinity && i > visible) return null;
+            const live = visible !== Infinity && i === visible;
+            return (
+              <div key={t.treapta}>
+                <div className="stage">
+                  {STAGE_NAME[t.treapta] ?? t.treapta}
+                  {t.stare === "oprita" ? " · stopped here" : t.stare === "neexecutata" ? " · not needed" : ""}
+                </div>
+                {t.rezultate.map((r) => (
+                  <Row key={r.id} r={r} live={live} />
+                ))}
               </div>
-              {t.rezultate.map((r) => (
-                <Row key={r.id} r={r} live={live} />
-              ))}
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </details>
     </section>
   );
 }
@@ -170,6 +195,10 @@ export default function Case() {
     ...(rec.incertitudini ?? []).filter((i) => !(of?.conditii_de_confirmat ?? []).some((cc) => cc.includes(i.text.slice(0, 20)))).map((i) => i.text),
   ];
   const blocked = cs.blocaje.length > 0 || rec.recomandare === "blocat";
+  const products = offer.legaturi.produse_active.map(label).join(", ");
+  const relationship = [`${client.nivel} client since ${client.client_din.slice(0, 4)}`, products ? `also ${products}` : "no other products", cs.request_id ? `request ${cs.request_id}` : ""]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <>
@@ -186,21 +215,15 @@ export default function Case() {
           <b>{client.nume}</b>
           <span>
             {label(cs.produs)}
-            {loan ? ` · balance ${ron(loan.sold)}` : " · new request"}
+            {loan
+              ? ` · balance ${ron(loan.sold)} · ${ron(loan.rata)}/month at ${pp(loan.dobanda)}${loan.tip_dobanda === "fixa" ? " fixed" : ""}${loan.expira ? ` until ${loan.expira}` : ""}${loan.moneda && loan.moneda !== "RON" ? ` (${loan.moneda}, shown in RON)` : ""}`
+              : " · new request"}
           </span>
         </div>
         <div className="cell">
           <State r={rec.recomandare} lg />
           {rec.interventie && rec.interventie !== rec.recomandare && <span>{label(rec.interventie)}</span>}
         </div>
-        {of && (
-          <div className="cell">
-            <b>
-              {ron(of.rata_veche)} → {ron(of.rata_noua)}
-            </b>
-            <span>monthly payment · bank cost {ron(of.cost_banca)}</span>
-          </div>
-        )}
         <div className="cell">
           <Due deadline={cs.deadline} today={today} />
         </div>
@@ -218,51 +241,22 @@ export default function Case() {
         </div>
       )}
 
-      <div className="grid c2">
-        <div>
-          <section className="sec" aria-labelledby="why">
-            <div className="sec-label">
-              <span id="why">[01] Why now</span>
-            </div>
-            <ul className="plain">
-              {cs.motive_top3.map((m) => (
-                <li key={m}>{m}</li>
-              ))}
-            </ul>
-          </section>
-          <section className="sec" aria-labelledby="who">
-            <div className="sec-label">
-              <span id="who">[02] The client</span>
-            </div>
-            <dl className="kv">
-              <dt>Relationship</dt>
-              <dd>
-                {client.nivel}, client since {client.client_din.slice(0, 4)}
-                {offer.legaturi.produse_active.length ? `, ${offer.legaturi.produse_active.map(label).join(", ")}` : ", no other products"}
-              </dd>
-              {loan && (
-                <>
-                  <dt>The loan</dt>
-                  <dd>
-                    payment {ron(loan.rata)}, rate {pp(loan.dobanda)} {loan.tip_dobanda === "fixa" ? "fixed" : loan.tip_dobanda}
-                    {loan.expira ? `, fixed until ${loan.expira}` : ""}
-                    {loan.moneda && loan.moneda !== "RON" ? ` (in ${loan.moneda}, balance shown in RON)` : ""}
-                  </dd>
-                </>
-              )}
-              {cs.request_id && (
-                <>
-                  <dt>Request</dt>
-                  <dd className="id">{cs.request_id}</dd>
-                </>
-              )}
-            </dl>
-          </section>
-        </div>
+      <div className="grid c2 case-grid">
+        <section className="sec" aria-labelledby="why">
+          <div className="sec-label">
+            <span id="why">[01] Why now</span>
+          </div>
+          <ul className="plain why">
+            {cs.motive_top3.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+          <p className="meta" style={{ marginTop: 12 }}>{relationship}</p>
+        </section>
 
         <section className="sec" aria-labelledby="prop">
           <div className="sec-label">
-            <span id="prop">[03] What the agent proposes</span>
+            <span id="prop">[02] What the agent proposes</span>
           </div>
           <p className="lead">{proposal(rec)}</p>
           {of && (
@@ -278,12 +272,6 @@ export default function Case() {
                 </dd>
                 <dt>monthly payment</dt>
               </div>
-              {of.economie_client > 0 && (
-                <div>
-                  <dd>{ron(of.economie_client)}</dd>
-                  <dt>the client saves</dt>
-                </div>
-              )}
               <div>
                 <dd>{ron(of.cost_banca)}</dd>
                 <dt>it costs the bank</dt>
@@ -332,24 +320,12 @@ export default function Case() {
                 </li>
               ))}
             </ul>
-            <p className="small" style={{ marginTop: 12 }}>
-              If the client leaves, they gain <b>{ron(offer.B)}</b> over 3 years; probability of leaving now <b>{pct(offer.p, 0)}</b> (target{" "}
-              {pct(offer.p_tinta, 0)}); if they stay, they're worth <b>{ron(offer.V)}</b>. {offer.motiv_alegere}
-            </p>
-            <p className="meta">{rec.motiv}</p>
-            {rec.grafic && (
-              <p className="meta">
-                New schedule: {rec.grafic.nr_rate} payments until {rec.grafic.ultima_luna}, total interest {ron(rec.grafic.dobanda_totala)}.
-              </p>
-            )}
           </div>
           <div>
             <p className="mono" style={{ marginBottom: 8 }}>Intervention menu</p>
             <MenuChart offer={offer} />
             <p className="meta" style={{ margin: "6px 0 0" }}>
-              Chosen: <b>{stateName(rec.recomandare)}</b>
-              {offer.aleasa ? ` · ${offer.interventii.find((i) => i.id === offer.aleasa)?.eticheta ?? label(offer.aleasa)}` : ""}. Light grey points are infeasible
-              (BNR limits / internal caps); hover for the reason.
+              {offer.motiv_alegere} Light grey points are infeasible (BNR limits / internal caps); hover for the reason.
             </p>
           </div>
         </div>
@@ -359,11 +335,6 @@ export default function Case() {
             {rec.explicatie}
           </pre>
         </details>
-        <p className="meta mono" style={{ marginBottom: 0, textTransform: "none", letterSpacing: 0.2 }}>
-          {c.consilier ? `advisor ${c.consilier} · ` : ""}
-          {c.versiune ? <span title={c.versiune}>version {c.versiune.split(" ")[0].replace("cfg:", "cfg ")}</span> : null}
-          {offer.model ? ` · p from the ${offer.model.nume === "antrenat" ? "trained" : "sigmoid"} model` : ""}
-        </p>
       </details>
     </>
   );
