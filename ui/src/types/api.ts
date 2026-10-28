@@ -346,9 +346,19 @@ export interface Metrici {
     candidati: number;
     agent: Strategie;
     uniform: Record<string, Strategie>;
+    /** the smallest uniform cut that keeps at least as many clients as the agent ("same retention"), if any */
     uniform_aleasa: string | null;
-    economie_ron: number;
+    aceeasi_rata?: boolean;
+    /** the uniform cut the headline compares against: uniform_aleasa, or the most generous one (0.6 pp) */
+    comparator?: string;
+    /** the agent costs no more than the comparator AND keeps at least as many clients */
+    domina?: boolean;
+    /** comparator cost − agent cost (positive = the agent is cheaper) */
+    economie_ron: number | null;
     economie_pct: number | null;
+    diferenta_retentie_pp?: number;
+    uniform_ieftina?: string;
+    cost_per_client_in_plus?: number | null;
     concluzie: string;
   };
   nu_interveni: { nu_interveni: number; altele: number; total: number; procent: number };

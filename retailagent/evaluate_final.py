@@ -74,21 +74,37 @@ def cifra_vedeta(full, gt: list[dict]) -> dict:
 
     ag = politica(agent)
     un = {pp: politica(uniform(pp)) for pp in UNIFORM}
+    # 1) „la aceeași rată de rămânere” (MODEL_FINAL): cea mai mică reducere uniformă care ține cel puțin cât agentul.
     aleasa = next((pp for pp in UNIFORM if un[pp]["rata_ramanere"] >= ag["rata_ramanere"]), None)
+    # 2) Dacă nicio reducere uniformă nu ajunge la rata agentului, „la aceeași rată” nu există. Comparăm atunci cu cea mai
+    #    generoasă reducere uniformă din meniu (0,6 pp pentru toți): agentul o domină dacă e mai ieftin ȘI păstrează mai
+    #    mulți. Ca să nu ascundem nimic, raportăm și costul pe clientul păstrat în plus față de cea mai ieftină reducere
+    #    uniformă care ține cât cea mai bună dintre ele.
+    comparator = aleasa or UNIFORM[-1]
+    u = un[comparator]
+    diferenta_pp = round((ag["rata_ramanere"] - u["rata_ramanere"]) * 100, 1)
+    econ = round(u["cost"] - ag["cost"], 2)
+    domina = ag["cost"] <= u["cost"] + 1e-6 and ag["rata_ramanere"] >= u["rata_ramanere"]
+    top_rata = max(x["rata_ramanere"] for x in un.values())
+    ieftina = min((pp for pp in UNIFORM if un[pp]["rata_ramanere"] == top_rata), key=lambda pp: un[pp]["cost"])
+    in_plus = ag["retinuti"] - un[ieftina]["retinuti"]
+    cost_per_client_in_plus = round((ag["cost"] - un[ieftina]["cost"]) / in_plus, 2) if in_plus > 0 and ag["cost"] > un[ieftina]["cost"] else None
     if aleasa is not None:
-        econ = un[aleasa]["cost"] - ag["cost"]
         concl = (f"la aceeași rată de rămânere ({ag['rata_ramanere']:.0%}), agentul costă {fmt_ron(ag['cost'])} RON față de "
-                 f"{fmt_ron(un[aleasa]['cost'])} RON cu reducere uniformă de {aleasa} pp pentru toți → "
-                 f"{'economie' if econ >= 0 else 'cost suplimentar'} {fmt_ron(abs(econ))} RON ({abs(econ) / un[aleasa]['cost']:.0%})"
-                 if un[aleasa]["cost"] else f"ambele politici costă 0 RON la rata {ag['rata_ramanere']:.0%}")
+                 f"{fmt_ron(u['cost'])} RON cu reducere uniformă de {aleasa} pp pentru toți → "
+                 f"{'economie' if econ >= 0 else 'cost suplimentar'} {fmt_ron(abs(econ))} RON ({abs(econ) / u['cost']:.0%})"
+                 if u["cost"] else f"ambele politici costă 0 RON la rata {ag['rata_ramanere']:.0%}")
     else:
-        top = max(UNIFORM, key=lambda pp: un[pp]["rata_ramanere"])
-        econ = un[top]["cost"] - ag["cost"]
-        concl = (f"nicio reducere uniformă nu atinge rata de rămânere a agentului ({ag['rata_ramanere']:.0%}): cea mai mare "
-                 f"({top} pp pentru toți) ține {un[top]['rata_ramanere']:.0%} la {fmt_ron(un[top]['cost'])} RON, agentul ține "
-                 f"{ag['rata_ramanere']:.0%} la {fmt_ron(ag['cost'])} RON")
-    return {"candidati": n, "agent": ag, "uniform": un, "uniform_aleasa": aleasa, "economie_ron": round(econ, 2),
-            "economie_pct": round(econ / un[aleasa]["cost"], 4) if aleasa and un[aleasa]["cost"] else None, "concluzie": concl}
+        concl = (f"nicio reducere uniformă nu atinge rata agentului ({ag['rata_ramanere']:.0%}). Față de cea mai generoasă "
+                 f"({comparator} pp pentru toți: {fmt_ron(u['cost'])} RON, {u['rata_ramanere']:.0%} păstrați), agentul "
+                 + (f"costă cu {fmt_ron(econ)} RON mai puțin și păstrează cu {diferenta_pp:.0f} pp mai mulți clienți"
+                    if domina else f"costă cu {fmt_ron(-econ)} RON mai mult și păstrează cu {diferenta_pp:.0f} pp mai mulți clienți")
+                 + (f"; față de {ieftina} pp pentru toți (cea mai ieftină care ține {top_rata:.0%}), fiecare client păstrat în plus "
+                    f"costă {fmt_ron(cost_per_client_in_plus)} RON" if cost_per_client_in_plus is not None else ""))
+    return {"candidati": n, "agent": ag, "uniform": un, "uniform_aleasa": aleasa, "aceeasi_rata": aleasa is not None,
+            "comparator": comparator, "domina": domina, "economie_ron": econ,
+            "economie_pct": round(econ / u["cost"], 4) if u["cost"] else None, "diferenta_retentie_pp": diferenta_pp,
+            "uniform_ieftina": ieftina, "cost_per_client_in_plus": cost_per_client_in_plus, "concluzie": concl}
 
 
 # ---------------------------------------------------------------- celelalte metrici

@@ -42,10 +42,27 @@ def test_cifra_vedeta(full, gt):
     assert set(h["uniform"]) == {"0.2", "0.4", "0.6"}
     for u in h["uniform"].values():
         assert u["cost"] >= 0 and 0 <= u["rata_ramanere"] <= 1
+    u = h["uniform"][h["comparator"]]
+    assert h["economie_ron"] == pytest.approx(u["cost"] - a["cost"], abs=1)
     if h["uniform_aleasa"] is not None:
-        assert h["uniform"][h["uniform_aleasa"]]["rata_ramanere"] >= a["rata_ramanere"]
-        assert h["economie_ron"] == pytest.approx(h["uniform"][h["uniform_aleasa"]]["cost"] - a["cost"], abs=1)
+        assert h["aceeasi_rata"] and h["comparator"] == h["uniform_aleasa"]
+        assert u["rata_ramanere"] >= a["rata_ramanere"]
+    else:
+        # nicio reducere uniformă nu ajunge la rata agentului: comparatorul e cea mai generoasă (0,6 pp pentru toți), iar
+        # „domină” cere ambele: cost mai mic sau egal ȘI rată de rămânere mai mare sau egală
+        assert not h["aceeasi_rata"] and h["comparator"] == "0.6"
+        assert h["domina"] == (a["cost"] <= u["cost"] + 1e-6 and a["rata_ramanere"] >= u["rata_ramanere"])
+        assert h["diferenta_retentie_pp"] == pytest.approx((a["rata_ramanere"] - u["rata_ramanere"]) * 100, abs=0.1)
     assert "RON" in h["concluzie"]
+
+
+def test_cifra_vedeta_pe_etalon_nu_promite_aceeasi_rata(full, gt):
+    """Pe etalon nicio reducere uniformă nu atinge rata agentului: cifra nu are voie să pretindă „aceeași rată”, iar
+    agentul trebuie să domine reducerea de 0,6 pp pentru toți (mai ieftin și păstrează mai mulți)."""
+    h = cifra_vedeta(full, gt)
+    assert not h["aceeasi_rata"] and "aceeași rată" not in h["concluzie"]
+    assert h["domina"] and h["economie_ron"] > 0 and h["diferenta_retentie_pp"] > 0
+    assert h["cost_per_client_in_plus"] is None or h["cost_per_client_in_plus"] > 0
 
 
 def test_procent_si_interogari(full):

@@ -48,12 +48,20 @@ export default function Reports() {
   const cv = m.data.cifra_vedeta;
   const uniform = Object.entries(cv.uniform).map(([k, v]) => [`${k} pp cut for everyone`, v] as [string, Strategie]);
   const strategies: [string, Strategie][] = [["the agent", cv.agent], ...uniform];
-  const best = uniform.reduce<[string, Strategie] | null>((a, x) => (!a || x[1].rata_ramanere > a[1].rata_ramanere ? x : a), null);
+  const comp = cv.comparator ?? cv.uniform_aleasa ?? "0.6";
+  const cu = cv.uniform[comp];
   const breaches = Object.values(m.data.cerinte_dure).reduce((a, b) => a + b, 0);
   const v = ctx.data?.versiune;
   const b = ctx.data?.buget_portofoliu;
   const met = model.data?.antrenat?.metrici;
-  const saved = ronShort(cv.economie_ron);
+  const saved = ronShort(Math.abs(cv.economie_ron ?? 0));
+  const gap = cv.diferenta_retentie_pp ?? (cu ? (cv.agent.rata_ramanere - cu.rata_ramanere) * 100 : 0);
+  // the headline never claims "same retention" unless a uniform cut really reaches the agent's rate
+  const headline = cv.aceeasi_rata
+    ? { label: "Saved at the same retention", note: `vs. ${comp} pp for everyone, ${pct(cu?.rata_ramanere, 0)} kept by both` }
+    : cv.domina
+      ? { label: `Cheaper than ${comp} pp for everyone`, note: `and keeps ${num(gap, 0)} pp more clients (${pct(cv.agent.rata_ramanere, 0)} vs ${pct(cu?.rata_ramanere, 0)})` }
+      : { label: `Extra cost vs. ${comp} pp for everyone`, note: `for ${num(gap, 0)} pp more clients kept (${pct(cv.agent.rata_ramanere, 0)} vs ${pct(cu?.rata_ramanere, 0)})` };
   const W = 440, H = 230, L = 36, R = 10, T = 10, B = 26;
 
   return (
@@ -67,7 +75,7 @@ export default function Reports() {
       </section>
 
       <div className="stats">
-        <Stat label="Saved vs. a uniform cut" n={saved.n} unit={saved.unit} note={cv.economie_pct != null ? `${pct(cv.economie_pct, 0)} cheaper, same retention` : "against the same discount for everyone"} tone="good" />
+        <Stat label={headline.label} n={saved.n} unit={saved.unit} note={headline.note} tone={cv.aceeasi_rata || cv.domina ? "good" : undefined} />
         <Stat label="No-cost cases" n={pct(m.data.nu_interveni.procent, 0)} note={`${int(m.data.nu_interveni.nu_interveni)} of ${int(m.data.nu_interveni.total)} cases need no offer`} />
         <Stat label="External queries avoided" n={pct(m.data.interogari_externe.procent, 0)} note={`${int(m.data.interogari_externe.evitate)} of ${int(m.data.interogari_externe.rulare_tot)}`} />
         <Stat
@@ -82,10 +90,14 @@ export default function Reports() {
         <section className="win accent">
           <p className="mono card-title">[01] Cost of retention · agent vs. uniform cut</p>
           <Bars rows={strategies.map(([k, s]) => ({ k, v: s.cost, text: `${ron(s.cost)} · ${pct(s.rata_ramanere, 0)} stay`, kind: k === "the agent" ? "grad" : "" }))} />
-          {best && (
+          {cu && (
             <p className="meta card-note">
-              The agent keeps {pct(cv.agent.rata_ramanere, 0)} of clients for {ron(cv.agent.cost)}. The best uniform cut ({best[0]}) keeps {pct(best[1].rata_ramanere, 0)} for{" "}
-              {ron(best[1].cost)}.
+              The agent keeps {pct(cv.agent.rata_ramanere, 0)} of clients for {ron(cv.agent.cost)}.{" "}
+              {cv.aceeasi_rata
+                ? `A ${comp} pp cut for everyone keeps the same share for ${ron(cu.cost)}.`
+                : `No uniform cut reaches that: the most generous (${comp} pp for everyone) keeps ${pct(cu.rata_ramanere, 0)} for ${ron(cu.cost)}.`}
+              {cv.cost_per_client_in_plus != null &&
+                ` Against ${cv.uniform_ieftina} pp for everyone, each extra client kept costs ${ron(cv.cost_per_client_in_plus)}.`}
             </p>
           )}
           {b && (

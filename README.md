@@ -165,7 +165,7 @@ istoric, neschimbat byte cu byte); cele 10 noi au toate recomandarea și incerti
 
 | metrică | valoare |
 |---|---|
-| **cifra-vedetă:** cost retenție agent vs. „aceeași reducere pentru toți", la aceeași rată de rămânere | agent **288.544 RON**, reține 20/21 candidați (95%) · uniform 0,6 pp pentru toți: 309.669 RON, reține doar 67% (0,2 pp: 103.948 RON, 67%) |
+| **cifra-vedetă:** agentul vs. „aceeași reducere pentru toți" | nicio reducere uniformă nu atinge rata agentului (95%), deci nu există „aceeași rată”. Față de cea mai generoasă (0,6 pp pentru toți: 309.669 RON, 67% păstrați) agentul **costă cu 21.175 RON mai puțin (288.494 RON) și păstrează cu 29 pp mai mulți clienți**. Față de 0,2 pp pentru toți (103.948 RON, tot 67%), fiecare client păstrat în plus costă 30.758 RON |
 | cazuri „nu interveni" (bani necheltuiți) | 15 / 56 cazuri active (27%) |
 | interogări externe evitate prin alegerea verificărilor după motiv | 191 / 289 (66%) față de „rulează tot" |
 | recomandări față de etalon | 48 / 49 (98%) |
@@ -180,7 +180,7 @@ istoric, neschimbat byte cu byte); cele 10 noi au toate recomandarea și incerti
 |---|---|
 | timp | generare 31 s · flux complet 38,5 s (scan 11,4 · coadă 1,1 · verificări 5,9 · retenție 16,9 · recomandare 3,3) |
 | detecție semnale pe toți cei 10.000 (semnalele plantate sunt cunoscute pentru fiecare) | F1 **1,000** (4.845 TP, 0 FP, 0 FN) |
-| cifra-vedetă | agent 27,1 M RON, reține 2.105/2.147 candidați (98%) · uniform 0,6 pp: 28,9 M RON, 79% · 0,2 pp: 9,7 M RON, 75% |
+| cifra-vedetă | agent **25,8 M RON, păstrează 2.105/2.150 (98%)** · cea mai generoasă reducere uniformă (0,6 pp pentru toți): 29,0 M RON, 78% → agentul e **cu 3,19 M RON mai ieftin și păstrează cu 20 pp mai mulți clienți** (0,2 pp: 9,7 M RON, 75%; nicio reducere uniformă nu atinge 98%) |
 | interogări externe evitate | 19.236 / 26.260 (73%) |
 | recomandări | restructurare 1.972 · blocat 1.503 · nu interveni 1.476 · ofertă minimă 782 · respins 253 · ofertă + produs 38 |
 | cerințe dure | 0 · 0 · 0 · 0 |
