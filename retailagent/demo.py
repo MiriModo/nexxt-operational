@@ -82,20 +82,19 @@ def build_html(full: FullRun, gt: list[dict], max_cazuri: int | None = None, dat
 
 
 UI_DIR = Path("ui")
-UI_COPII = ("queue.json", "checks.json", "offers.json", "recommendations.json", "evaluation.json")
+# copiile vechi ale out/*.json (~120 MB la 10.000 de clienți) nu mai sunt citite de interfață: doar demo.json
+UI_COPII_VECHI = ("queue.json", "checks.json", "offers.json", "recommendations.json", "evaluation.json")
 
 
 def sync_ui(data: dict, out_dir: Path, ui_dir: Path = UI_DIR) -> Path | None:
-    """Scrie snapshot-ul în ui/public/data/demo.json și copiază out/*.json lângă el (sursa statică a interfeței React)."""
+    """Scrie snapshot-ul în ui/public/data/demo.json (sursa statică a interfeței React, când API-ul nu rulează)."""
     if not (ui_dir / "package.json").exists():
         return None
     dest = ui_dir / "public" / "data"
     dest.mkdir(parents=True, exist_ok=True)
     (dest / "demo.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    for name in UI_COPII:
-        src = out_dir / name
-        if src.exists():
-            (dest / name).write_bytes(src.read_bytes())
+    for name in UI_COPII_VECHI:
+        (dest / name).unlink(missing_ok=True)
     return dest
 
 
@@ -253,7 +252,7 @@ def main(argv: list[str] | None = None) -> None:
     if not a.fara_ui:
         dest = sync_ui(data, Path(a.out_dir), Path(a.ui_dir))
         if dest:
-            print(f"  interfața React: snapshot + copii out/*.json → {dest} (cd ui && npm run dev)")
+            print(f"  interfața React: snapshot → {dest} (cd ui && npm run dev)")
     log_event(a.out_dir, "demo", "done", cazuri=len(full.res.cases), kb=round(out.stat().st_size / 1024), secunde=round(dt, 3))
 
 

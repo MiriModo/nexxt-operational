@@ -130,6 +130,9 @@ def test_sync_ui_scrie_snapshotul(pipeline, tmp_path):
     (ui / "package.json").write_text("{}")
     (tmp_path / "out").mkdir(exist_ok=True)
     (tmp_path / "out" / "queue.json").write_text("[]")
+    veche = ui / "public" / "data" / "queue.json"           # copie rămasă de la o versiune veche: se curăță
+    veche.parent.mkdir(parents=True)
+    veche.write_text("[]")
     dest = sync_ui(data, tmp_path / "out", ui)
-    assert dest and (dest / "demo.json").exists() and (dest / "queue.json").exists()
+    assert dest and (dest / "demo.json").exists() and not (dest / "queue.json").exists()
     assert json.loads((dest / "demo.json").read_text(encoding="utf-8"))["clienti"] == 50

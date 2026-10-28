@@ -9,3 +9,4 @@ out/
 data/
 models/labels_din_approvals.json
 *.tsbuildinfo
+.claude/
