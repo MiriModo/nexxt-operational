@@ -403,3 +403,50 @@ pre.text { white-space: pre-wrap; font: 13px/1.5 var(--font-sans); margin: 0; }
   .mock-win { margin-right: 0; min-height: 0; }
   .mock-card { position: static; width: auto; margin-top: 14px; }
 }
+
+/* ---------- header v2: the scoutnext.io menu bar (measured) ---------- */
+.hdr { position: fixed; inset: 0 0 auto; height: 64px; z-index: 50; background: transparent; transition: none; }
+.hdr-bg { position: absolute; inset: 0; border-bottom: 1px solid transparent; background: transparent; transition: background-color 0.3s ease, border-color 0.3s ease; }
+.hdr.scrolled .hdr-bg { background: rgba(255, 255, 255, 0.8); border-bottom-color: #ececed; backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5); }
+.hdr-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: #1f6bff; transform-origin: left; transform: scaleX(0); transition: opacity 0.3s ease; }
+.hdr-in { position: relative; height: 64px; max-width: 1200px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 32px; }
+.brand { font: 500 19px var(--font-display); letter-spacing: -0.035em; color: var(--ink); gap: 8px; }
+.brand svg { width: 24px; height: 24px; }
+.nav { display: flex; align-items: center; gap: 28px; list-style: none; margin: 0; padding: 0; }
+.nav li { display: block; }
+.nav-link { position: relative; display: inline-block; padding: 8px 0; font: 400 14.5px/1.5 var(--font-display); letter-spacing: -0.01em; color: var(--body-2); text-decoration: none; transition: color 0.3s ease; border: 0; }
+.nav-link:hover, .nav-link.active, .nav-link:focus-visible { color: var(--ink); text-decoration: none; }
+.nav-link .ul { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.nav-link:hover .ul, .nav-link.active .ul { transform: scaleX(1); }
+.cta { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.cta .who { font: 400 14.5px var(--font-display); letter-spacing: -0.01em; color: var(--body-2); margin-right: 8px; }
+.cta .btn.ghost { font: 400 14.5px var(--font-display); letter-spacing: -0.01em; color: #2a2c30; height: 36px; padding: 0 12px; border-radius: 9px; }
+.cta .btn.ghost:hover { background: var(--muted); transform: none; }
+.cta .btn.primary { font: 500 14px var(--font-display); letter-spacing: -0.01em; }
+.burger { display: none; width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; margin: 0 -8px 0 4px; place-items: center; cursor: pointer; }
+.burger:hover { background: var(--muted); }
+.burger > span { position: relative; display: block; width: 18px; height: 12px; }
+.burger i { position: absolute; left: 0; width: 100%; height: 1.5px; border-radius: 2px; background: var(--ink); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease; }
+.burger i:nth-child(1) { top: 0; }
+.burger i:nth-child(2) { top: 5.25px; }
+.burger i:nth-child(3) { top: 10.5px; }
+.hdr.open .burger i:nth-child(1) { transform: translateY(5.25px) rotate(45deg); }
+.hdr.open .burger i:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hdr.open .burger i:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg); }
+.mobile-menu { display: none; }
+.hdr.open .mobile-menu { display: flex; flex-direction: column; position: fixed; inset: 64px 0 0; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 8px 24px 24px; overflow: auto; }
+.mobile-menu ul { list-style: none; margin: 0; padding: 0; }
+.mobile-menu li { border-bottom: 1px solid var(--border); }
+.mobile-menu .nav-link.big { display: block; padding: 16px 0; font: 500 22px/1.5 var(--font-display); letter-spacing: -0.02em; color: var(--ink); }
+.mobile-menu .nav-link.big .ul { display: none; }
+.mobile-cta { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 24px; }
+.mobile-cta .btn { height: 48px; width: 100%; font-size: 15px; }
+@media (max-width: 1023px) {
+  .hdr-in { padding: 0 20px; gap: 16px; }
+  .nav { display: none; }
+  .cta .who, .cta .btn.ghost, .cta .btn.primary { display: none; }
+  .burger { display: grid; }
+}
+@media (prefers-reduced-motion: reduce) { .nav-link .ul, .burger i, .hdr-bg { transition: none; } }
+/* the old frosted rule on .hdr itself would make it a containing block for the fixed mobile menu; the frosting lives on .hdr-bg */
+.hdr.scrolled { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
