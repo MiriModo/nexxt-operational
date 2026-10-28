@@ -6,7 +6,8 @@
 # (risc_credit ≥ prag) și `blocaj` (blocaj de proces activ). `adauga` câștigă în fața lui `sare`.
 # `blocaj.doar` = singurele verificări care rulează; restul așteaptă rezolvarea task-ului.
 
-trepte: [intern, anaf, biroul_credit, crc, garantie]
+# `eligibilitate` e internă, dar rulează după sursele externe: are nevoie de venitul confirmat (ANAF) și de istoric.
+trepte: [intern, anaf, biroul_credit, crc, garantie, eligibilitate]
 
 verificari:
   # ---- strat de bază (intern, fără cost)
@@ -79,12 +80,12 @@ verificari:
     descriere: cât rămâne în cont după rambursarea anticipată față de cheltuielile lunare
     parametri: { luni_cheltuieli: 3 }
   - id: capacitate_plata_actuala
-    treapta: intern
+    treapta: eligibilitate
     externa: false
     strat: motiv
     descriere: DTI pe venitul actual (ANAF sau observat) cu toate ratele, inclusiv la alți creditori
   - id: eligibilitate_produs_nou
-    treapta: intern
+    treapta: eligibilitate
     externa: false
     strat: motiv
     descriere: eligibilitatea pe produsul vizat (venit minim, DTI după rata nouă, vârstă la scadență, LTV)
@@ -96,7 +97,7 @@ verificari:
     strat: motiv
     necesita_consimtamant: consimtamant_anaf
     descriere: venitul raportat la ANAF pe surse; confirmă sau infirmă venitul observat
-    parametri: { luni: 3 }
+    parametri: { luni: 3, luni_lipsa: 2 }     # salariu la altă bancă = ANAF îl vede, noi nu, de luni_lipsa luni
   - id: istoric_biroul_credit
     treapta: biroul_credit
     externa: true
@@ -125,20 +126,23 @@ verificari:
 motive:
   # expirare dobândă fixă / refinanțare → scenarii, cost mutare, meniu intervenții; nu sare nimic din eligibilitate
   expirare_dobanda_fixa:
-    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie,
+             capacitate_plata_actuala]
     sare: []
   cerere_adeverinta_sold:
-    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie,
+             capacitate_plata_actuala]
     sare: []
   adeverinta_sold:
-    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie,
+             capacitate_plata_actuala]
     sare: []
   refinantare:
     adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie,
              eligibilitate_produs_nou, capacitate_plata_actuala]
     sare: []
   salariu_mutat:
-    adauga: [venit_anaf, scenarii_rata, cost_mutare, istoric_biroul_credit]
+    adauga: [venit_anaf, scenarii_rata, cost_mutare, istoric_biroul_credit, capacitate_plata_actuala]
     sare: []
   rata_alt_creditor:
     adauga: [istoric_biroul_credit]

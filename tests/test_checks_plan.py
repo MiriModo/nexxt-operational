@@ -42,7 +42,8 @@ def test_expirare_dobanda_fixa_pe_ipotecar(cfg):
               "scenarii_rata", "cost_mutare", "venit_anaf", "istoric_biroul_credit",         # motiv
               "expuneri_crc", "extras_cf", "reevaluare_garantie"):
         assert v in got, v
-    for v in ("comision_rambursare_anticipata", "fond_urgenta", "capacitate_plata_actuala", "eligibilitate_produs_nou"):
+    assert "capacitate_plata_actuala" in got                                      # oferta are nevoie de DTI
+    for v in ("comision_rambursare_anticipata", "fond_urgenta", "eligibilitate_produs_nou"):
         assert v not in got and "niciun motiv" in omise(p)[v]
     assert [m["motiv"] for m in p["motive"]][:1] == ["expirare_dobanda_fixa"] or any(m["motiv"] == "expirare_dobanda_fixa" for m in p["motive"])
     # ordinea respectă treptele

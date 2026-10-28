@@ -40,3 +40,14 @@
   rulare_tot, evitate_vs_tot}}`. Produsele deținute = toate creditele clientului, nu doar cel din caz.
 - Baseline „rulează tot" = toate verificările externe aplicabile (produs + consimțământ).
 - 6 teste în `tests/test_checks_plan.py` (expirare, simulare, credit nou, risc + adauga>sare, blocaj, consimțământ).
+
+## M2-T3 — checks_run.py + CLI (done)
+- `checks_run.py`: `Mocks`/`load_mocks`, `CheckContext`, registru `@check(id)` cu 18 funcții, `run_checks` în trepte
+  cu oprire la primul `fail`; concluzii agregate (venit observat/ANAF, salariu_la_alta_banca, DTI, LTV dosar/actual,
+  interogări BC, cost mutare, scenarii, eligibil). `checks.py`: `build_context`, `check_registry`, `run_all_checks`,
+  `print_plan` (planul cu motive ÎNAINTE de rezultate), CLI → `out/checks.json`.
+- Pe date: C0046 → biroul_credit, C0047 → crc, C0005 → garantie (extras CF cu litigiu); C0013/C0014
+  `salariu_la_alta_banca = true`; 191/289 interogări evitate (66%); 0,26 s pe 67 de cazuri.
+- 8 teste de integrare în `tests/test_checks_run.py`. Suita: 97 verzi.
+- Lecție: `cat >> f <<'EOF'` cu conținut Python lung a picat în shell; scrierea cu Write + patch-uri mici e sigură.
+  `\n` în f-string-uri scrise prin heredoc Python trebuie dublat (`\\n`).

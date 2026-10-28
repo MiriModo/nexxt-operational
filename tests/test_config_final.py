@@ -75,7 +75,7 @@ def test_tip_interventie_necunoscut_ridica_eroare(tmp_path):
 
 def test_checks_config_se_incarca(cfg):
     ch = cfg.checks
-    assert ch.trepte == ["intern", "anaf", "biroul_credit", "crc", "garantie"]
+    assert ch.trepte == ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"]
     ids = [v.id for v in ch.verificari]
     assert len(ids) == len(set(ids))
     assert {"identitate_kyc", "expuneri_interne", "venit_observat", "sold_cont", "ltv", "utilizare_limita_card",

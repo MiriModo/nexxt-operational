@@ -1,14 +1,22 @@
 """Verificări alese după produse deținute + motiv (MODEL_FINAL §2).
 
 Planificarea (`plan_checks`) spune, pentru fiecare verificare din config/checks.yaml, dacă rulează și de ce,
-sau de ce e omisă. Lista se afișează ÎNAINTE de rulare. Execuția în trepte (`run_checks`) e în același modul
-(M2-T3): intern → anaf → biroul_credit → crc → garantie, cu oprire la primul pas picat.
+sau de ce e omisă. Lista se afișează ÎNAINTE de rulare. Execuția în trepte e în `checks_run.py`
+(intern → anaf → biroul_credit → crc → garantie, cu oprire la primul pas picat); aici e și CLI-ul.
 
-    python -m retailagent.checks        # out/checks.json
+    python -m retailagent.checks [--case Q0001] [--top 5]       # out/checks.json
 """
 from __future__ import annotations
 
+import argparse
+import time
+from pathlib import Path
+
+from .checks_run import CHECKS, CheckContext, Mocks, load_mocks, run_checks  # noqa: F401 (re-export)
+from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, log_event, setup_console, write_json
 from .config_loader import Config
+from .queue import QueueResult, run_pipeline
+from .scan import Portfolio, client_flows
 
 MOTIV_RISC = "risc"
 MOTIV_BLOCAJ = "blocaj"
@@ -101,3 +109,84 @@ def plan_checks(case: dict, client: dict, loans: list[dict], cereri: list[dict],
         "interogari_externe": {"planificate": planificate, "rulare_tot": rulare_tot,
                                "evitate_vs_tot": rulare_tot - planificate},
     }
+
+
+# ---------------------------------------------------------------- rulare pe portofoliu + CLI
+
+def build_context(pf: Portfolio, mocks: Mocks, cfg: Config, case: dict, cereri: list[dict], motive: list[str]) -> CheckContext:
+    cid = case["client_id"]
+    client = next(c for c in pf.clients if c["client_id"] == cid)
+    loans = pf.loans_by_client.get(cid, [])
+    loan = next((l for l in loans if l["loan_id"] == case["loan_id"]), None)
+    codebitor_la = [l for l in pf.loans if l["client_id"] != cid and any(c.get("client_id") == cid for c in l.get("codebitori", []))]
+    return CheckContext(pf.today, client, loan, loans, codebitor_la, cereri, motive, pf.market,
+                        client_flows(pf, cfg, cid), pf.tx_by_client.get(cid, []),
+                        {l["loan_id"]: pf.payments_by_loan.get(l["loan_id"], []) for l in loans}, mocks, cfg)
+
+
+def check_registry(cfg: Config) -> None:
+    missing = {v.id for v in cfg.checks.verificari} - set(CHECKS)
+    if missing:
+        raise SystemExit(f"Verificări din checks.yaml fără funcție @check: {sorted(missing)}")
+
+
+def run_all_checks(pf: Portfolio, mocks: Mocks, cfg: Config, res: QueueResult) -> list[dict]:
+    check_registry(cfg)
+    out = []
+    for case in res.cases:
+        ci = res.inputs[case["case_id"]]
+        plan = plan_checks(case, ci.client, pf.loans_by_client.get(case["client_id"], []), ci.cereri, cfg)
+        ctx = build_context(pf, mocks, cfg, case, ci.cereri, [m["motiv"] for m in plan["motive"]])
+        out.append(run_checks(plan, ctx))
+    return out
+
+
+def print_plan(r: dict) -> None:
+    print(f"\n═══ {r['case_id']} · {r['client_id']} · {r['loan_id'] or 'fără credit'} · motive: "
+          + ", ".join(m["motiv"] for m in r["motive"]))
+    print("  planificate (înainte de rulare):")
+    for x in r["plan"]:
+        print(f"    [{x['treapta']:<13}] {x['id']:<30} {'extern' if x['externa'] else 'intern':<6}  ← {x['motiv']}")
+    if r["omise"]:
+        print("  omise:")
+        for x in r["omise"]:
+            print(f"    [{x['treapta']:<13}] {x['id']:<30} {'extern' if x['externa'] else 'intern':<6}  ✗ {x['motiv']}")
+    print("  rezultate:")
+    for x in r["rezultate"]:
+        mark = {"ok": "✔", "avertizare": "⚠", "fail": "✘", "neexecutat": "·"}[x["status"]]
+        print(f"    {mark} {x['id']:<30} {x['dovada']}")
+    ie = r["interogari_externe"]
+    print(f"  interogări externe: {ie['executate']} executate din {ie['rulare_tot']} posibile → {ie['rulare_tot'] - ie['executate']} evitate"
+          + (f"   OPRIT la {r['oprit_la']} ({r['verificare_picata']})" if r["oprit_la"] else ""))
+
+
+def main(argv: list[str] | None = None) -> None:
+    setup_console()
+    ap = argparse.ArgumentParser(description="Verificări alese după produse deținute + motiv, rulate în trepte.")
+    ap.add_argument("--today")
+    ap.add_argument("--data-dir", default=str(DATA_DIR))
+    ap.add_argument("--out-dir", default=str(OUT_DIR))
+    ap.add_argument("--config-dir", default=str(CONFIG_DIR))
+    ap.add_argument("--case", help="afișează doar acest caz")
+    ap.add_argument("--top", type=int, default=5, help="câte cazuri se afișează detaliat")
+    a = ap.parse_args(argv)
+
+    t0 = time.perf_counter()
+    pf, cfg, res = run_pipeline(a.data_dir, a.out_dir, a.config_dir, a.today)
+    results = run_all_checks(pf, load_mocks(a.data_dir), cfg, res)
+    write_json(Path(a.out_dir) / "checks.json", results)
+    dt = time.perf_counter() - t0
+
+    for r in ([r for r in results if r["case_id"] == a.case] if a.case else results[:a.top]):
+        print_plan(r)
+    tot = sum(r["interogari_externe"]["rulare_tot"] for r in results)
+    ex = sum(r["interogari_externe"]["executate"] for r in results)
+    oprite = [r for r in results if r["oprit_la"]]
+    print(f"\nVerificări: {len(results)} cazuri în {dt:.2f}s → {a.out_dir}/checks.json")
+    print(f"  interogări externe: {ex} executate din {tot} („rulează tot”) → {tot - ex} evitate ({(tot - ex) / tot:.0%})")
+    print(f"  oprite la o verificare picată: {len(oprite)}  " + ", ".join(f"{r['case_id']}={r['verificare_picata']}" for r in oprite))
+    log_event(a.out_dir, "checks", "done", cazuri=len(results), interogari_executate=ex, interogari_posibile=tot, secunde=round(dt, 3))
+
+
+if __name__ == "__main__":
+    main()

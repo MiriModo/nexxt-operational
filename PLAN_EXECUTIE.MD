@@ -102,7 +102,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   (`adauga` câștigă în fața lui `sare`); blocaj activ → doar `identitate_kyc`, restul omise cu motivul
   „blocat de <x>"; risc ≥ 0.7 → adaugă `capacitate_plata_actuala`, sare `scenarii_rata`/`cost_mutare`;
   teste pe 5 cazuri construite de mână (expirare, simulare rambursare, credit nou, întârziere, CI expirată).
-- [ ] M2-T3 `retailagent/checks.py` — execuție în trepte + CLI — Acceptance criteria: `run_checks(plan, ctx,
+- [x] M2-T3 `retailagent/checks.py` — execuție în trepte + CLI — Acceptance criteria: `run_checks(plan, ctx,
   mocks, cfg)` rulează verificările în ordinea treptelor, se oprește la prima treaptă cu `fail`, marchează
   restul `neexecutat (oprit la <treaptă>)`; fiecare verificare întoarce `{id, status: ok|avertizare|fail|
   neexecutat, dovada, detalii, sursa}`; concluzii agregate (`venit_lunar`, `dti_curent`, `ltv_actual`,
