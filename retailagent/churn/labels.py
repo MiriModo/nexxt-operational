@@ -45,7 +45,7 @@ def build_labels(full: FullRun, gt: list[dict]) -> list[dict]:
             "semnale": [s["id"] for s in case["semnale"]], "plecare_scor": case["scoruri"]["plecare"], "banda": case["banda"],
             "interogari_bc": check["concluzii"].get("interogari_bc", 0), "dti_curent": check["concluzii"].get("dti_curent"),
             "salariu_la_alta_banca": bool(check["concluzii"].get("salariu_la_alta_banca")),
-            "p_model_actual": offer["p"],
+            "p_model_actual": offer["p"], "features": offer.get("features"),
             # ce a făcut agentul
             "interventie_agent": offer["interventie_aleasa"], "cost_agent": offer["cost"], "B_dupa_agent": b_dupa,
             # etichete (simulate din comportamentul ascuns)

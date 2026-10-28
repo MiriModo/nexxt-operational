@@ -7,7 +7,8 @@ calculează **cea mai ieftină implicare a băncii care păstrează clientul** �
 aprobă, modifică sau respinge, cu motiv.** Fiecare decizie e explicabilă în română, cu cifre și cu sursa.
 
 Rulează local și determinist: Python 3.11+, fișiere JSON/YAML, fără bază de date, fără servicii externe (ANAF,
-Biroul de Credit, CRC și garanțiile sunt mock-uri locale). Datele sunt 100% sintetice.
+Biroul de Credit, CRC și garanțiile sunt mock-uri locale). Datele sunt 100% sintetice. Dependențe: `pyyaml`,
+`pydantic`, `pytest`, `scikit-learn` (modelul de churn).
 
 ```
 Portofoliu ──scan semnale──┐
@@ -45,7 +46,9 @@ recomandare și butoanele de aprobare.
 ```bash
 python -m retailagent.generate --n 50 --seed 42   # data/*.json, data/externe/*.json, ground_truth.json
 python -m retailagent.generate --n 10000 --seed 42 --out out/scale_10000   # portofoliu realist: 50 etalon + 9.950 statistici
-python -m retailagent.churn.labels --data-dir out/scale_10000             # eticheta de churn (a_plecat) pentru antrenare
+python -m retailagent.churn.labels --data-dir out/scale_10000             # eticheta de churn (a_plecat) + feature-uri
+python -m retailagent.churn.train --labels out/scale_10000/churn_labels.json   # models/churn_v1.pkl + .json (metrici)
+python -m retailagent.churn.train --din-approvals                           # reantrenare pe rezultate reale (schelet)
 python -m retailagent.pipeline [--skip-evaluate] [--skip-demo]   # tot fluxul → out/*.json, audit.jsonl, demo.html
 python -m retailagent.explain Q0001               # explicația completă a unui caz (coadă → verificări → retenție → recomandare)
 python -m retailagent.approve Q0001                                   # consilierul aprobă
@@ -53,7 +56,7 @@ python -m retailagent.approve Q0001 --decizie modifica --interventie fix_1_an --
 python -m retailagent.approve Q0001 --decizie respinge --motiv "..."
 python -m retailagent.evaluate [--scale 10000]    # metrici Modul 1 + „Model final" [+ scalare] → out/evaluation.json
 python -m retailagent.demo [--max-cazuri 200]     # doar pagina out/demo.html
-python -m pytest                                  # 159 teste
+python -m pytest                                  # 167 teste
 
 # pașii individuali (fiecare scrie fișierul lui în out/ și afișează un rezumat)
 python -m retailagent.scan        # out/signals_detected.json
@@ -209,6 +212,38 @@ Pentru `--n > 50` generatorul nu mai repetă cele 50 de scenarii în blocuri: pr
 
 `--profil blocuri` păstrează comportamentul vechi (repetarea blocurilor); `--profil-file` ia alt profil.
 
+## Modelul de churn antrenat (`retailagent/churn/`, `models/`)
+
+`p_plecare` poate veni din două surse, alese în `retention.yaml → churn.model`: **`sigmoid`** (formula cu parametri
+scriși de noi, implicit) sau **`antrenat`** (`models/churn_v1.pkl`). Tot restul — meniul, constrângerile,
+optimizarea — e identic; modelul dă doar `p_înainte`, iar intervențiile rămân deplasări pe logit. Cu `sigmoid`
+rezultatele sunt identice cu cele de dinainte (test de aur).
+
+Conceptul, pe scurt:
+
+* **Ce învață.** Din 10.000 de clienți sintetici, pentru fiecare candidat la retenție: a plecat sau nu *dacă banca
+  nu făcea nimic* (`a_plecat_fara_interventie`, simulat din comportamentul ascuns). Modelul învață legătura
+  dintre ce vede agentul (B, legături, semnale active, nivel, vechime, produs, sold, DTI…) și plecare.
+* **O singură funcție `features()`** (`churn/features.py`), folosită identic la antrenare (`churn.labels` o scrie
+  în `churn_labels.json`) și la inferență (`retention_menu`). 33 de coloane, ordine fixă, versiune de schemă;
+  un model antrenat pe altă schemă e refuzat la încărcare.
+* **De ce split pe clienți.** Un client cu două credite are două rânduri; dacă unul e în antrenare și altul în
+  test, scorul e umflat. `GroupShuffleSplit` pe `client_id`, 80/20.
+* **De ce calibrare, nu doar AUC.** p intră în `cost ≤ p × V`: un model care ordonează bine dar spune 90% când
+  realitatea e 60% cheltuie bani degeaba. Se antrenează regresie logistică și gradient boosting; câștigă cel cu
+  **Brier** mai mic pe test; se raportează și ECE + curba de calibrare pe 10 intervale.
+* **Explicabilitate.** Logistic: contribuția fiecărui feature pe logit (coeficient × valoare standardizată);
+  boosting: delta logit când feature-ul e adus la media de antrenare. Apar în `explain` și în demo.
+* **Circularitatea.** Eticheta e simulată din regulile noastre de generare, deci modelul învață generatorul
+  (AUC 0,98 pe sintetic nu înseamnă nimic despre realitate). Valoarea apare când eticheta vine din
+  rezultatele consilierilor: `churn.train --din-approvals` citește `rezultat ∈ {ramas, plecat}` din
+  `approvals.json` și reantrenează când sunt cel puțin 200 de rezultate reale.
+
+Rezultat (`models/churn_v1.json`, 2.147 rânduri, 1.719 / 428): **logistic**, AUC 0,98, Brier 0,045, ECE 0,024;
+coeficienți principali: `B_norm +2,36`, `B_log +2,23`, `produs_nevoi_personale −0,74`, `sold_log +0,55`,
+`activ_salariu_mutat +0,25`, `legaturi −0,24`. `evaluate` tipărește secțiunea „sigmoid vs antrenat" (cifra-vedetă,
+p mediu, distribuția intervențiilor) când `models/churn_v1.pkl` există.
+
 ## Date (`retailagent/generate.py`, `retailagent/generate_ext.py`)
 
 50 de scenarii explicite cu semnale plantate și etalon: `ground_truth.json` conține semnalele plantate, banda și
@@ -253,7 +288,9 @@ pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Port
 ```
 retailagent/
   generate.py, generate_ext.py   # date sintetice + etalon (50 scenarii explicite; --n > 50 = profil statistic)
-  profil.py, churn/labels.py     # profilul portofoliului realist (pydantic); eticheta de churn simulată
+  profil.py                      # profilul portofoliului realist (pydantic)
+  churn/                         # features (o singură funcție), model (SigmoidChurn / TrainedChurn), labels, train
+models/                          # churn_v1.pkl (joblib) + churn_v1.json (feature-uri, metrici, calibrare, coeficienți)
   common.py, config_loader.py    # utilitare; validare pydantic a celor 5 YAML-uri + verificări încrucișate
   signals/                       # registru, inflows (deducerea încasărilor), plecare, risc_credit, blocaj_proces
   scan.py, intake.py, queue.py   # Modulul 1: semnale → cazuri → coadă (schema queue.json stabilă)
@@ -264,6 +301,6 @@ retailagent/
   explain.py, evaluate.py, evaluate_final.py, demo.py, pipeline.py
 config/                          # signals, priority, checks, constraints, retention, portofoliu
 data/                            # portofoliul + externe/ (mock-uri)         out/   # artefactele rulării
-tests/                           # 159 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)
+tests/                           # 167 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)
 vault/                           # jurnalul deciziilor și al taskurilor (autobot)
 ```

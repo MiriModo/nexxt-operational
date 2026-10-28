@@ -12,7 +12,7 @@ from collections import Counter, defaultdict
 from datetime import timedelta
 from pathlib import Path
 
-from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, log_event, parse_date, read_json, setup_console, write_json
+from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, fmt_ron, log_event, parse_date, read_json, setup_console, write_json
 from .config_loader import Config, load_config
 from .generate import SCENARIOS, TRAP_INDEX, generate
 from .intake import run_intake
@@ -177,6 +177,40 @@ def eval_scale(n: int, today: str, out_dir: Path, config_dir, cfg: Config) -> di
             "benzi": dict(_Counter(c["banda"] for c in full.res.cases))}
 
 
+def compara_modele_churn(data_dir, out_dir, config_dir, cfg: Config, gt: list[dict]) -> dict | None:
+    """Sigmoid vs model antrenat, pe aceleași date: cifra-vedetă, p mediu, distribuția intervențiilor. None dacă modelul lipsește."""
+    from .churn.model import TrainedChurn
+    from .evaluate_final import cifra_vedeta, procent_nu_interveni
+    from .pipeline import run_full
+    cale = Path(cfg.retention.churn.cale)
+    if not cale.exists():
+        return None
+    out = {}
+    for nume in ("sigmoid", "antrenat"):
+        c = cfg.model_copy(deep=True)
+        c.retention.churn.model = nume
+        c.retention.churn.fallback_sigmoid = False
+        full = run_full(data_dir, out_dir, config_dir, cfg=c, rescan=True)
+        cand = [o for o in full.offers if o["interventie_aleasa"] and not o["blocat"] and o["risc_credit"] < cfg.priority.risc_credit.blocheaza_retentia_daca]
+        out[nume] = {"cifra_vedeta": cifra_vedeta(full, gt), "nu_interveni": procent_nu_interveni(full)["procent"],
+                     "p_mediu": round(sum(o["p"] for o in cand) / len(cand), 4) if cand else None,
+                     "interventii": dict(Counter(o["interventie_aleasa"] for o in cand)),
+                     "model": full.offers[0]["model_churn"] if full.offers else None}
+    out["model_antrenat"] = TrainedChurn.load(cale).metrici
+    return out
+
+
+def print_comparatie(c: dict) -> None:
+    print("\n═══ Model de churn: sigmoid vs antrenat (aceleași date, același meniu și constrângeri)")
+    for nume in ("sigmoid", "antrenat"):
+        h, a = c[nume]["cifra_vedeta"], c[nume]["cifra_vedeta"]["agent"]
+        print(f"  {nume:<9} {c[nume]['model']['versiune'] if c[nume]['model'] else ''}")
+        print(f"            cost {fmt_ron(a['cost'])} RON · rămân {a['retinuti']}/{h['candidati']} ({a['rata_ramanere']:.0%}) · p mediu {c[nume]['p_mediu']:.0%} "
+              f"· nu interveni {c[nume]['nu_interveni']:.0%} · " + ", ".join(f"{k}={v}" for k, v in sorted(c[nume]["interventii"].items(), key=lambda x: -x[1])))
+    m = c["model_antrenat"]
+    print(f"  modelul antrenat (test): AUC {m.get('auc')} · Brier {m.get('brier')} · ECE {m.get('ece')} · n {m.get('n')}")
+
+
 def print_scale(s: dict) -> None:
     d, h, a = s["detectie"], s["cifra_vedeta"], s["cifra_vedeta"]["agent"]
     print(f"\n═══ Scalare: {s['clienti']} clienți ({s['etalon']} etalon + {s['clienti'] - s['etalon']} statistici) → {s['cazuri']} cazuri")
@@ -225,8 +259,10 @@ def main(argv: list[str] | None = None) -> None:
     timing["clienti_50"]["secunde_flux_complet"] = round(time.perf_counter() - t0, 3)
     model_final = raport_model_final(full, gt)
 
+    comparatie = compara_modele_churn(a.data_dir, a.out_dir, a.config_dir, cfg, gt)
+
     report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing,
-              "model_final": model_final, "scalare": scalare}
+              "model_final": model_final, "scalare": scalare, "comparatie_churn": comparatie}
     write_json(Path(a.out_dir) / "evaluation.json", report)
 
     # ---------------- consolă
@@ -262,6 +298,8 @@ def main(argv: list[str] | None = None) -> None:
     print_model_final(model_final)
     if scalare:
         print_scale(scalare)
+    if comparatie:
+        print_comparatie(comparatie)
 
     print("\n═══ Timp (generare exclusă; scan + intake + coadă)")
     for k, v in timing.items():

@@ -210,9 +210,16 @@ class ValoareClientCfg(BaseModel):
     produse_ron_pe_an: dict[str, float]
 
 
+class ChurnCfg(BaseModel):
+    model: Literal["sigmoid", "antrenat"] = "sigmoid"
+    cale: str = "models/churn_v1.pkl"
+    fallback_sigmoid: bool = True
+
+
 class RetentionConfig(BaseModel):
     p_tinta: float = Field(gt=0.0, lt=1.0)
     orizont_ani: float = Field(default=3.0, gt=0.0)
+    churn: ChurnCfg = Field(default_factory=ChurnCfg)
     sigmoid: dict[str, float]
     B_referinta_ron: float = Field(gt=0.0)
     B_norm_max: float = 2.0

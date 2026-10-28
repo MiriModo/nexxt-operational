@@ -1,0 +1,487 @@
+{
+  "tip": "logistic",
+  "feature_names": [
+    "B_norm",
+    "B_log",
+    "legaturi",
+    "leg_produse",
+    "leg_vechime",
+    "leg_nivel",
+    "leg_activitate",
+    "n_active",
+    "activ_salariu_mutat",
+    "activ_cerere_adeverinta_sold",
+    "activ_expirare_dobanda_fixa",
+    "activ_interogari_bc",
+    "activ_simulare_in_app",
+    "activ_rata_alt_creditor",
+    "vechime_ani",
+    "nr_produse",
+    "sold_log",
+    "luni_ramase",
+    "dobanda_fixa",
+    "marja",
+    "dti",
+    "dti_necunoscut",
+    "interogari_bc",
+    "salariu_alta_banca",
+    "nivel_gold",
+    "nivel_platinum",
+    "tip_salariat",
+    "tip_independent",
+    "tip_pensionar",
+    "tip_antreprenor",
+    "tip_diaspora",
+    "tip_tanar_fara_istoric",
+    "produs_ipotecar",
+    "produs_imobiliar",
+    "produs_nevoi_personale",
+    "produs_card_credit",
+    "produs_refinantare"
+  ],
+  "schema_versiune": 1,
+  "versiune": "v1",
+  "medii": {
+    "B_norm": 0.6331670455691294,
+    "B_log": 0.5563931468382707,
+    "legaturi": 0.6174316463059919,
+    "leg_produse": 0.5936591041303083,
+    "leg_vechime": 0.655041303083188,
+    "leg_nivel": 0.26119837114601513,
+    "leg_activitate": 0.9685863874345549,
+    "n_active": 0.5933682373472949,
+    "activ_salariu_mutat": 0.06748109365910412,
+    "activ_cerere_adeverinta_sold": 0.08784176847004072,
+    "activ_expirare_dobanda_fixa": 0.030831878999418267,
+    "activ_interogari_bc": 0.09482257126236183,
+    "activ_simulare_in_app": 0.08900523560209424,
+    "activ_rata_alt_creditor": 0.22338568935427575,
+    "vechime_ani": 0.34200160145955,
+    "nr_produse": 0.6105293775450844,
+    "sold_log": 0.7539253181307973,
+    "luni_ramase": 0.31517678236700924,
+    "dobanda_fixa": 0.8196625945317044,
+    "marja": 0.5906259453170448,
+    "dti": 0.11705700988947063,
+    "dti_necunoscut": 0.6910994764397905,
+    "interogari_bc": 0.11355439208842351,
+    "salariu_alta_banca": 0.12332751599767307,
+    "nivel_gold": 0.34554973821989526,
+    "nivel_platinum": 0.08842350203606748,
+    "tip_salariat": 0.6637579988365329,
+    "tip_independent": 0.1273996509598604,
+    "tip_pensionar": 0.0924956369982548,
+    "tip_antreprenor": 0.06864456079115765,
+    "tip_diaspora": 0.038976148923792905,
+    "tip_tanar_fara_istoric": 0.008726003490401396,
+    "produs_ipotecar": 0.38219895287958117,
+    "produs_imobiliar": 0.12332751599767307,
+    "produs_nevoi_personale": 0.26527050610820246,
+    "produs_card_credit": 0.16695753344968003,
+    "produs_refinantare": 0.062245491564863295
+  },
+  "metrici": {
+    "auc": 0.9845,
+    "brier": 0.0445,
+    "log_loss": 0.1439,
+    "rata_pozitiva": 0.2827,
+    "n": 428,
+    "ece": 0.0241,
+    "bins": [
+      {
+        "interval": "0.0-0.1",
+        "n": 262,
+        "p_medie": 0.007,
+        "rata_reala": 0.008
+      },
+      {
+        "interval": "0.1-0.2",
+        "n": 18,
+        "p_medie": 0.155,
+        "rata_reala": 0.222
+      },
+      {
+        "interval": "0.2-0.3",
+        "n": 13,
+        "p_medie": 0.262,
+        "rata_reala": 0.231
+      },
+      {
+        "interval": "0.3-0.4",
+        "n": 8,
+        "p_medie": 0.355,
+        "rata_reala": 0.125
+      },
+      {
+        "interval": "0.4-0.5",
+        "n": 7,
+        "p_medie": 0.424,
+        "rata_reala": 0.571
+      },
+      {
+        "interval": "0.5-0.6",
+        "n": 9,
+        "p_medie": 0.559,
+        "rata_reala": 0.444
+      },
+      {
+        "interval": "0.6-0.7",
+        "n": 8,
+        "p_medie": 0.65,
+        "rata_reala": 0.5
+      },
+      {
+        "interval": "0.7-0.8",
+        "n": 8,
+        "p_medie": 0.745,
+        "rata_reala": 0.75
+      },
+      {
+        "interval": "0.8-0.9",
+        "n": 18,
+        "p_medie": 0.86,
+        "rata_reala": 0.944
+      },
+      {
+        "interval": "0.9-1.0",
+        "n": 77,
+        "p_medie": 0.964,
+        "rata_reala": 0.987
+      }
+    ]
+  },
+  "antrenat_la": "2026-10-28T18:38:55",
+  "n": 2147,
+  "eticheta": "a_plecat_fara_interventie",
+  "seed": 42,
+  "sursa": "out/scale_10000/churn_labels.json",
+  "candidati": {
+    "logistic": {
+      "test": {
+        "auc": 0.9845,
+        "brier": 0.0445,
+        "log_loss": 0.1439,
+        "rata_pozitiva": 0.2827,
+        "n": 428,
+        "ece": 0.0241,
+        "bins": [
+          {
+            "interval": "0.0-0.1",
+            "n": 262,
+            "p_medie": 0.007,
+            "rata_reala": 0.008
+          },
+          {
+            "interval": "0.1-0.2",
+            "n": 18,
+            "p_medie": 0.155,
+            "rata_reala": 0.222
+          },
+          {
+            "interval": "0.2-0.3",
+            "n": 13,
+            "p_medie": 0.262,
+            "rata_reala": 0.231
+          },
+          {
+            "interval": "0.3-0.4",
+            "n": 8,
+            "p_medie": 0.355,
+            "rata_reala": 0.125
+          },
+          {
+            "interval": "0.4-0.5",
+            "n": 7,
+            "p_medie": 0.424,
+            "rata_reala": 0.571
+          },
+          {
+            "interval": "0.5-0.6",
+            "n": 9,
+            "p_medie": 0.559,
+            "rata_reala": 0.444
+          },
+          {
+            "interval": "0.6-0.7",
+            "n": 8,
+            "p_medie": 0.65,
+            "rata_reala": 0.5
+          },
+          {
+            "interval": "0.7-0.8",
+            "n": 8,
+            "p_medie": 0.745,
+            "rata_reala": 0.75
+          },
+          {
+            "interval": "0.8-0.9",
+            "n": 18,
+            "p_medie": 0.86,
+            "rata_reala": 0.944
+          },
+          {
+            "interval": "0.9-1.0",
+            "n": 77,
+            "p_medie": 0.964,
+            "rata_reala": 0.987
+          }
+        ]
+      },
+      "antrenare": {
+        "auc": 0.9819,
+        "brier": 0.0474,
+        "log_loss": 0.1534,
+        "rata_pozitiva": 0.2821,
+        "n": 1719,
+        "ece": 0.0083,
+        "bins": [
+          {
+            "interval": "0.0-0.1",
+            "n": 1055,
+            "p_medie": 0.008,
+            "rata_reala": 0.003
+          },
+          {
+            "interval": "0.1-0.2",
+            "n": 66,
+            "p_medie": 0.147,
+            "rata_reala": 0.152
+          },
+          {
+            "interval": "0.2-0.3",
+            "n": 43,
+            "p_medie": 0.244,
+            "rata_reala": 0.279
+          },
+          {
+            "interval": "0.3-0.4",
+            "n": 29,
+            "p_medie": 0.354,
+            "rata_reala": 0.414
+          },
+          {
+            "interval": "0.4-0.5",
+            "n": 35,
+            "p_medie": 0.453,
+            "rata_reala": 0.457
+          },
+          {
+            "interval": "0.5-0.6",
+            "n": 25,
+            "p_medie": 0.547,
+            "rata_reala": 0.6
+          },
+          {
+            "interval": "0.6-0.7",
+            "n": 43,
+            "p_medie": 0.656,
+            "rata_reala": 0.698
+          },
+          {
+            "interval": "0.7-0.8",
+            "n": 52,
+            "p_medie": 0.752,
+            "rata_reala": 0.75
+          },
+          {
+            "interval": "0.8-0.9",
+            "n": 74,
+            "p_medie": 0.86,
+            "rata_reala": 0.865
+          },
+          {
+            "interval": "0.9-1.0",
+            "n": 297,
+            "p_medie": 0.963,
+            "rata_reala": 0.956
+          }
+        ]
+      },
+      "secunde": 0.1
+    },
+    "boosting": {
+      "test": {
+        "auc": 0.9836,
+        "brier": 0.0489,
+        "log_loss": 0.1577,
+        "rata_pozitiva": 0.2827,
+        "n": 428,
+        "ece": 0.0322,
+        "bins": [
+          {
+            "interval": "0.0-0.1",
+            "n": 276,
+            "p_medie": 0.004,
+            "rata_reala": 0.018
+          },
+          {
+            "interval": "0.1-0.2",
+            "n": 10,
+            "p_medie": 0.158,
+            "rata_reala": 0.2
+          },
+          {
+            "interval": "0.2-0.3",
+            "n": 2,
+            "p_medie": 0.261,
+            "rata_reala": 0.0
+          },
+          {
+            "interval": "0.3-0.4",
+            "n": 8,
+            "p_medie": 0.355,
+            "rata_reala": 0.25
+          },
+          {
+            "interval": "0.4-0.5",
+            "n": 5,
+            "p_medie": 0.457,
+            "rata_reala": 0.8
+          },
+          {
+            "interval": "0.5-0.6",
+            "n": 6,
+            "p_medie": 0.564,
+            "rata_reala": 0.333
+          },
+          {
+            "interval": "0.6-0.7",
+            "n": 10,
+            "p_medie": 0.655,
+            "rata_reala": 0.5
+          },
+          {
+            "interval": "0.7-0.8",
+            "n": 18,
+            "p_medie": 0.749,
+            "rata_reala": 0.667
+          },
+          {
+            "interval": "0.8-0.9",
+            "n": 13,
+            "p_medie": 0.854,
+            "rata_reala": 0.769
+          },
+          {
+            "interval": "0.9-1.0",
+            "n": 80,
+            "p_medie": 0.978,
+            "rata_reala": 0.988
+          }
+        ]
+      },
+      "antrenare": {
+        "auc": 0.9997,
+        "brier": 0.0131,
+        "log_loss": 0.0563,
+        "rata_pozitiva": 0.2821,
+        "n": 1719,
+        "ece": 0.0367,
+        "bins": [
+          {
+            "interval": "0.0-0.1",
+            "n": 1106,
+            "p_medie": 0.004,
+            "rata_reala": 0.0
+          },
+          {
+            "interval": "0.1-0.2",
+            "n": 43,
+            "p_medie": 0.139,
+            "rata_reala": 0.0
+          },
+          {
+            "interval": "0.2-0.3",
+            "n": 36,
+            "p_medie": 0.237,
+            "rata_reala": 0.0
+          },
+          {
+            "interval": "0.3-0.4",
+            "n": 22,
+            "p_medie": 0.362,
+            "rata_reala": 0.0
+          },
+          {
+            "interval": "0.4-0.5",
+            "n": 15,
+            "p_medie": 0.452,
+            "rata_reala": 0.267
+          },
+          {
+            "interval": "0.5-0.6",
+            "n": 19,
+            "p_medie": 0.546,
+            "rata_reala": 0.421
+          },
+          {
+            "interval": "0.6-0.7",
+            "n": 16,
+            "p_medie": 0.645,
+            "rata_reala": 0.688
+          },
+          {
+            "interval": "0.7-0.8",
+            "n": 50,
+            "p_medie": 0.756,
+            "rata_reala": 1.0
+          },
+          {
+            "interval": "0.8-0.9",
+            "n": 76,
+            "p_medie": 0.86,
+            "rata_reala": 1.0
+          },
+          {
+            "interval": "0.9-1.0",
+            "n": 336,
+            "p_medie": 0.976,
+            "rata_reala": 1.0
+          }
+        ]
+      },
+      "secunde": 0.52
+    }
+  },
+  "n_antrenare": 1719,
+  "n_test": 428,
+  "coeficienti": {
+    "B_norm": 2.3641,
+    "B_log": 2.2311,
+    "produs_nevoi_personale": -0.7411,
+    "sold_log": 0.5457,
+    "produs_ipotecar": 0.3961,
+    "produs_imobiliar": 0.3866,
+    "activ_salariu_mutat": 0.2537,
+    "legaturi": -0.239,
+    "tip_tanar_fara_istoric": -0.2376,
+    "activ_rata_alt_creditor": -0.2118,
+    "interogari_bc": -0.2068,
+    "leg_produse": -0.1884,
+    "nivel_gold": -0.1753,
+    "leg_nivel": -0.1728,
+    "tip_antreprenor": 0.1604,
+    "activ_cerere_adeverinta_sold": 0.155,
+    "tip_pensionar": -0.1433,
+    "nr_produse": -0.1367,
+    "vechime_ani": -0.1317,
+    "leg_vechime": -0.1208,
+    "leg_activitate": 0.1183,
+    "dti_necunoscut": 0.1166,
+    "marja": -0.1054,
+    "activ_expirare_dobanda_fixa": -0.1052,
+    "dti": 0.1036,
+    "tip_diaspora": 0.086,
+    "luni_ramase": -0.086,
+    "salariu_alta_banca": -0.0775,
+    "activ_interogari_bc": 0.0682,
+    "nivel_platinum": -0.0519,
+    "n_active": 0.0414,
+    "activ_simulare_in_app": 0.0255,
+    "produs_refinantare": 0.0213,
+    "tip_independent": 0.0145,
+    "dobanda_fixa": 0.0117,
+    "produs_card_credit": 0.0066,
+    "tip_salariat": 0.0033
+  }
+}

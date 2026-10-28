@@ -14,7 +14,7 @@ from datetime import date
 from .common import fmt_ron
 from .config_loader import Config, InterventieCfg
 from .finance import dobanda_perioada, dobanda_totala, luni_ramase, segmente_credit, varsta_la
-from .retention import castig_plecare, legaturi, prob_plecare, semnale_active, valoare_client
+from .retention import castig_plecare, legaturi, semnale_active, valoare_client
 
 OFERTA = ("comision", "reducere_marja", "fix_piata", "pachet")     # tipuri care sunt o ofertă comercială
 
@@ -121,9 +121,15 @@ def evalueaza_interventii(loan: dict | None, client: dict, transactions: list[di
     else:
         B = {"B": 0.0, "B_brut": 0.0, "dobanda_la_noi": 0.0, "dobanda_piata": 0.0, "dobanda_pct_piata": None, "cost_mutare": 0.0, "luni_ramase": 0}
         V = {"V": 0.0, "venit_marja": 0.0, "produse": 0.0, "ani_ramasi": 0.0}
-    p0 = prob_plecare(B["B"], n_act, leg["scor"], cfg)
+    # p din modelul de churn ales (sigmoid sau antrenat); feature-urile sunt aceleași ca la antrenare
+    from .churn.features import features
+    from .churn.model import get_model, sigmoid
+    model = get_model(cfg)
+    x0 = features(B["B"], leg, lista_act, client, loan, concluzii, today, cfg, B.get("luni_ramase"))
+    p0 = sigmoid(model.predict_logit(x0))
 
     rows = []
+    xs_dupa: list[dict] = []
     for it in R.interventii:
         motiv = "cazul e blocat de un task de proces" if blocat else \
             _fezabilitate(it, loan, client, concluzii, risc, leg, today, market, cfg)
@@ -141,19 +147,23 @@ def evalueaza_interventii(loan: dict | None, client: dict, transactions: list[di
         elif it.tip == "comision":
             castig_client = it.cost_fix
         B_dupa = max(0.0, B["B"] - castig_client)
-        leg_dupa = min(1.0, leg["scor"] + it.efect_legaturi)
-        p_dupa = prob_plecare(B_dupa, n_act, leg_dupa, cfg, it.efect_scor)
+        leg_dupa = {**leg, "scor": min(1.0, leg["scor"] + it.efect_legaturi)}
+        xs_dupa.append(features(B_dupa, leg_dupa, lista_act, client, loan, concluzii, today, cfg, B.get("luni_ramase")))
         rows.append({"id": it.id, "tip": it.tip, "eticheta": it.eticheta, "fezabil": motiv is None, "motiv_infezabil": motiv,
                      "cost": round(cost, 2), "castig_client": round(castig_client, 2), "B_dupa": round(B_dupa, 2),
-                     "p_dupa": round(p_dupa, 4), "respecta_tinta": p_dupa <= R.p_tinta,
-                     "merita": cost <= p0 * V["V"], "detalii": detalii})
+                     "p_dupa": None, "respecta_tinta": None, "merita": cost <= p0 * V["V"], "detalii": detalii,
+                     "efect_scor": it.efect_scor})
+    for r, lg in zip(rows, model.predict_logit_batch(xs_dupa)):        # un singur apel la model pentru tot meniul
+        p_dupa = sigmoid(lg + r.pop("efect_scor"))
+        r["p_dupa"], r["respecta_tinta"] = round(p_dupa, 4), p_dupa <= R.p_tinta
 
     aleasa, motiv_alegere = alege_interventie(rows, p0, risc, blocat, cfg)
     alternative = sorted((r for r in rows if r["fezabil"] and r["respecta_tinta"] and r["id"] != aleasa and r["tip"] != "nimic"),
                          key=lambda r: r["cost"])[:3]
     return {"B": B, "V": V["V"], "valoare": V, "legaturi": leg, "semnale_active": lista_act, "p_inainte": round(p0, 4),
             "p_tinta": R.p_tinta, "interventii": rows, "aleasa": aleasa, "motiv_alegere": motiv_alegere,
-            "alternative": [a["id"] for a in alternative]}
+            "alternative": [a["id"] for a in alternative], "features": x0,
+            "model_churn": {"nume": model.nume, "versiune": model.versiune}}
 
 
 def alege_interventie(rows: list[dict], p0: float, risc: float, blocat: bool, cfg: Config) -> tuple[str | None, str]:

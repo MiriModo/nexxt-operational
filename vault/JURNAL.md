@@ -140,6 +140,14 @@
   rata la alt creditor și poprirea (ieșirile dispar). F1 la 10.000: 1,000.
 - Rezultate: generare 31 s, flux 38,5 s, F1 1,000, 0 încălcări, agent 98% vs uniform 79%; 11 teste noi (159 total).
 
+## Upgrade pasul 2 — model de churn antrenat (2026-10-28)
+- `churn/features.py` (33 feature-uri, ordine fixă, schema v1), `churn/model.py` (`ChurnModel`, `SigmoidChurn`, `TrainedChurn`,
+  `get_model` cu fallback), `churn/train.py` (split pe clienți, logistic vs boosting, Brier decide, calibrare ECE, artefact
+  pkl + json, `--din-approvals` schelet), `retention.yaml → churn`, `retention_menu` folosește modelul (batch pe meniu),
+  `evaluate` → „sigmoid vs antrenat", `explain`/demo → contribuții pe logit. `scikit-learn` în requirements.
+- Test de aur: cu `sigmoid`, cifrele sunt identice. Model v1: logistic, AUC 0,98, Brier 0,045, ECE 0,024 (învață generatorul).
+- Lecție: `build_offers` copiază explicit câmpurile din evaluare; un câmp nou în `evalueaza_interventii` trebuie adăugat și acolo.
+
 ## Raport final — OBIECTIV ATINS (2026-10-28)
 - 16/16 taskuri done; 148 teste verzi; compileall OK; metricile Modulului 1 neschimbate (F1 1,00, 100%, 708/708, 0, 5/5).
 - Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;

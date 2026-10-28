@@ -18,6 +18,15 @@ from .evaluate_final import raport_model_final
 from .pipeline import FullRun, run_full
 
 
+def _contributii(full: FullRun, offer: dict) -> list[list] | None:
+    """Top 6 contribuții ale feature-urilor la p (doar pentru modelul antrenat)."""
+    mc = offer.get("model_churn")
+    if not mc or mc["nume"] != "antrenat" or not offer.get("features"):
+        return None
+    from .churn.model import get_model
+    return [[f, round(v, 3)] for f, v in get_model(full.cfg).explain(offer["features"])[:6]]
+
+
 def _case_payload(full: FullRun, case: dict) -> dict:
     a = full.by_case(case["case_id"])
     ci, check, offer, rec = a["input"], a["check"], a["offer"], a["rec"]
@@ -38,6 +47,7 @@ def _case_payload(full: FullRun, case: dict) -> dict:
         "offer": {"B": offer["B"], "B_detalii": offer["B_detalii"], "p": offer["p"], "p_tinta": offer["p_tinta"], "V": offer["V"],
                   "legaturi": offer["legaturi"], "semnale_active": offer["semnale_active"], "aleasa": offer["interventie_aleasa"],
                   "motiv_alegere": offer["motiv_alegere"], "explicatie": offer["explicatie"],
+                  "model": offer.get("model_churn"), "contributii": _contributii(full, offer),
                   "interventii": [{k: i[k] for k in ("id", "eticheta", "fezabil", "motiv_infezabil", "cost", "B_dupa", "p_dupa", "respecta_tinta", "merita")}
                                   for i in offer["interventii"]]},
         "rec": {k: rec[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "grafic", "documente_lipsa", "explicatie")},
@@ -163,7 +173,8 @@ function panel(){const c=D.cazuri.find(x=>x.case.case_id===sel);if(!c)return;con
  const L=o.legaturi,b=o.B_detalii;
  h+=`<h3>Retenție <span class="muted">(cea mai ieftină implicare care păstrează clientul)</span></h3>
  <div>B = dobândă la noi ${ron(b.dobanda_la_noi)} − piață ${ron(b.dobanda_piata)} − cost mutare ${ron(b.cost_mutare)} = <b>${ron(o.B)} RON</b> în ${b.orizont_luni||0} luni · legături <b>${L.scor.toFixed(2)}</b> (produse ${L.componente.produse}, vechime ${L.componente.vechime}, nivel ${L.componente.nivel}, activitate ${L.componente.activitate}) · semnale active: ${o.semnale_active.join(', ')||'—'}</div>
- <div>p = <b>${pct(o.p)}</b> (țintă ≤ ${pct(o.p_tinta)}) · V = ${ron(o.V)} RON · p × V = ${ron(o.p*o.V)} RON</div>
+ <div>p = <b>${pct(o.p)}</b> (țintă ≤ ${pct(o.p_tinta)})${o.model?' · model '+esc(o.model.nume)+(o.model.nume==='antrenat'?' '+esc(o.model.versiune):''):''} · V = ${ron(o.V)} RON · p × V = ${ron(o.p*o.V)} RON</div>
+ ${o.contributii?`<div class="muted">contribuții pe logit: ${o.contributii.map(c=>esc(c[0])+' '+(c[1]>=0?'+':'')+c[1].toFixed(2)).join(', ')}</div>`:''}
  <table><thead><tr><th>intervenție</th><th>fezabil</th><th class="num">cost RON</th><th class="num">B după</th><th class="num">p după</th><th>țintă</th><th>merită</th><th>motiv</th></tr></thead><tbody>${o.interventii.map(i=>`<tr class="${i.id===o.aleasa?'chosen':''}"><td>${i.id===o.aleasa?'► ':''}${esc(i.eticheta)}</td><td>${i.fezabil?'da':'<span class=\"st fail\">nu</span>'}</td><td class="num">${ron(i.cost)}</td><td class="num">${ron(i.B_dupa)}</td><td class="num">${pct(i.p_dupa)}</td><td>${i.respecta_tinta?'da':'nu'}</td><td>${i.merita?'da':'nu'}</td><td class="muted">${esc(i.motiv_infezabil||'')}</td></tr>`).join('')}</tbody></table>
  <div style="margin-top:6px">${esc(o.explicatie)}</div>`;
  h+=`<h3>Recomandare</h3><div>${esc(r.explicatie)}</div>`;

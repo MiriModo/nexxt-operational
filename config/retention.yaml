@@ -8,6 +8,13 @@ p_tinta: 0.20                    # probabilitatea de plecare sub care consideră
 # pe toată durata pentru care acordă intervenția. Fără orizont, B pe 20+ ani ar face orice ofertă inutilă.
 orizont_ani: 3
 
+# Modelul care dă p_înainte: `sigmoid` (formula de mai jos) sau `antrenat` (models/churn_<v>.pkl, din churn.train).
+# Intervențiile rămân deplasări pe logit (efect_scor), indiferent de model.
+churn:
+  model: sigmoid                 # sigmoid | antrenat
+  cale: models/churn_v1.pkl
+  fallback_sigmoid: true         # dacă fișierul lipsește, se folosește sigmoidul (cu avertisment)
+
 # p = sigmoid(a·B_norm + b·semnale_active − c − d·legaturi)
 sigmoid:
   a: 3.0

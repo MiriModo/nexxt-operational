@@ -80,6 +80,7 @@ def semnale_active(semnale: list[dict], concluzii: dict, cfg: Config) -> tuple[i
 
 
 def prob_plecare(B: float, n_active: int, legaturi_scor: float, cfg: Config, efect_scor: float = 0.0) -> float:
+    """Formula sigmoidului (modelul implicit). Cu un model antrenat, retention_menu folosește `churn.model.get_model`."""
     R = cfg.retention
     s = R.sigmoid
     b_norm = min(max(B, 0.0) / R.B_referinta_ron, R.B_norm_max)
@@ -149,7 +150,8 @@ def build_offers(pf, cfg: Config, res, checks: list[dict]) -> list[dict]:
              "semnale_active": e["semnale_active"], "interventie_aleasa": e["aleasa"],
              "eticheta": ales["eticheta"] if ales else None, "cost": ales["cost"] if ales else 0.0,
              "p_dupa": ales["p_dupa"] if ales else e["p_inainte"], "alternative": e["alternative"],
-             "motiv_alegere": e["motiv_alegere"], "interventii": e["interventii"]}
+             "motiv_alegere": e["motiv_alegere"], "interventii": e["interventii"],
+             "features": e.get("features"), "model_churn": e.get("model_churn")}
         o["explicatie"] = explicatie_oferta(o)
         out.append(o)
     return out

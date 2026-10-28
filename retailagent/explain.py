@@ -164,8 +164,15 @@ def explain_retention(offer: dict, cfg: Config) -> list[str]:
     L.append(f"  legături = {leg['scor']:.2f} (produse {c['produse']:.2f} · vechime {c['vechime']:.2f} ({leg['vechime_ani']} ani) · "
              f"nivel {c['nivel']:.2f} · activitate {c['activitate']:.0f}) → {'suficiente' if leg['suficiente_pentru_oferta'] else 'insuficiente'} pentru ofertă")
     L.append(f"  semnale active: {', '.join(offer['semnale_active']) or '—'}")
-    s = R.sigmoid
-    L.append(f"  p = sigmoid({s['a']}·B_norm + {s['b']}·active − {s['c']} − {s['d']}·legături) = {offer['p']:.0%}   (țintă ≤ {offer['p_tinta']:.0%})")
+    mc = offer.get("model_churn") or {"nume": "sigmoid", "versiune": ""}
+    if mc["nume"] == "antrenat" and offer.get("features"):
+        from .churn.model import get_model
+        contrib = get_model(cfg).explain(offer["features"])[:6]
+        L.append(f"  p = {offer['p']:.0%} din modelul antrenat {mc['versiune']}   (țintă ≤ {offer['p_tinta']:.0%})")
+        L.append("    contribuții pe logit: " + ", ".join(f"{f} {v:+.2f}" for f, v in contrib))
+    else:
+        s = R.sigmoid
+        L.append(f"  p = sigmoid({s['a']}·B_norm + {s['b']}·active − {s['c']} − {s['d']}·legături) = {offer['p']:.0%}   (țintă ≤ {offer['p_tinta']:.0%})")
     L.append(f"  V = {fmt_ron(offer['V'])} RON (marjă {fmt_ron(offer['valoare']['venit_marja'])} + produse {fmt_ron(offer['valoare']['produse'])}) "
              f"→ p × V = {fmt_ron(offer['p'] * offer['V'])} RON")
     L.append(f"  {'':2}{'intervenție':<22} {'fezabil':<7} {'cost':>9} {'B după':>9} {'p după':>6} {'țintă':<5} {'merită':<6} motiv")
