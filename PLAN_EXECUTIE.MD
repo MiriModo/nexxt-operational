@@ -68,7 +68,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   `python -m compileall -q retailagent tests`. TDD: testele taskului se scriu înainte de cod.
 
 ## Milestone 1: Fundație (calcule financiare, config, date)
-- [ ] M1-T1 `retailagent/finance.py` — Acceptance criteria: funcții pure `rata_anuitate`, `luni_ramase`,
+- [x] M1-T1 `retailagent/finance.py` — Acceptance criteria: funcții pure `rata_anuitate`, `luni_ramase`,
   `grafic(sold, segmente, luna_start)`, `dobanda_totala(sold, segmente)`, `segmente_credit(loan, today, market)`
   (curentă până la expirarea fixei, apoi IRCC + marjă), `comision_rambursare_anticipata` (OUG 50: 0 la
   variabilă; la fixă 1% peste 1 an rămas / 0,5% sub), `dti`, `varsta_la`; teste `tests/test_finance.py`:
