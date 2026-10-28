@@ -31,7 +31,7 @@ export default function Home() {
           <circle cx="380" cy="200" r="5" fill="#2867e4" />
         </svg>
         <p className="mono hero-kicker rise" style={{ animationDelay: "0ms" }}>[00] Keeper · for retail credit advisors</p>
-        <h1 id="title" className="rise" style={{ animationDelay: "80ms" }}>Find the case. Keep the client.</h1>
+        <h1 id="title" className="rise hl" style={{ animationDelay: "80ms" }}>Find the case. Keep the client.</h1>
         <p className="rise" style={{ animationDelay: "160ms" }}>
           Keeper finds the clients in your portfolio who need attention today, runs the checks you would run, and proposes
           the cheapest offer that keeps them. You decide.
@@ -56,7 +56,7 @@ export default function Home() {
             <span>/ for advisors</span>
           </div>
           <div className="sec-head">
-            <h2 id="welcome-t">Your morning queue, already triaged.</h2>
+            <h2 id="welcome-t" className="hl">Your morning queue, already triaged.</h2>
             <p>
               Sign in and you get your own desk: who needs you today, what the agent proposes and why, what is still to confirm.
               Nothing is sent to a client until you approve it.
@@ -72,7 +72,7 @@ export default function Home() {
             <span>/ scan → queue → verify → offer</span>
           </div>
           <div className="sec-head">
-            <h2 id="how-t">Four steps, every day, before you arrive.</h2>
+            <h2 id="how-t" className="hl">Four steps, every day, before you arrive.</h2>
             <p>Each step leaves a trace: the signal, the check, the menu it chose from. The advisor sees the result and the reason.</p>
           </div>
         </Reveal>

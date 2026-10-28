@@ -47,7 +47,7 @@ export default function Reports() {
           <span>/ whole portfolio · synthetic data</span>
         </div>
         <div className="sec-head">
-          <h2>What the agent is worth.</h2>
+          <h2 className="hl">What the agent is worth.</h2>
           <p>Against “the same discount for everyone”, at the same retention rate. Every figure comes from the run, with its source in the audit log.</p>
         </div>
         <div className="figures">

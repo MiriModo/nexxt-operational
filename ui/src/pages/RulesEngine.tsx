@@ -67,7 +67,7 @@ export default function RulesEngine() {
           <span>/ config{ctx.data?.versiune ? ` · version ${ctx.data.versiune.config.hash.slice(0, 6)}` : ""}</span>
         </div>
         <div className="sec-head" style={{ padding: "28px 0 8px" }}>
-          <h2 style={{ fontSize: 34 }}>A rule, a threshold or a new intervention is configuration, not code.</h2>
+          <h2 className="hl" style={{ fontSize: 34 }}>A rule, a threshold or a new intervention is configuration, not code.</h2>
           <div>
             <p>Saving validates on the server with the same models used at start-up. Then re-run the flow.</p>
             <button type="button" className="btn primary" disabled={rerun.isPending} onClick={run} style={{ marginTop: 12 }}>

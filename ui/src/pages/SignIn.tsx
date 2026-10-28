@@ -15,7 +15,7 @@ export default function SignIn() {
           <span>/ advisors · administrator</span>
         </div>
         <div className="sec-head">
-          <h2 id="signin-t">Who are you today?</h2>
+          <h2 id="signin-t" className="hl">Who are you today?</h2>
           <p>Advisors see only their own queue. The administrator sees everything and tunes the rules engine.</p>
         </div>
       </Reveal>

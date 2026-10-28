@@ -16,7 +16,7 @@ export default function Overview() {
     <>
       <section className="day section" aria-labelledby="hello">
         <p className="date">{dateLong(today)} · whole portfolio · {ctx.data.clienti.toLocaleString("en-US")} clients</p>
-        <h1 id="hello">What the queue holds today.</h1>
+        <h1 id="hello" className="hl">What the queue holds today.</h1>
         <div className="figures">
           <Figure n={s.p1_azi ?? s.scadente_azi} label="urgent cases due today" to="/queue?band=P1&only=due_today&sort=due" />
           <Figure n={s.peste_plafon ?? 0} label="offers deferred over this month's cap" to="/queue?only=over_cap" />
