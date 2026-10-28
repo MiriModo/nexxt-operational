@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { homeFor, useEu } from "../auth";
-import { Login } from "../components/Login";
 import { Mockup } from "../components/Mockup";
 import { Reveal } from "../components/Reveal";
 
@@ -38,9 +37,9 @@ export default function Home() {
           the cheapest offer that keeps them. You decide.
         </p>
         <div className="actions rise" style={{ animationDelay: "240ms" }}>
-          <a href="#signin" className="btn primary lg">
+          <Link to="/signin" className="btn primary lg">
             Open the queue <span className="arrow">→</span>
-          </a>
+          </Link>
           <a href="#how" className="btn secondary lg">
             See how it works
           </a>
@@ -94,21 +93,6 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <section className="section" id="signin" aria-labelledby="signin-t" style={{ scrollMarginTop: 80 }}>
-        <Reveal>
-          <div className="label-row">
-            <span>[03] Sign in</span>
-            <span>/ advisors · administrator</span>
-          </div>
-          <div className="sec-head">
-            <h2 id="signin-t">Who are you today?</h2>
-            <p>Advisors see only their own queue. The administrator sees everything and tunes the rules engine.</p>
-          </div>
-        </Reveal>
-        <Reveal className="frame" delay={100}>
-          <Login />
-        </Reveal>
-      </section>
     </>
   );
 }

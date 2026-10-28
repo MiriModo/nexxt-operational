@@ -11,6 +11,7 @@ import Overview from "./pages/Overview";
 import Queue from "./pages/Queue";
 import Reports from "./pages/Reports";
 import RulesEngine from "./pages/RulesEngine";
+import SignIn from "./pages/SignIn";
 
 export default function App() {
   const { eu } = useEu();
@@ -28,6 +29,7 @@ export default function App() {
       <main id="content" className={`container ${landing ? "landing" : ""}`}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/desk" element={<Protected role="consilier"><Desk /></Protected>} />
           <Route path="/overview" element={<Protected role="admin"><Overview /></Protected>} />
           <Route path="/queue" element={<Protected><Queue /></Protected>} />

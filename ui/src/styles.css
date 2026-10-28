@@ -450,3 +450,9 @@ pre.text { white-space: pre-wrap; font: 13px/1.5 var(--font-sans); margin: 0; }
 @media (prefers-reduced-motion: reduce) { .nav-link .ul, .burger i, .hdr-bg { transition: none; } }
 /* the old frosted rule on .hdr itself would make it a containing block for the fixed mobile menu; the frosting lives on .hdr-bg */
 .hdr.scrolled { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+/* header: slightly translucent and frosted from the start (as on scoutnext.io when scrolled); the hairline appears on scroll */
+.hdr-bg { background: rgba(255, 255, 255, 0.62); backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5); }
+.hdr.scrolled .hdr-bg { background: rgba(255, 255, 255, 0.78); }
+.signin { padding-top: 24px; }
+.landing .hero { padding-top: 40px; }

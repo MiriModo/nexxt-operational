@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { homeFor, useEu } from "../auth";
 import { Brand } from "./Brand";
 
@@ -43,10 +43,11 @@ export function Header({ offline }: { offline: boolean }) {
     nav("/");
   };
   const landing = !eu && loc.pathname === "/";
-  const goSignIn = (e: React.MouseEvent) => {
+  const goHash = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const hash = e.currentTarget.getAttribute("href") ?? "";
     if (loc.pathname !== "/") {
       e.preventDefault();
-      nav("/#signin");
+      nav(`/${hash}`);
     }
   };
 
@@ -54,11 +55,11 @@ export function Header({ offline }: { offline: boolean }) {
     ? [{ to: "/desk", t: "My desk" }, { to: "/queue", t: "My queue" }]
     : eu?.rol === "admin"
       ? [{ to: "/overview", t: "Overview" }, { to: "/queue", t: "Queue" }, { to: "/reports", t: "Reports" }, { to: "/rules", t: "Rules engine" }]
-      : [{ to: "/#welcome", t: "Welcome" }, { to: "/#how", t: "How it works" }, { to: "/#signin", t: "Sign in" }];
+      : [{ to: "/#welcome", t: "Welcome" }, { to: "/#how", t: "How it works" }, { to: "/signin", t: "Sign in" }];
 
   const Item = ({ to, t, big = false }: { to: string; t: string; big?: boolean }) =>
     to.startsWith("/#") ? (
-      <a href={to.slice(1)} className={`nav-link ${big ? "big" : ""} ${landing && loc.hash === to.slice(1) ? "active" : ""}`} onClick={goSignIn}>
+      <a href={to.slice(1)} className={`nav-link ${big ? "big" : ""} ${landing && loc.hash === to.slice(1) ? "active" : ""}`} onClick={goHash}>
         {t}
         <span className="ul" aria-hidden="true" />
       </a>
@@ -93,12 +94,12 @@ export function Header({ offline }: { offline: boolean }) {
             </>
           ) : (
             <>
-              <a href="#signin" className="btn ghost" onClick={goSignIn}>
+              <Link to="/signin" className="btn ghost">
                 Sign in
-              </a>
-              <a href="#signin" className="btn primary" onClick={goSignIn}>
+              </Link>
+              <Link to="/signin" className="btn primary">
                 Open the queue <span className="arrow">→</span>
-              </a>
+              </Link>
             </>
           )}
           <button type="button" className="burger" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(!open)}>
@@ -125,12 +126,12 @@ export function Header({ offline }: { offline: boolean }) {
             </button>
           ) : (
             <>
-              <a href="#signin" className="btn secondary lg" onClick={goSignIn}>
+              <Link to="/signin" className="btn secondary lg">
                 Sign in
-              </a>
-              <a href="#signin" className="btn primary lg" onClick={goSignIn}>
+              </Link>
+              <Link to="/signin" className="btn primary lg">
                 Open the queue <span className="arrow">→</span>
-              </a>
+              </Link>
             </>
           )}
         </div>
