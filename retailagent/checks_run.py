@@ -16,7 +16,8 @@ from typing import Any, Callable
 
 from .common import DATA_DIR, fmt_ron, last_months, parse_date, read_json
 from .config_loader import Config
-from .finance import comision_rambursare_anticipata, dobanda_totala, dti, luni_ramase, rata_anuitate, segmente_credit, varsta_la
+from .finance import (comision_rambursare_anticipata, cost_mutare_total, dobanda_totala, dti, luni_ramase, rata_anuitate,
+                      segmente_credit, varsta_la)
 from .signals.util import ltv as ltv_dosar
 
 ELIGIBILITATE = ("credit_nou", "majorare_limita_card", "refinantare")
@@ -242,12 +243,7 @@ def cost_mutare(ctx: CheckContext, p: dict) -> CheckResult:
     l = _loan_or_first(ctx)
     if not l:
         return CheckResult("ok", "fără credit existent", {})
-    c = ctx.market["costuri_mutare"][l["produs"]]
-    sold = l["sold_ramas"]
-    comp = {"evaluare_imobil": c["evaluare_imobil"], "notar": c["notar_fix"] + sold * c["notar_pct_sold"] / 100,
-            "ocpi": c["ocpi"], "asigurari_noi": c["asigurari_noi"],
-            "comisioane_banca_noua": c["comision_analiza_banca_noua"] + sold * c["comision_acordare_pct"] / 100}
-    total = sum(comp.values())
+    total, comp = cost_mutare_total(l, ctx.market)
     ctx.concluzii["cost_mutare"] = round(total, 2)
     return CheckResult("ok", f"costul mutării ≈ {fmt_ron(total)} RON (" + ", ".join(f"{k} {fmt_ron(v)}" for k, v in comp.items() if v) + ")",
                        {**{k: round(v, 2) for k, v in comp.items()}, "total": round(total, 2)})

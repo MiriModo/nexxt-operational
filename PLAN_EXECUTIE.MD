@@ -114,7 +114,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   interogări externe (omise cu motiv).
 
 ## Milestone 3: Model de retenție
-- [ ] M3-T1 `retailagent/retention.py` — B, p, V, legături — Acceptance criteria: `castig_plecare(loan, ctx,
+- [x] M3-T1 `retailagent/retention.py` — B, p, V, legături — Acceptance criteria: `castig_plecare(loan, ctx,
   cfg)` = B din grafice (cu descompunerea: dobândă la noi, dobândă piață, cost mutare); `legaturi(client,
   ctx, cfg)` ∈ [0,1] cu componente; `valoare_client(loan, client, cfg)` = marjă × sold × ani + produse;
   `prob_plecare(B, semnale_active, legaturi, cfg)` cu sigmoid; teste: B > 0 pentru C0001 (gap 3 pp pe

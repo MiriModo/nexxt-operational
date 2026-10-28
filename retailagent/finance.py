@@ -92,6 +92,16 @@ def comision_rambursare_anticipata(loan: dict, suma: float, today: date, reguli:
     return round(suma * pct / 100, 2), f"dobândă fixă cu {ani:.1f} ani rămași → {pct:.1f}% din {fmt_ron(suma)} RON"
 
 
+def cost_mutare_total(loan: dict, market: dict) -> tuple[float, dict[str, float]]:
+    """Ce plătește clientul ca să-și mute creditul la altă bancă (market.json → costuri_mutare[produs])."""
+    c = market["costuri_mutare"][loan["produs"]]
+    sold = loan["sold_ramas"]
+    comp = {"evaluare_imobil": c["evaluare_imobil"], "notar": c["notar_fix"] + sold * c["notar_pct_sold"] / 100,
+            "ocpi": c["ocpi"], "asigurari_noi": c["asigurari_noi"],
+            "comisioane_banca_noua": c["comision_analiza_banca_noua"] + sold * c["comision_acordare_pct"] / 100}
+    return sum(comp.values()), comp
+
+
 def dti(rate_lunare: float, venit_lunar: float | None) -> float | None:
     """Gradul de îndatorare: rate lunare / venit lunar net. None dacă venitul e necunoscut sau zero."""
     if not venit_lunar or venit_lunar <= 0:

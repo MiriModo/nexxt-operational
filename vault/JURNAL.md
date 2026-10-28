@@ -51,3 +51,11 @@
 - 8 teste de integrare în `tests/test_checks_run.py`. Suita: 97 verzi.
 - Lecție: `cat >> f <<'EOF'` cu conținut Python lung a picat în shell; scrierea cu Write + patch-uri mici e sigură.
   `\n` în f-string-uri scrise prin heredoc Python trebuie dublat (`\\n`).
+
+## M3-T1 — retention.py: B, legături, V, p (done)
+- `castig_plecare` (B = dobândă la noi − dobândă piață − cost mutare, pe grafice; B = max(0, brut)),
+  `legaturi` (produse active fără cont_salariu mutat, vechime, nivel, activitate = ieșiri ≥ 1.000 RON în 2 luni),
+  `valoare_client`, `semnale_active` (+ interogări BC ≥ 2), `prob_plecare` (sigmoid cu B_norm plafonat).
+- `finance.cost_mutare_total` extras din checks (un singur loc). Pe date: B(C0001 ipotecar) > 50k, B(card) < 500,
+  legături C0013 = suficiente, C0014 = sub prag.
+- 6 teste în `tests/test_retention_model.py`.
