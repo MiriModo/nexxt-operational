@@ -140,34 +140,55 @@ export async function getModel(): Promise<ModelInfo | null> {
   return viaApi<ModelInfo | null>("/model", async () => null);
 }
 
-export async function getConfigLista(): Promise<ConfigFisier[]> {
-  return viaApi<ConfigFisier[]>("/config", async () => []);
+// ---- administrare: rutele de configurare cer parola (antetul X-Admin-Parola); se ține doar în sesiunea browserului
+const ADMIN_KEY = "retailagent.admin";
+export function getAdminParola(): string | null {
+  try {
+    return sessionStorage.getItem(ADMIN_KEY);
+  } catch {
+    return null;
+  }
 }
-
-export async function getConfig(nume: string): Promise<{ nume: string; text: string }> {
-  const r = await fetch(`${API}/config/${nume}`);
-  if (!r.ok) throw new Error(`config ${nume}: ${r.status}`);
-  return (await r.json()) as { nume: string; text: string };
+export function setAdminParola(p: string | null) {
+  try {
+    if (p) sessionStorage.setItem(ADMIN_KEY, p);
+    else sessionStorage.removeItem(ADMIN_KEY);
+  } catch {
+    /* fără sessionStorage: parola se cere din nou la următoarea pagină */
+  }
 }
-
-export async function putConfig(nume: string, text: string): Promise<{ salvat: boolean; versiune: string; nota: string }> {
-  const r = await fetch(`${API}/config/${nume}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+function antetAdmin(extra: Record<string, string> = {}): Record<string, string> {
+  const p = getAdminParola();
+  return p ? { ...extra, "X-Admin-Parola": p } : extra;
+}
+async function cereAdmin<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const r = await fetch(`${API}${path}`, { ...init, headers: antetAdmin((init.headers as Record<string, string>) ?? {}) });
+  if (r.status === 401) {
+    setAdminParola(null);
+    throw new Error("parola de administrare lipsește sau e greșită");
+  }
   if (r.status === 400) throw new Error(((await r.json()) as { detail?: string }).detail ?? "configurație respinsă");
-  if (!r.ok) throw new Error(`config ${nume}: ${r.status}`);
-  return (await r.json()) as { salvat: boolean; versiune: string; nota: string };
+  if (!r.ok) throw new Error(`${path}: ${r.status}`);
+  return (await r.json()) as T;
 }
 
-export async function getConfigDiff(nume: string): Promise<{ diff: string; git: boolean }> {
-  const r = await fetch(`${API}/config/${nume}/diff`);
-  if (!r.ok) throw new Error(`diff ${nume}: ${r.status}`);
-  return (await r.json()) as { diff: string; git: boolean };
+/** Verifică parola pe server; dacă e bună o păstrează pentru restul sesiunii. */
+export async function loginAdmin(parola: string): Promise<boolean> {
+  const r = await fetch(`${API}/admin/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ parola }) });
+  if (r.status === 401) return false;
+  if (!r.ok) throw new Error(`login: ${r.status}`);
+  setAdminParola(parola);
+  return true;
 }
 
-export async function postRescan(): Promise<{ cazuri: number; azi: string }> {
-  const r = await fetch(`${API}/rescan`, { method: "POST" });
-  if (!r.ok) throw new Error(`rescan: ${r.status}`);
-  return (await r.json()) as { cazuri: number; azi: string };
-}
+export const getConfigLista = () => cereAdmin<ConfigFisier[]>("/config");
+export const getConfig = (nume: string) => cereAdmin<{ nume: string; text: string }>(`/config/${nume}`);
+export const putConfig = (nume: string, text: string) =>
+  cereAdmin<{ salvat: boolean; versiune: string; nota: string }>(`/config/${nume}`, {
+    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }),
+  });
+export const getConfigDiff = (nume: string) => cereAdmin<{ diff: string; git: boolean }>(`/config/${nume}/diff`);
+export const postRescan = () => cereAdmin<{ cazuri: number; azi: string }>("/rescan", { method: "POST" });
 
 export async function getCazuri(): Promise<Caz[]> {
   return viaApi<Caz[]>("/cazuri", async () => (await loadSnapshot()).cazuri);
@@ -187,11 +208,16 @@ export async function getCoada(p: ParametriCoada = {}): Promise<PaginaCoada> {
   if (p.consilier) qs.set("consilier", p.consilier);
   if (p.q?.trim()) qs.set("q", p.q.trim());
   if (p.ascundeDecise) qs.set("ascunde_decise", "true");
+  if (p.doar) qs.set("doar", p.doar);
   return viaApi<PaginaCoada>(`/coada?${qs}`, async () => {
     const decizii = getDeciziiLocale();
     const needle = (p.q ?? "").trim().toLowerCase();
-    let rows = (await loadSnapshot()).cazuri.filter((c) => {
+    const snap = await loadSnapshot();
+    let rows = snap.cazuri.filter((c) => {
       if (p.benzi && p.benzi.length && !p.benzi.includes(c.case.banda)) return false;
+      if (p.doar === "termen_azi" && c.case.deadline > snap.azi) return false;
+      if (p.doar === "peste_plafon" && !c.rec.oferta?.amanata_buget) return false;
+      if (p.doar === "de_confirmat" && !c.rec.incertitudini?.length) return false;
       if (p.recomandari && p.recomandari.length && !p.recomandari.includes(c.rec.recomandare)) return false;
       if (p.consilier && c.consilier !== p.consilier) return false;
       if (p.ascundeDecise && decizii[c.case.case_id]) return false;

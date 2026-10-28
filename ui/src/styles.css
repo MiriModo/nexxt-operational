@@ -369,29 +369,137 @@ details > summary { cursor: pointer; }
   .cc-motiv { white-space: normal; }
 }
 
-/* ---- pasul 5: trepte de verificare, incertitudini, buget, admin ---- */
-.tag.indisponibil { background: var(--warn-bg); color: var(--warn); border-style: dashed; }
-.tag.inc { background: var(--warn-bg); color: var(--warn); }
-.tag.buget { background: transparent; color: var(--ink-2); border-color: var(--line-strong); }
-.trepte { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
-.treapta { padding: 8px 10px; border: 1px solid var(--line); border-left: 4px solid var(--line-strong); border-radius: 8px; background: var(--panel); }
-.treapta > .small { margin-bottom: 4px; }
-.treapta table { margin: 0; }
-.treapta td { padding: 4px 6px; vertical-align: top; }
-.treapta.executata { border-left-color: var(--ok); }
-.treapta.oprita { border-left-color: var(--err); background: var(--err-bg, var(--panel)); }
-.treapta.neexecutata { color: var(--ink-3); border-style: dashed; }
-.treapta.activa { animation: puls 0.9s ease-in-out infinite; }
-@keyframes puls { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-@media (prefers-reduced-motion: reduce) { .treapta.activa { animation: none; } }
-.inc-list { margin: 8px 0 0; padding-left: 18px; }
-.inc-list li { margin-bottom: 4px; }
-.editor { width: 100%; min-height: 420px; font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; font-size: 12.5px; line-height: 1.5; tab-size: 2; }
+/* ---------- cele 6 stări: aceeași culoare + simbol peste tot ---------- */
+.stare { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+.stare i { font-style: normal; font-size: 11px; line-height: 1; }
+.stare.mare { font-size: 16px; }
+.stare.mare i { font-size: 13px; }
+.stare.oferta_minima, .stare.oferta_produs { color: var(--ok); }
+.stare.nu_interveni { color: var(--ink-2); }
+.stare.restructurare { color: var(--warn); }
+.stare.respins_escaladat { color: var(--err); }
+.stare.blocat { color: var(--ink-3); }
+
+/* ---------- antet: administrare discret ---------- */
+header.top .admin-link { margin-left: auto; color: var(--ink-3); font-size: 12px; }
+header.top .admin-link:hover { color: var(--ink); }
+header.top .ctx { margin-left: auto; }
+header.top .ctx + .admin-link { margin-left: 16px; }
+
+/* ---------- banda de decizie (Caz): singurul element care iese in fata ---------- */
+.strip {
+  position: sticky; top: 56px; z-index: 4; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  padding: 12px 16px; margin: 0 0 18px;
+}
+.strip .who { display: flex; flex-direction: column; min-width: 0; }
+.strip .who b { font-size: 17px; letter-spacing: -0.01em; }
+.strip .who span { color: var(--ink-2); font-size: 12px; }
+.strip .what { display: flex; flex-direction: column; margin-left: 8px; padding-left: 16px; border-left: 1px solid var(--line); }
+.strip .what span { color: var(--ink-2); font-size: 12px; }
+.strip .num { display: flex; flex-direction: column; font-size: 13px; }
+.strip .num b { font-size: 15px; }
+.strip .num span { color: var(--ink-2); font-size: 12px; }
+.strip .go { margin-left: auto; }
+@media (max-width: 760px) { .strip { position: static; } .strip .go { margin-left: 0; width: 100%; } }
+
+/* ---------- Caz: secțiuni liniștite ---------- */
+.sec { margin: 0 0 18px; }
+.sec h2 { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 0 0 8px; }
+.sec .lead { font-size: 15px; margin: 0 0 6px; max-width: 70ch; }
+ul.plain { margin: 0; padding-left: 18px; }
+ul.plain li { margin-bottom: 4px; }
+.offer { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; margin: 0; }
+.offer div { display: flex; flex-direction: column-reverse; }
+.offer dd { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.offer dt { color: var(--ink-2); font-size: 12px; margin-bottom: 2px; }
+.offer dd s { color: var(--ink-3); font-weight: 400; font-size: 14px; margin-right: 6px; }
+.todo { border-left: 3px solid var(--warn-edge); padding: 4px 12px; margin: 10px 0; }
+.todo li { margin-bottom: 2px; }
+details.more { border-top: 1px solid var(--line-soft); margin-top: 12px; padding-top: 8px; }
+details.more > summary { color: var(--ink-2); font-size: 13px; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+details.more > summary::before { content: "+"; width: 16px; height: 16px; border: 1px solid var(--line); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+details.more[open] > summary::before { content: "\2013"; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > :not(summary) { margin-top: 10px; }
+
+/* verificări compacte: un rând pe verificare */
+.checks { display: flex; flex-direction: column; }
+.check { display: grid; grid-template-columns: 18px 150px 1fr; gap: 10px; align-items: baseline; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); }
+.check:last-child { border-bottom: 0; }
+.check .st { font-weight: 700; text-align: center; }
+.check.ok .st { color: var(--ok); }
+.check.avertizare .st, .check.indisponibil .st { color: var(--warn); }
+.check.fail .st { color: var(--err); }
+.check.neexecutat { color: var(--ink-3); }
+.check .ev { color: var(--ink-2); }
+.check.fail .ev, .check.avertizare .ev, .check.indisponibil .ev { color: var(--ink); }
+.check.activa { animation: puls 0.9s ease-in-out infinite; }
+.treapta-h { font-size: 12px; color: var(--ink-3); margin: 10px 0 2px; }
+.treapta-h:first-child { margin-top: 0; }
+@keyframes puls { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) { .check.activa { animation: none; } }
+
+/* meniul de intervenții ca grafic cost × p_după */
+.menu-chart { width: 100%; height: auto; display: block; max-width: 560px; }
+.menu-chart text { font-family: inherit; font-size: 10px; fill: var(--ink-2); }
+.menu-chart .ax { stroke: var(--line); }
+.menu-chart .pt { fill: var(--ink-2); }
+.menu-chart .pt.ales { fill: var(--ok); }
+.menu-chart .pt.infezabil { fill: var(--line); }
+.menu-chart .tinta { stroke: var(--ok); stroke-dasharray: 3 3; }
+.menu-chart .lbl { fill: var(--ink); font-weight: 600; }
+
+/* ---------- Coadă: bară de termen, filtre active, schelet ---------- */
+.sla { display: inline-flex; align-items: center; gap: 6px; }
+.sla i { display: inline-block; width: 56px; height: 5px; background: var(--line-soft); border-radius: 3px; overflow: hidden; }
+.sla i b { display: block; height: 100%; background: var(--ink-3); }
+.sla.urgent i b { background: var(--err); }
+.sla.curand i b { background: var(--warn-edge); }
+.active-filters { display: flex; gap: 6px; flex-wrap: wrap; margin: -4px 0 12px; }
+.flt { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px 3px 10px; color: var(--ink); cursor: pointer; }
+.flt:hover { border-color: var(--line-strong); }
+.flt b { font-weight: 400; color: var(--ink-3); }
+.skeleton { background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); height: 86px; position: relative; overflow: hidden; }
+.skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--panel-2) 80%, transparent), transparent); animation: shimmer 1.2s infinite; }
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .skeleton::after { animation: none; } }
+
+/* ---------- toast ---------- */
+.toasts { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 20; pointer-events: none; }
+.toast { background: var(--ink); color: var(--ink-invert); padding: 10px 16px; border-radius: 999px; font-size: 13px; box-shadow: var(--shadow-card); }
+.toast.fail { background: var(--err); color: #fff; }
+
+/* ---------- briefing (Acasă) ---------- */
+.brief { list-style: none; margin: 28px 0 0; padding: 20px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.14); display: grid; gap: 10px; }
+.brief a { color: #fff; font-size: 17px; text-decoration: none; display: inline-flex; gap: 10px; align-items: baseline; }
+.brief a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.brief a b { font-size: 26px; letter-spacing: -0.02em; min-width: 2ch; text-align: right; }
+.brief .zero { color: var(--hero-muted); }
+
+/* ---------- Rezultate: grafice SVG ---------- */
+.hbars { display: grid; grid-template-columns: max-content 1fr max-content; gap: 6px 12px; align-items: center; font-size: 13px; }
+.hbars .b { height: 10px; background: var(--line-soft); border-radius: 3px; overflow: hidden; }
+.hbars .b i { display: block; height: 100%; background: var(--ink-2); }
+.hbars .b i.ok { background: var(--ok); }
+.hbars .b i.warn { background: var(--warn-edge); }
+.hbars .b i.err { background: var(--err); }
+.hbars .b i.mute { background: var(--line); }
+.hbars .v { text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.calib { width: 100%; max-width: 420px; height: auto; display: block; }
+.calib text { font-family: inherit; font-size: 10px; fill: var(--ink-2); }
+.calib .ax { stroke: var(--line); }
+.calib .diag { stroke: var(--ink-3); stroke-dasharray: 3 3; }
+.calib .p { fill: var(--line); }
+.calib .r { fill: var(--ok); }
+.budget { height: 12px; background: var(--line-soft); border-radius: 6px; overflow: hidden; margin: 6px 0; }
+.budget i { display: block; height: 100%; background: var(--ok); }
+
+/* ---------- Admin ---------- */
+.login { max-width: 360px; margin: 60px auto; }
+.login h1 { margin-bottom: 4px; }
+.editor { width: 100%; min-height: 460px; font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; font-size: 12.5px; line-height: 1.5; tab-size: 2; }
 pre.diff { white-space: pre-wrap; font-size: 12px; max-height: 320px; overflow: auto; }
-.calib { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; align-items: end; height: 120px; margin: 8px 0; }
-.calib > div { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 2px; }
-.calib .b { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
-.calib .b.p { background: var(--ink-3); }
-.calib .b.r { background: var(--ok); }
-.calib .lbl { font-size: 10px; color: var(--ink-3); }
-.istoric li { margin-bottom: 6px; }
+.tag.inc { background: var(--warn-bg); color: var(--warn); }
+.tag.indisponibil { background: var(--warn-bg); color: var(--warn); border-style: dashed; }
+.istoric > div + div { border-top: 1px solid var(--line-soft); }

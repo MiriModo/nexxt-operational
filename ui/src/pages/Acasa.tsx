@@ -1,102 +1,59 @@
-import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { getContext, getDeciziiLocale, getSumar, type Context } from "../api/client";
+import { getDeciziiLocale } from "../api/client";
+import { useContext, useSumar } from "../api/hooks";
 import { CaseCard } from "../components/CaseCard";
 import { Loading } from "../components/ui";
-import type { Sumar } from "../types/api";
 
 function dataLunga(iso: string) {
   const d = new Date(iso + "T12:00:00");
   return new Intl.DateTimeFormat("ro-RO", { weekday: "long", day: "numeric", month: "long" }).format(d);
 }
 
-function plural(n: number, unu: string, multe: string) {
-  return n === 1 ? `${n} ${unu}` : `${n} ${multe}`;
-}
-
+/** Briefing-ul zilei: trei liste cu link direct, nu contoare generale. */
 export default function Acasa() {
-  // contoarele vin din GET /api/cazuri/sumar (toată coada), nu din încărcarea tuturor cazurilor
-  const [sumar, setSumar] = useState<Sumar | null>(null);
-  const [ctx, setCtx] = useState<Context | null>(null);
-  const [err, setErr] = useState<string | null>(null);
+  const sumar = useSumar();
+  const ctx = useContext();
   const decizii = getDeciziiLocale();
+  if (!sumar.data || !ctx.data) return <Loading err={sumar.error ? String(sumar.error) : null} />;
+  const s = sumar.data;
+  const azi = ctx.data.azi;
 
-  useEffect(() => {
-    Promise.all([getSumar(), getContext()])
-      .then(([s, x]) => {
-        setSumar(s);
-        setCtx(x);
-      })
-      .catch((e) => setErr(String(e)));
-  }, []);
-
-  const azi = ctx?.azi ?? "";
-  const stare = useMemo(() => {
-    if (!sumar) return null;
-    return { deschise: sumar.deschise, p1: sumar.p1, scadenteAzi: sumar.scadente_azi, blocate: sumar.blocate, decise: sumar.decise, primele: sumar.primele };
-  }, [sumar]);
-
-  if (!sumar || !ctx || !stare) return <Loading err={err} />;
-
-  const rezumat =
-    stare.deschise === 0
-      ? "Nu mai e nimic deschis în coadă. Poți închide ziua liniștit."
-      : `${plural(stare.p1, "caz cere", "cazuri cer")} atenție azi` +
-        (stare.scadenteAzi ? `, ${plural(stare.scadenteAzi, "are", "au")} termenul azi sau depășit` : "") +
-        ".";
+  const linii: { n: number; text: string; to: string }[] = [
+    { n: s.p1_azi ?? s.scadente_azi, text: "cazuri urgente cu termenul azi", to: "/cazuri?banda=P1&doar=termen_azi&sort=termen" },
+    { n: s.peste_plafon ?? 0, text: "oferte amânate peste plafonul lunii, de aprobat explicit", to: "/cazuri?doar=peste_plafon" },
+    { n: s.de_confirmat ?? 0, text: "cazuri cu ceva de confirmat înainte de ofertă", to: "/cazuri?doar=de_confirmat" },
+    { n: s.deschise, text: "cazuri deschise în total", to: "/cazuri" },
+  ];
 
   return (
     <>
       <section className="hero" aria-labelledby="salut">
-        <p className="hero-date">{dataLunga(ctx.azi)}</p>
+        <p className="hero-date">{dataLunga(azi)}</p>
         <h1 id="salut" className="hero-title">
-          Haide să lucrăm și&nbsp;astăzi<span className="dot" aria-hidden="true" />
+          Ce ai de făcut azi<span className="dot" aria-hidden="true" />
         </h1>
-        <p className="hero-sub">{rezumat}</p>
-        <div className="hero-actions">
-          <Link to="/cazuri" className="btn">
-            Deschide coada
-          </Link>
-          <Link to="/dashboard" className="btn secondary on-dark">
-            Vezi rezultatele agentului
-          </Link>
-        </div>
-        <dl className="hero-stats">
-          <div>
-            <dt>cazuri deschise</dt>
-            <dd>{stare.deschise}</dd>
-          </div>
-          <div>
-            <dt>cu termen azi sau depășit</dt>
-            <dd>{stare.scadenteAzi}</dd>
-          </div>
-          <div>
-            <dt>blocate de verificări</dt>
-            <dd>{stare.blocate}</dd>
-          </div>
-          <div>
-            <dt>decise deja</dt>
-            <dd>{stare.decise}</dd>
-          </div>
-        </dl>
+        <ul className="brief">
+          {linii.map((l) => (
+            <li key={l.to}>
+              <Link to={l.to} className={l.n === 0 ? "zero" : undefined}>
+                <b>{l.n}</b> {l.text}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {stare.primele.length > 0 && (
+      {s.primele.length > 0 && (
         <section className="block" aria-labelledby="incepe">
           <div className="block-head">
             <h2 id="incepe">Începe de aici</h2>
-            <p className="muted">Cele mai apropiate termene, în ordinea priorității. Apasă pe un caz pentru detalii.</p>
+            <p className="muted">cele mai apropiate termene</p>
           </div>
           <div className="case-list">
-            {stare.primele.map((c) => (
+            {s.primele.map((c) => (
               <CaseCard key={c.case.case_id} c={c} azi={azi} decizie={decizii[c.case.case_id]} />
             ))}
           </div>
-          <p style={{ marginTop: 14 }}>
-            <Link to="/cazuri" className="link">
-              Toate cele {stare.deschise} cazuri deschise
-            </Link>
-          </p>
         </section>
       )}
     </>

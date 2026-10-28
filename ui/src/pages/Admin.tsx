@@ -1,98 +1,129 @@
-import { useEffect, useState } from "react";
-import { getSursa } from "../api/client";
+import { useEffect, useState, type FormEvent } from "react";
+import { getAdminParola, getSursa, loginAdmin, setAdminParola } from "../api/client";
 import { useConfigDiff, useConfigFisier, useConfigLista, useContext, useRescan, useSalveazaConfig } from "../api/hooks";
+import { useToast } from "../components/Toast";
 import { Loading } from "../components/ui";
 
 const DESCRIERI: Record<string, string> = {
-  priority: "ponderi, benzi, SLA, buget de retenție pe nivel, rutare",
-  retention: "p țintă, orizont, model de churn, legături, meniul de intervenții, buget de portofoliu",
-  constraints: "DTI, LTV, vârstă, marjă minimă, restructurare (BNR + politica internă)",
-  checks: "verificări pe trepte, motive, documente necesare, incertitudini critice",
-  signals: "cele 24 de semnale: praguri, scoruri, regex-uri",
-  portofoliu: "profilul statistic al portofoliului generat",
-  echipa: "consilierii și alocarea cazurilor",
+  priority: "ponderi, benzi, termene, bugete pe nivel",
+  retention: "p țintă, modelul de churn, meniul de intervenții, buget de portofoliu",
+  constraints: "DTI, LTV, vârstă, marjă minimă, restructurare",
+  checks: "verificări pe trepte, motive, documente, incertitudini critice",
+  signals: "semnalele: praguri și scoruri",
+  portofoliu: "profilul portofoliului generat",
+  echipa: "consilierii și alocarea",
 };
 
-/** Tot ce e regulă, prag, meniu sau constrângere stă în YAML: aici se editează cu validare pe server (aceleași modele
- *  pydantic ca la pornire) și apoi se re-rulează fluxul. Fără API, ecranul explică de ce nu poate edita. */
-export default function Admin() {
+function Login({ onOk }: { onOk: () => void }) {
+  const [parola, setParola] = useState("");
+  const [eroare, setEroare] = useState<string | null>(null);
+  const [verific, setVerific] = useState(false);
+  const trimite = async (e: FormEvent) => {
+    e.preventDefault();
+    setVerific(true);
+    setEroare(null);
+    try {
+      if (await loginAdmin(parola)) onOk();
+      else setEroare("Parolă greșită.");
+    } catch (err) {
+      setEroare(String(err instanceof Error ? err.message : err));
+    } finally {
+      setVerific(false);
+    }
+  };
+  return (
+    <form className="login panel" onSubmit={trimite}>
+      <h1>Administrare</h1>
+      <p className="muted" style={{ marginTop: 0 }}>Editarea regulilor și re-rularea fluxului. Doar cu parolă.</p>
+      <div className="field">
+        <span>Parola</span>
+        <input type="password" value={parola} onChange={(e) => setParola(e.target.value)} autoFocus autoComplete="current-password" style={{ width: "100%", font: "inherit", minHeight: 32, padding: "6px 10px", border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--panel)", color: "var(--ink)" }} />
+      </div>
+      {eroare && (
+        <div className="notice fail" role="alert">
+          {eroare}
+        </div>
+      )}
+      <button type="submit" className="btn" disabled={!parola || verific}>
+        {verific ? "Se verifică…" : "Intră"}
+      </button>
+    </form>
+  );
+}
+
+/** Regulile stau în YAML; aici se editează cu validare pe server (aceleași modele ca la pornire) și apoi se re-rulează fluxul. */
+function Editor() {
   const lista = useConfigLista();
   const ctx = useContext();
+  const toast = useToast();
   const [ales, setAles] = useState("retention");
   const fisier = useConfigFisier(ales);
   const diff = useConfigDiff(ales);
   const salveaza = useSalveazaConfig(ales);
   const rescan = useRescan();
   const [text, setText] = useState("");
-  const [mesaj, setMesaj] = useState<{ ok: boolean; text: string } | null>(null);
+  const [eroare, setEroare] = useState<string | null>(null);
 
   useEffect(() => {
     if (fisier.data) {
       setText(fisier.data.text);
-      setMesaj(null);
+      setEroare(null);
     }
   }, [fisier.data]);
 
   if (lista.isLoading) return <Loading />;
-  if (getSursa() === "static" || !lista.data?.length)
-    return (
-      <>
-        <h1>Admin</h1>
-        <div className="notice warn">
-          Editarea configurației cere API-ul pornit (<code>python -m retailagent.api</code>). Fără el, interfața arată doar
-          snapshot-ul static; YAML-urile rămân editabile direct în <code>config/</code>, urmate de <code>python -m retailagent.pipeline</code>.
-        </div>
-      </>
-    );
+  if (lista.error) return <Loading err={String(lista.error)} />;
+  if (!lista.data) return null;
 
   const modificat = fisier.data ? text !== fisier.data.text : false;
   const trimite = () => {
-    setMesaj(null);
+    setEroare(null);
     salveaza.mutate(text, {
-      onSuccess: (r) => setMesaj({ ok: true, text: `Salvat (versiune config ${r.versiune}). ${r.nota}.` }),
-      onError: (e) => setMesaj({ ok: false, text: String(e instanceof Error ? e.message : e) }),
+      onSuccess: () => toast(`${ales}.yaml salvat. Re-rulează fluxul ca schimbarea să intre în cazuri.`),
+      onError: (e) => setEroare(String(e instanceof Error ? e.message : e)),
     });
   };
   const reruleaza = () =>
     rescan.mutate(undefined, {
-      onSuccess: (r) => setMesaj({ ok: true, text: `Fluxul a fost re-rulat: ${r.cazuri} cazuri în coadă (azi ${r.azi}).` }),
-      onError: (e) => setMesaj({ ok: false, text: String(e instanceof Error ? e.message : e) }),
+      onSuccess: (r) => toast(`Fluxul a fost re-rulat: ${r.cazuri} cazuri`),
+      onError: (e) => toast(String(e instanceof Error ? e.message : e), "fail"),
     });
 
   return (
     <>
       <div className="page-head">
         <div>
-          <h1>Admin · configurație</h1>
+          <h1>Administrare</h1>
           <p className="muted" style={{ margin: 0 }}>
-            Un semnal, o verificare, o intervenție sau un prag nou = configurație, nu cod. Salvarea validează pe server; apoi re-rulezi fluxul.
-            {ctx.data?.versiune ? ` Versiune curentă: ${ctx.data.versiune.scurt}` : ""}
+            O regulă, un prag sau o intervenție nouă = configurație, nu cod. Salvarea validează pe server.
+            {ctx.data?.versiune ? ` Versiunea curentă: ${ctx.data.versiune.config.hash.slice(0, 6)}.` : ""}
           </p>
+        </div>
+        <div className="actions">
+          <button type="button" className="btn secondary" disabled={rescan.isPending} onClick={reruleaza}>
+            {rescan.isPending ? "Se re-rulează… (15–45 s)" : "Re-rulează fluxul"}
+          </button>
+          <button type="button" className="btn ghost" onClick={() => { setAdminParola(null); location.reload(); }}>
+            Ieși
+          </button>
         </div>
       </div>
 
-      <div className="grid c3" style={{ gridTemplateColumns: "260px 1fr 1fr" }}>
+      <div className="grid" style={{ gridTemplateColumns: "240px 1fr" }}>
         <section className="panel">
-          <h2>Fișiere</h2>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {lista.data.map((f) => (
-              <li key={f.nume} style={{ marginBottom: 6 }}>
-                <button type="button" className={`chip ${f.nume === ales ? "on" : ""}`} onClick={() => setAles(f.nume)} style={{ width: "100%", textAlign: "left" }}>
-                  {f.fisier} <span className="chip-n">{f.hash ?? "—"}</span>
+              <li key={f.nume} style={{ marginBottom: 8 }}>
+                <button type="button" className={`chip ${f.nume === ales ? "on" : ""}`} onClick={() => setAles(f.nume)} style={{ width: "100%", justifyContent: "flex-start" }}>
+                  {f.fisier}
                 </button>
                 <div className="small muted" style={{ padding: "2px 6px 0" }}>{DESCRIERI[f.nume]}</div>
               </li>
             ))}
           </ul>
-          <div className="actions" style={{ marginTop: 12 }}>
-            <button type="button" className="btn" disabled={rescan.isPending} onClick={reruleaza}>
-              {rescan.isPending ? "Se re-rulează… (15–45 s)" : "Re-rulează fluxul"}
-            </button>
-          </div>
-          <p className="small muted">Re-rularea reface coada, verificările, retenția și recomandările cu configurația de pe disc.</p>
         </section>
 
-        <section className="panel" style={{ gridColumn: "span 2" }}>
+        <section className="panel">
           <h2>
             {ales}.yaml {modificat && <span className="tag avertizare">modificat, nesalvat</span>}
           </h2>
@@ -103,24 +134,20 @@ export default function Admin() {
               <textarea className="editor" value={text} onChange={(e) => setText(e.target.value)} spellCheck={false} aria-label={`Conținutul ${ales}.yaml`} />
               <div className="actions" style={{ marginTop: 10 }}>
                 <button type="button" className="btn" disabled={!modificat || salveaza.isPending} onClick={trimite}>
-                  {salveaza.isPending ? "Se validează…" : "Salvează (cu validare)"}
+                  {salveaza.isPending ? "Se validează…" : "Salvează"}
                 </button>
                 <button type="button" className="btn ghost" disabled={!modificat} onClick={() => fisier.data && setText(fisier.data.text)}>
-                  Renunță la modificări
+                  Renunță
                 </button>
               </div>
-              {mesaj && (
-                <div className={`notice ${mesaj.ok ? "ok" : "fail"}`} role={mesaj.ok ? "status" : "alert"} style={{ marginTop: 10 }}>
-                  {mesaj.text}
+              {eroare && (
+                <div className="notice fail" role="alert" style={{ marginTop: 10 }}>
+                  {eroare}
                 </div>
               )}
               <details style={{ marginTop: 12 }} onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && diff.refetch()}>
-                <summary className="small">Diferența față de versiunea din git</summary>
-                {diff.data?.git ? (
-                  <pre className="diff mono">{diff.data.diff || "(identic cu versiunea din git)"}</pre>
-                ) : (
-                  <p className="small muted">Proiectul nu e într-un repo git accesibil serverului.</p>
-                )}
+                <summary className="small muted">Diferența față de versiunea din git</summary>
+                {diff.data?.git ? <pre className="diff mono">{diff.data.diff || "(identic)"}</pre> : <p className="small muted">Indisponibil (nu e repo git).</p>}
               </details>
             </>
           )}
@@ -128,4 +155,15 @@ export default function Admin() {
       </div>
     </>
   );
+}
+
+export default function Admin() {
+  const [autentificat, setAutentificat] = useState(!!getAdminParola());
+  if (getSursa() === "static")
+    return (
+      <div className="notice warn">
+        Administrarea cere serverul pornit (<code>python -m retailagent.api</code>). Fără el, regulile se editează direct în <code>config/</code>.
+      </div>
+    );
+  return autentificat ? <Editor /> : <Login onOk={() => setAutentificat(true)} />;
 }

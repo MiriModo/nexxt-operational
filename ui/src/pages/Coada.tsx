@@ -1,52 +1,63 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getCoada, getContext, getDeciziiLocale } from "../api/client";
 import { useEchipa } from "../api/hooks";
 import { CaseCard } from "../components/CaseCard";
+import { STARI, numeStare } from "../components/Stare";
 import { Loading } from "../components/ui";
-import { eticheta } from "../format";
 import type { Banda, Caz, ParametriCoada, Recomandare } from "../types/api";
 
 type SortKey = NonNullable<ParametriCoada["sort"]>;
+type Doar = NonNullable<ParametriCoada["doar"]>;
 const PAGINA = 60;
-const RECOMANDARI: Recomandare[] = ["oferta_minima", "oferta_produs", "nu_interveni", "restructurare", "respins_escaladat", "blocat"];
-
-const GRUPE: { b: Banda; titlu: string; desc: string }[] = [
-  { b: "P1", titlu: "Acționează azi", desc: "Termen apropiat sau semnal puternic. Fiecare zi contează." },
-  { b: "P2", titlu: "Săptămâna aceasta", desc: "Important, dar cu spațiu de manevră." },
-  { b: "P3", titlu: "Poate aștepta", desc: "Monitorizare sau sarcini administrative." },
+const DOAR_TEXT: Record<Doar, string> = { termen_azi: "termen azi", peste_plafon: "amânate peste plafon", de_confirmat: "cu ceva de confirmat" };
+const GRUPE: { b: Banda; titlu: string }[] = [
+  { b: "P1", titlu: "Azi" },
+  { b: "P2", titlu: "Săptămâna aceasta" },
+  { b: "P3", titlu: "Poate aștepta" },
 ];
 
-/** Coada e filtrată, sortată și paginată pe server (sau pe snapshot, cu aceeași semantică): la 10.000 de clienți
- *  sunt ~6.000 de cazuri, deci se încarcă câte PAGINA odată și se cere „încă o pagină" la nevoie. */
+/** Coada e filtrată, sortată și paginată pe server (sau pe snapshot, cu aceeași semantică): câte PAGINA odată.
+ *  Filtrele vin și din URL (listele briefing-ului de pe Acasă). */
 export default function Coada() {
+  const [sp, setSp] = useSearchParams();
   const [items, setItems] = useState<Caz[] | null>(null);
   const [total, setTotal] = useState(0);
   const [peBanda, setPeBanda] = useState<Record<string, number>>({});
   const [azi, setAzi] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [incarca, setIncarca] = useState(false);
-  const [benzi, setBenzi] = useState<Set<Banda>>(new Set(["P1", "P2", "P3"]));
-  const [q, setQ] = useState("");
-  const [qAplicat, setQAplicat] = useState("");
-  const [sort, setSort] = useState<SortKey>("prioritate");
-  const [ascundeDecise, setAscundeDecise] = useState(false);
-  const [recomandari, setRecomandari] = useState<Set<Recomandare>>(new Set());
-  const [consilier, setConsilier] = useState("");
+  const [q, setQ] = useState(sp.get("q") ?? "");
+  const [qAplicat, setQAplicat] = useState(q);
   const echipa = useEchipa();
   const decizii = getDeciziiLocale();
+
+  // filtrele stau în URL: linkurile din briefing și „înapoi” le păstrează
+  const benzi = new Set<Banda>((sp.get("banda")?.split(",").filter(Boolean) as Banda[]) ?? []);
+  if (benzi.size === 0) ["P1", "P2", "P3"].forEach((b) => benzi.add(b as Banda));
+  const rec = (sp.get("rec") as Recomandare | null) ?? "";
+  const consilier = sp.get("consilier") ?? "";
+  const sort = (sp.get("sort") as SortKey | null) ?? "prioritate";
+  const ascundeDecise = sp.get("decise") === "nu";
+  const doar = (sp.get("doar") as Doar | null) ?? undefined;
+  const seteaza = (k: string, v: string | null) => {
+    const n = new URLSearchParams(sp);
+    if (v) n.set(k, v);
+    else n.delete(k);
+    setSp(n, { replace: true });
+  };
 
   useEffect(() => {
     getContext().then((ctx) => setAzi(ctx.azi)).catch(() => undefined);
   }, []);
-
-  // căutarea se aplică după o scurtă pauză de tastare, ca să nu lovească serverul la fiecare literă
   useEffect(() => {
     const t = setTimeout(() => setQAplicat(q), 250);
     return () => clearTimeout(t);
   }, [q]);
 
+  const cheie = `${[...benzi].join(",")}|${rec}|${consilier}|${sort}|${ascundeDecise}|${doar ?? ""}|${qAplicat}`;
   const parametri = (offset: number): ParametriCoada => ({
-    benzi: [...benzi], recomandari: [...recomandari], consilier: consilier || undefined, q: qAplicat, sort, ascundeDecise, limit: PAGINA, offset,
+    benzi: [...benzi], recomandari: rec ? [rec] : [], consilier: consilier || undefined, q: qAplicat, sort, ascundeDecise, doar, limit: PAGINA, offset,
   });
 
   useEffect(() => {
@@ -65,7 +76,7 @@ export default function Coada() {
       activ = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [benzi, recomandari, consilier, qAplicat, sort, ascundeDecise]);
+  }, [cheie]);
 
   const incaOPagina = async () => {
     if (!items) return;
@@ -81,76 +92,54 @@ export default function Coada() {
     }
   };
 
-  if (!items) return <Loading err={err} />;
-
-  const toggle = (b: Banda) => {
+  const toggleBanda = (b: Banda) => {
     const s = new Set(benzi);
     if (s.has(b)) s.delete(b);
     else s.add(b);
-    setBenzi(s);
+    seteaza("banda", s.size === 3 || s.size === 0 ? null : [...s].join(","));
   };
-  const toggleRec = (r: Recomandare) => {
-    const s = new Set(recomandari);
-    if (s.has(r)) s.delete(r);
-    else s.add(r);
-    setRecomandari(s);
-  };
+
+  const active: { k: string; text: string }[] = [];
+  if (rec) active.push({ k: "rec", text: numeStare(rec) });
+  if (consilier) active.push({ k: "consilier", text: echipa.data?.find((c) => c.id === consilier)?.nume ?? consilier });
+  if (doar) active.push({ k: "doar", text: DOAR_TEXT[doar] });
+  if (ascundeDecise) active.push({ k: "decise", text: "fără cazurile decise" });
+  if (qAplicat) active.push({ k: "q", text: `„${qAplicat}”` });
 
   return (
     <>
       <div className="page-head">
         <div>
-          <h1>Coada de cazuri</h1>
+          <h1>Cazuri</h1>
           <p className="muted" style={{ margin: 0 }}>
-            {total} cazuri după filtre, afișate {items.length}. Apasă pe un caz pentru detalii, semnale și oferta propusă.
+            {items ? `${total} ${total === 1 ? "caz" : "cazuri"}` : "se încarcă"}
           </p>
         </div>
       </div>
 
       <div className="filters" role="group" aria-label="Filtre">
         {(["P1", "P2", "P3"] as Banda[]).map((b) => (
-          <button key={b} type="button" className={`chip ${benzi.has(b) ? "on" : ""}`} aria-pressed={benzi.has(b)} onClick={() => toggle(b)}>
+          <button key={b} type="button" className={`chip ${benzi.has(b) ? "on" : ""}`} aria-pressed={benzi.has(b)} onClick={() => toggleBanda(b)}>
             {b} <span className="chip-n">{peBanda[b] ?? 0}</span>
           </button>
         ))}
-        <button type="button" className={`chip ${ascundeDecise ? "on" : ""}`} aria-pressed={ascundeDecise} onClick={() => setAscundeDecise(!ascundeDecise)}>
-          Ascunde cazurile decise
-        </button>
-        <span style={{ flex: 1 }} />
-        <label className="sr-only" htmlFor="sort">
-          Ordonează după
+        <label className="sr-only" htmlFor="rec">
+          Recomandare
         </label>
-        <select id="sort" value={sort} onChange={(e) => setSort(e.target.value as SortKey)} style={{ width: "auto" }}>
-          <option value="prioritate">După prioritate</option>
-          <option value="termen">După termen</option>
-          <option value="client">După client</option>
+        <select id="rec" value={rec} onChange={(e) => seteaza("rec", e.target.value || null)} style={{ width: "auto" }}>
+          <option value="">Toate recomandările</option>
+          {(Object.keys(STARI) as Recomandare[]).map((r) => (
+            <option key={r} value={r}>
+              {STARI[r].nume}
+            </option>
+          ))}
         </select>
-        <label className="sr-only" htmlFor="cauta">
-          Caută în coadă
-        </label>
-        <input
-          id="cauta"
-          type="text"
-          placeholder="Caută client, caz, produs sau motiv"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          style={{ maxWidth: 300 }}
-        />
-      </div>
-
-      <div className="filters" role="group" aria-label="Filtre pe recomandare și consilier">
-        {RECOMANDARI.map((r) => (
-          <button key={r} type="button" className={`chip ${recomandari.has(r) ? "on" : ""}`} aria-pressed={recomandari.has(r)} onClick={() => toggleRec(r)}>
-            {eticheta(r)}
-          </button>
-        ))}
-        <span style={{ flex: 1 }} />
         {echipa.data && echipa.data.length > 0 && (
           <>
             <label className="sr-only" htmlFor="consilier">
               Consilier
             </label>
-            <select id="consilier" value={consilier} onChange={(e) => setConsilier(e.target.value)} style={{ width: "auto" }}>
+            <select id="consilier" value={consilier} onChange={(e) => seteaza("consilier", e.target.value || null)} style={{ width: "auto" }}>
               <option value="">Toți consilierii</option>
               {echipa.data.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -160,44 +149,82 @@ export default function Coada() {
             </select>
           </>
         )}
+        <button type="button" className={`chip ${ascundeDecise ? "on" : ""}`} aria-pressed={ascundeDecise} onClick={() => seteaza("decise", ascundeDecise ? null : "nu")}>
+          Ascunde decise
+        </button>
+        <span style={{ flex: 1 }} />
+        <label className="sr-only" htmlFor="sort">
+          Ordonează după
+        </label>
+        <select id="sort" value={sort} onChange={(e) => seteaza("sort", e.target.value === "prioritate" ? null : e.target.value)} style={{ width: "auto" }}>
+          <option value="prioritate">După prioritate</option>
+          <option value="termen">După termen</option>
+          <option value="client">După client</option>
+        </select>
+        <label className="sr-only" htmlFor="cauta">
+          Caută
+        </label>
+        <input id="cauta" type="text" placeholder="Caută client, caz sau motiv" value={q} onChange={(e) => setQ(e.target.value)} style={{ maxWidth: 260 }} />
       </div>
 
-      <p className="sr-only" role="status">
-        {items.length} cazuri afișate din {total}
-      </p>
-
-      {items.length === 0 && !incarca && (
-        <div className="empty">Niciun caz nu se potrivește filtrelor. Șterge căutarea sau reactivează o bandă.</div>
+      {active.length > 0 && (
+        <div className="active-filters" aria-label="Filtre active">
+          {active.map((a) => (
+            <button
+              key={a.k}
+              type="button"
+              className="flt"
+              onClick={() => {
+                if (a.k === "q") setQ("");
+                seteaza(a.k, null);
+              }}
+              aria-label={`Scoate filtrul ${a.text}`}
+            >
+              {a.text} <b aria-hidden="true">×</b>
+            </button>
+          ))}
+        </div>
       )}
 
-      {GRUPE.filter((g) => benzi.has(g.b)).map((g) => {
-        const grup = items.filter((c) => c.case.banda === g.b);
-        if (grup.length === 0) return null;
-        return (
-          <section key={g.b} className="queue-group" aria-labelledby={`g-${g.b}`}>
-            <div className="group-head">
-              <h2 id={`g-${g.b}`}>
-                {g.titlu} <span className="group-band">{g.b}</span>
-              </h2>
-              <span className="group-count">
-                {grup.length}
-                {peBanda[g.b] && peBanda[g.b] > grup.length ? ` din ${peBanda[g.b]}` : ""}
-              </span>
-              <p className="muted small">{g.desc}</p>
-            </div>
-            <div className="case-list">
-              {grup.map((c) => (
-                <CaseCard key={c.case.case_id} c={c} azi={azi} decizie={decizii[c.case.case_id]} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      {!items && !err && (
+        <div className="case-list" aria-busy="true">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="skeleton" />
+          ))}
+        </div>
+      )}
+      {!items && err && <Loading err={err} />}
 
-      {items.length < total && (
+      {items && items.length === 0 && !incarca && <div className="empty">Niciun caz pentru filtrele alese.</div>}
+
+      {items &&
+        GRUPE.filter((g) => benzi.has(g.b)).map((g) => {
+          const grup = items.filter((c) => c.case.banda === g.b);
+          if (grup.length === 0) return null;
+          return (
+            <section key={g.b} className="queue-group" aria-labelledby={`g-${g.b}`}>
+              <div className="group-head">
+                <h2 id={`g-${g.b}`}>
+                  {g.titlu} <span className="group-band">{g.b}</span>
+                </h2>
+                <span className="group-count">
+                  {grup.length}
+                  {peBanda[g.b] && peBanda[g.b] > grup.length ? ` din ${peBanda[g.b]}` : ""}
+                </span>
+              </div>
+              <div className="case-list">
+                {grup.map((c) => (
+                  <CaseCard key={c.case.case_id} c={c} azi={azi} decizie={decizii[c.case.case_id]} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+
+      {items && items.length < total && (
         <div className="actions" style={{ justifyContent: "center", margin: "16px 0" }}>
           <button type="button" className="btn secondary" disabled={incarca} onClick={incaOPagina}>
-            {incarca ? "Se încarcă…" : `Încă ${Math.min(PAGINA, total - items.length)} cazuri (${items.length} din ${total})`}
+            {incarca ? "Se încarcă…" : `Încă ${Math.min(PAGINA, total - items.length)} cazuri`}
           </button>
         </div>
       )}

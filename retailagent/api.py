@@ -20,7 +20,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+import secrets
+
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -43,6 +45,14 @@ class RezultatInput(BaseModel):
 
 class ConfigInput(BaseModel):
     text: str
+
+
+class ParolaInput(BaseModel):
+    parola: str
+
+
+# parola ecranului Admin (editarea YAML-urilor, re-rularea); pentru demo e `admin`, în producție vine din mediu
+ADMIN_PAROLA = os.environ.get("RETAILAGENT_ADMIN_PAROLA", "admin")
 
 
 def compact_caz(c: dict) -> dict:
@@ -127,13 +137,21 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     @app.get("/api/coada")
     def coada(limit: int = 60, offset: int = 0, banda: str | None = None, q: str | None = None,
               sort: str = "prioritate", ascunde_decise: bool = False, recomandare: str | None = None,
-              consilier: str | None = None):
-        """Pagina de coadă: filtre + sortare + paginare pe server (UI-ul nu încarcă toate cazurile)."""
+              consilier: str | None = None, doar: str | None = None):
+        """Pagina de coadă: filtre + sortare + paginare pe server (UI-ul nu încarcă toate cazurile).
+        `doar` = una din listele briefing-ului: termen_azi | peste_plafon | de_confirmat."""
         rows = stare.data["cazuri"]
         benzi = set(banda.split(",")) if banda else None
         decise = _decise() if ascunde_decise else {}
         if benzi:
             rows = [c for c in rows if c["case"]["banda"] in benzi]
+        if doar == "termen_azi":
+            azi = stare.data["azi"]
+            rows = [c for c in rows if c["case"]["deadline"] <= azi]
+        elif doar == "peste_plafon":
+            rows = [c for c in rows if (c["rec"].get("oferta") or {}).get("amanata_buget")]
+        elif doar == "de_confirmat":
+            rows = [c for c in rows if c["rec"].get("incertitudini")]
         if recomandare:
             rec_set = set(recomandare.split(","))
             rows = [c for c in rows if c["rec"]["recomandare"] in rec_set]
@@ -155,7 +173,8 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
 
     @app.get("/api/cazuri/sumar")
     def sumar():
-        """Contoarele paginii de start, pe toată coada: deschise, cu termen azi, blocate, decise, primele 5."""
+        """Contoarele paginii de start (briefing-ul consilierului), pe toată coada: deschise, P1 cu termen azi,
+        oferte amânate peste plafon, cazuri cu ceva de confirmat, blocate, decise, primele 5."""
         rows = stare.data["cazuri"]
         azi = stare.data["azi"]
         decise = _decise()
@@ -163,6 +182,9 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         primele = sorted(deschise, key=lambda c: (c["case"]["deadline"], -c["case"]["scoruri"]["prioritate"]))[:5]
         return {"total": len(rows), "deschise": len(deschise), "p1": sum(1 for c in deschise if c["case"]["banda"] == "P1"),
                 "scadente_azi": sum(1 for c in deschise if c["case"]["deadline"] <= azi),
+                "p1_azi": sum(1 for c in deschise if c["case"]["banda"] == "P1" and c["case"]["deadline"] <= azi),
+                "peste_plafon": sum(1 for c in deschise if (c["rec"].get("oferta") or {}).get("amanata_buget")),
+                "de_confirmat": sum(1 for c in deschise if c["rec"].get("incertitudini")),
                 "blocate": sum(1 for c in deschise if c["case"]["blocaje"] or c["rec"]["recomandare"] == "blocat"),
                 "decise": len(rows) - len(deschise), "pe_banda": dict(Counter(c["case"]["banda"] for c in rows)),
                 "primele": [compact_caz(c) for c in primele]}
@@ -254,17 +276,29 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         meta = read_json(meta_p) if meta_p.exists() else {}
         return {"activ": versiune_model(stare.full.cfg), "antrenat": meta}
 
-    # ---- configurație (Admin): editare YAML cu validare pe server, apoi re-rulare
+    # ---- configurație (Admin): editare YAML cu validare pe server, apoi re-rulare. Rutele cer parola de administrare
+    # (RETAILAGENT_ADMIN_PAROLA; implicit `admin` pentru demo) în antetul X-Admin-Parola.
     EDITABILE = ("priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa")
 
-    @app.get("/api/config")
+    def admin(x_admin_parola: str | None = Header(default=None)):
+        if not x_admin_parola or not secrets.compare_digest(x_admin_parola, ADMIN_PAROLA):
+            raise HTTPException(401, "parola de administrare lipsește sau e greșită")
+        return True
+
+    @app.post("/api/admin/login")
+    def admin_login(body: ParolaInput):
+        if not secrets.compare_digest(body.parola, ADMIN_PAROLA):
+            raise HTTPException(401, "parolă greșită")
+        return {"ok": True}
+
+    @app.get("/api/config", dependencies=[Depends(admin)])
     def config_lista():
         from .versiune import versiune_config
         v = versiune_config(stare.config_dir)
         return [{"nume": n, "fisier": f"{n}.yaml", "hash": v["fisiere"].get(f"{n}.yaml"),
                  "exista": (stare.config_dir / f"{n}.yaml").exists()} for n in EDITABILE]
 
-    @app.get("/api/config/{nume}")
+    @app.get("/api/config/{nume}", dependencies=[Depends(admin)])
     def config_citeste(nume: str):
         if nume not in EDITABILE:
             raise HTTPException(404, f"configurația {nume!r} nu e editabilă: {EDITABILE}")
@@ -273,7 +307,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
             raise HTTPException(404, f"{p} lipsește")
         return {"nume": nume, "text": p.read_text(encoding="utf-8")}
 
-    @app.put("/api/config/{nume}")
+    @app.put("/api/config/{nume}", dependencies=[Depends(admin)])
     def config_scrie(nume: str, body: ConfigInput):
         """Validează noul YAML cu aceleași modele pydantic ca la încărcare (pe o copie), apoi îl scrie. 400 = invalid."""
         import shutil
@@ -304,7 +338,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         return {"nume": nume, "salvat": True, "versiune": versiune_config(stare.config_dir)["hash"],
                 "nota": "rulează POST /api/rescan ca schimbarea să intre în coadă"}
 
-    @app.get("/api/config/{nume}/diff")
+    @app.get("/api/config/{nume}/diff", dependencies=[Depends(admin)])
     def config_diff(nume: str):
         """Diferența față de versiunea din git (dacă proiectul e într-un repo)."""
         import subprocess
@@ -317,7 +351,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         except (OSError, subprocess.SubprocessError):
             return {"nume": nume, "diff": "", "git": False}
 
-    @app.post("/api/rescan")
+    @app.post("/api/rescan", dependencies=[Depends(admin)])
     def rescan():
         stare.refresh()
         return {"cazuri": stare.data["total_cazuri"], "azi": stare.data["azi"]}

@@ -351,6 +351,10 @@ export interface Sumar {
   deschise: number;
   p1: number;
   scadente_azi: number;
+  /** briefing-ul zilei: P1 cu termen azi, oferte amânate peste plafon, cazuri cu ceva de confirmat */
+  p1_azi?: number;
+  peste_plafon?: number;
+  de_confirmat?: number;
   blocate: number;
   decise: number;
   pe_banda: Record<string, number>;
@@ -364,6 +368,8 @@ export interface ParametriCoada {
   q?: string;
   sort?: "prioritate" | "termen" | "client";
   ascundeDecise?: boolean;
+  /** listele briefing-ului de pe Acasă */
+  doar?: "termen_azi" | "peste_plafon" | "de_confirmat";
   limit?: number;
   offset?: number;
 }

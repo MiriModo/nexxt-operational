@@ -77,25 +77,33 @@ verificările cazului, pe trepte), `GET /api/decizii`, `GET /api/feedback`, `GET
 (metrici + calibrare), `GET /api/config` · `GET/PUT /api/config/{nume}` (editare YAML cu validare pydantic, 400 cu
 mesajul la eroare) · `GET /api/config/{nume}/diff`, `POST /api/rescan`, `GET /api/metrici`. OpenAPI la
 `http://127.0.0.1:8000/docs`; `cd ui && npm run types` generează `src/types/openapi.d.ts` din el.
-Variabile de mediu: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`.
+Variabile de mediu: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`, `RETAILAGENT_ADMIN_PAROLA`.
 
 ### Ecranele interfeței
 
-* **Acasă** — ce te așteaptă azi (contoare pe toată coada).
-* **Coadă** — carduri pe bandă, filtre pe bandă / recomandare / consilier, căutare, „ascunde decise", paginare
-  (60 odată din ~6.000); etichete „incertitudine" și „peste plafon".
-* **Caz** — semnale cu dovezi; **verificările pe trepte** (intern → ANAF → BC → CRC → garanție → eligibilitate) cu
-  starea fiecărei trepte și butonul **Reverifică acum** (rulează doar verificările acelui caz și le arată pas cu
-  pas); incertitudinile cazului; modelul de retenție (B, p din modelul antrenat + contribuții, V, legături, meniul
-  cu infezabilele și motivul); recomandarea cu oferta (condiționată, dacă e cazul), bugetul de portofoliu, graficul
-  și documentele; câmp opțional pentru argumentul / textul generat de agentul LLM (pasul următor).
+Interfața e pentru consilier: pe fiecare ecran doar ce îi trebuie ca să decidă (cine, de ce acum, ce propune
+agentul, ce costă / ce aduce, ce are de confirmat), restul într-un acordeon „Cum a ajuns agentul aici". Cele 6
+stări au aceeași culoare și același simbol peste tot (● ofertă, ◐ ofertă + produs, ○ nu interveni,
+▲ restructurare, ■ escaladare, ⊘ blocat).
+
+* **Acasă** — briefing-ul zilei, cu link direct: cazuri urgente cu termenul azi, oferte amânate peste plafon, cazuri
+  cu ceva de confirmat, apoi primele 5 după termen.
+* **Cazuri** — carduri pe bandă cu bara de termen (fereastră de 14 zile), filtre în URL (bandă, recomandare,
+  consilier, căutare, „ascunde decise", listele din briefing) afișate ca chips cu ×, paginare (60 odată din ~6.000),
+  schelet la încărcare.
+* **Caz** — banda sticky cu clientul, recomandarea, rata veche → nouă, termenul și butonul **Ia decizia**; „De ce
+  acum" (motivele), clientul și creditul pe două rânduri, „Ce propune agentul" (dobândă, rată, economie, cost, ce e
+  de confirmat / de cerut, textul LLM când există); **verificările** un rând pe verificare, pe trepte, cu
+  **Reverifică** (rulează doar verificările acelui caz și le arată pas cu pas). În acordeon: semnalele, B / p / V,
+  meniul de intervenții ca grafic cost × p_după (aleasa plină, infezabilele gri), explicația completă, versiunea.
 * **Decizie** — aprobă / modifică / respinge cu motiv, consilierul care decide (preselectat cel alocat din
-  `echipa.yaml`), istoricul deciziilor cu override-uri și versiune, rezultatul la 90 de zile.
-* **Dashboard** — cifra-vedetă, agent vs. uniform, distribuția, cerințele dure, **calibrarea modelului** (AUC /
-  Brier / ECE, 10 intervale prezis vs. real), bugetul de portofoliu, **feedback** (override-uri pe intervenție,
-  rămânere reală vs. prezisă, propuneri), versiunea.
-* **Admin** — editor pentru cele 7 YAML-uri cu validare pe server la salvare (aceleași modele pydantic ca la
-  pornire), diff față de git, „Re-rulează fluxul".
+  `echipa.yaml`), deciziile anterioare cu override și rezultatul la 90 de zile; confirmare (toast) și întoarcere la caz.
+* **Rezultate** — economia față de „aceeași reducere pentru toți", cazurile fără cost, interogările evitate,
+  cerințele dure; costul pe strategie și distribuția recomandărilor ca bare; bugetul lunar ca bară folosit / plafon;
+  **calibrarea modelului** (AUC / Brier, 10 intervale prezis vs. real cu diagonala ideală); consilierii față de agent.
+* **Administrare** (`/admin`, link discret în antet) — **cu parolă**: `RETAILAGENT_ADMIN_PAROLA` în mediul API-ului
+  (implicit `admin`, doar pentru demo); rutele `/api/config*` și `/api/rescan` cer antetul `X-Admin-Parola`. Editor
+  pentru cele 7 YAML-uri cu validare pe server la salvare, diff față de git, „Re-rulează fluxul".
 
 ## Comenzi
 

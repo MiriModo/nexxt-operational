@@ -92,31 +92,55 @@ def test_verifica_si_model(client, pipeline):
     assert m["activ"]["model"] in ("sigmoid", "antrenat")
 
 
+ADMIN = {"X-Admin-Parola": "admin"}
+
+
 def test_config_admin(client, tmp_path):
-    lista = client.get("/api/config").json()
+    # fără parolă (sau cu una greșită) rutele de administrare sunt închise
+    assert client.get("/api/config").status_code == 401
+    assert client.get("/api/config/retention", headers={"X-Admin-Parola": "nu"}).status_code == 401
+    assert client.post("/api/rescan").status_code == 401
+    assert client.post("/api/admin/login", json={"parola": "nu"}).status_code == 401
+    assert client.post("/api/admin/login", json={"parola": "admin"}).json() == {"ok": True}
+    lista = client.get("/api/config", headers=ADMIN).json()
     assert {x["nume"] for x in lista} >= {"priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa"}
-    r = client.get("/api/config/retention").json()
+    r = client.get("/api/config/retention", headers=ADMIN).json()
     assert "p_tinta" in r["text"]
-    assert client.get("/api/config/parola").status_code == 404
+    assert client.get("/api/config/parola", headers=ADMIN).status_code == 404
     # invalid: p_tinta în afara intervalului → 400 cu mesaj; fișierul nu se schimbă
     original = r["text"]
-    rau = client.put("/api/config/retention", json={"text": original.replace("p_tinta: 0.20", "p_tinta: 1.5")})
+    rau = client.put("/api/config/retention", json={"text": original.replace("p_tinta: 0.20", "p_tinta: 1.5")}, headers=ADMIN)
     assert rau.status_code == 400 and "respins" in rau.json()["detail"]
-    assert client.get("/api/config/retention").json()["text"] == original
-    assert client.put("/api/config/retention", json={"text": "p_tinta: [unclosed"}).status_code == 400
+    assert client.get("/api/config/retention", headers=ADMIN).json()["text"] == original
+    assert client.put("/api/config/retention", json={"text": "p_tinta: [unclosed"}, headers=ADMIN).status_code == 400
     # valid: aceeași configurație rescrisă cu un comentariu → salvat, versiunea se schimbă
-    ok = client.put("/api/config/retention", json={"text": original + "\n# editat din Admin\n"}).json()
+    ok = client.put("/api/config/retention", json={"text": original + "\n# editat din Admin\n"}, headers=ADMIN).json()
     assert ok["salvat"] and ok["versiune"]
-    assert client.get("/api/config/retention").json()["text"].endswith("# editat din Admin\n")
-    client.put("/api/config/retention", json={"text": original})            # restaurare
-    assert client.get("/api/config/retention").json()["text"] == original
-    d = client.get("/api/config/retention/diff").json()
+    assert client.get("/api/config/retention", headers=ADMIN).json()["text"].endswith("# editat din Admin\n")
+    client.put("/api/config/retention", json={"text": original}, headers=ADMIN)            # restaurare
+    assert client.get("/api/config/retention", headers=ADMIN).json()["text"] == original
+    d = client.get("/api/config/retention/diff", headers=ADMIN).json()
     assert "diff" in d
 
 
 def test_rescan(client):
-    r = client.post("/api/rescan").json()
+    r = client.post("/api/rescan", headers=ADMIN).json()
     assert r["cazuri"] > 0
+
+
+def test_sumar_briefing(client):
+    s = client.get("/api/cazuri/sumar").json()
+    assert {"p1_azi", "peste_plafon", "de_confirmat", "deschise", "primele"} <= set(s)
+    assert s["p1_azi"] <= s["p1"] <= s["deschise"]
+    # listele briefing-ului se deschid în coadă cu `doar`
+    for doar in ("de_confirmat", "peste_plafon"):            # sumarul numără doar cazurile nedecise, coada pe toate
+        p = client.get(f"/api/coada?doar={doar}&limit=500").json()
+        assert p["total"] >= s[doar]
+        if doar == "de_confirmat":
+            assert all(c["rec"]["incertitudini"] for c in p["items"])
+    azi = client.get("/api/metrici/context").json()["azi"]
+    p = client.get("/api/coada?doar=termen_azi&limit=500").json()
+    assert all(c["case"]["deadline"] <= azi for c in p["items"])
 
 
 def test_sync_ui_scrie_snapshotul(pipeline, tmp_path):

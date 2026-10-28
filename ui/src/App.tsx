@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
-import { getContext, getSursa, onSursa, type Context } from "./api/client";
+import { getSursa, onSursa } from "./api/client";
 import Acasa from "./pages/Acasa";
 import Dashboard from "./pages/Dashboard";
 import Coada from "./pages/Coada";
@@ -8,13 +8,11 @@ import CazPage from "./pages/Caz";
 import DeciziePage from "./pages/Decizie";
 import Admin from "./pages/Admin";
 
+/** Antetul spune doar ce are nevoie consilierul: unde e și dacă lucrează pe date vii. Administrarea e un link discret,
+ *  pe o pagină separată, cu parolă. */
 export default function App() {
-  const [ctx, setCtx] = useState<Context | null>(null);
   const [sursa, setSursa] = useState(getSursa());
-  useEffect(() => {
-    getContext().then(setCtx).catch(() => setCtx(null));
-    return onSursa(setSursa);
-  }, []);
+  useEffect(() => onSursa(setSursa), []);
   return (
     <>
       <a href="#continut" className="skip">
@@ -28,20 +26,18 @@ export default function App() {
           <NavLink to="/" end>
             Acasă
           </NavLink>
-          <NavLink to="/cazuri">Coadă</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/admin">Admin</NavLink>
+          <NavLink to="/cazuri">Cazuri</NavLink>
+          <NavLink to="/rezultate">Rezultate</NavLink>
         </nav>
-        <span className="ctx">
-          {ctx ? `${ctx.clienti} clienți în portofoliu` : ""}
-          {ctx && sursa === "static" ? ", date statice (API oprit)" : ""}
-          {ctx && sursa === "api" ? ", API live" : ""}
-          {ctx?.model_churn ? `, model ${ctx.model_churn.nume}` : ""}
-        </span>
+        {sursa === "static" && <span className="ctx">date statice, serverul nu răspunde</span>}
+        <NavLink to="/admin" className="admin-link">
+          Administrare
+        </NavLink>
       </header>
       <main id="continut">
         <Routes>
           <Route path="/" element={<Acasa />} />
+          <Route path="/rezultate" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cazuri" element={<Coada />} />
           <Route path="/cazuri/:id" element={<CazPage />} />
