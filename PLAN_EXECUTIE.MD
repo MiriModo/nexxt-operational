@@ -173,7 +173,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   explicația, documentele lipsă, butoane Aprobă / Modifică / Respinge care afișează comanda `approve`
   echivalentă; se deschide corect în browser (verificat cu un parser HTML în test: fără `<script src>`
   extern, dimensiune < 5 MB).
-- [ ] M6-T3 README + zip final — Acceptance criteria: README descrie setup-ul în 3 comenzi, toate comenzile,
+- [x] M6-T3 README + zip final — Acceptance criteria: README descrie setup-ul în 3 comenzi, toate comenzile,
   fluxul complet, formulele (B, p, V, optimizare), tabelul de interpretări extins, structura; o persoană
   nouă rulează tot în < 5 minute; `python -m pytest` verde; arhiva `NEXXT_retailagent_<data>.zip` refăcută
   (fără `out/`? NU — cu `out/` inclus, fără cache și fără PDF); commit + push final.

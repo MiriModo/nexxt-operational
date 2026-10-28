@@ -122,3 +122,16 @@
   KPI-uri, filtre pe bandă / cu ofertă / blocate, căutare, panou caz cu semnale, verificări planificate / omise / rezultate,
   tabel intervenții, recomandare, ofertă, grafic, documente, butoane Aprobă / Modifică / Respinge → comanda `approve`).
 - Fără resurse externe; ~700 KB. 4 teste în `tests/test_demo.py` (parser HTML: fără `<script src>`, date încorporate, UI, CLI).
+
+## M6-T3 — README + zip final (done)
+- README rescris integral: schema fluxului, setup în 3 comenzi (`generate` → `pipeline`), toate comenzile, tabelul de
+  rezultate cu cifra-vedetă, cele 4 secțiuni ale modelului cu formulele B / legături / p / V, constrângeri, optimizare,
+  exemplul C0013 vs C0014, datele, „cum adaugi ceva nou", tabelul de interpretări (12 rânduri), structura.
+- `tests/test_readme.py` (2 teste). Arhiva `NEXXT_retailagent_2026-10-28_final.zip` (87 fișiere, 0,5 MB, cu `out/`,
+  fără cache / PDF / .git).
+
+## Raport final — OBIECTIV ATINS (2026-10-28)
+- 16/16 taskuri done; 148 teste verzi; compileall OK; metricile Modulului 1 neschimbate (F1 1,00, 100%, 708/708, 0, 5/5).
+- Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;
+  recomandări 98%; verificări picate 3/3; 0 încălcări; flux complet 0,65 s; demo.html verificat în browser.
+- Deschise pentru mentor: calibrarea parametrilor (orizont, sigmoid, efect pachet), C0049, validarea pe date reale.
