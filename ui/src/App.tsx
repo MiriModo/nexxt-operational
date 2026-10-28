@@ -1,77 +1,112 @@
 import { useEffect, useState } from "react";
-import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { getSursa, onSursa } from "./api/client";
-import { Protejat, useEu } from "./auth";
-import Acasa from "./pages/Acasa";
-import Birou from "./pages/Birou";
-import CazPage from "./pages/Caz";
-import Coada from "./pages/Coada";
-import Dashboard from "./pages/Dashboard";
-import DeciziePage from "./pages/Decizie";
+import { Protected, homeFor, useEu } from "./auth";
+import { Brand } from "./components/Brand";
+import Case from "./pages/Case";
+import Decision from "./pages/Decision";
+import Desk from "./pages/Desk";
 import Home from "./pages/Home";
-import Motor from "./pages/Motor";
+import Overview from "./pages/Overview";
+import Queue from "./pages/Queue";
+import Reports from "./pages/Reports";
+import RulesEngine from "./pages/RulesEngine";
 
-/** Antetul arată doar ce are nevoie cine e logat: consilierul își vede biroul și cazurile, administratorul vede tot. */
+/** Fixed header (guide B3): transparent, frosted on scroll; the nav depends on who is signed in. */
 export default function App() {
   const { eu, logout } = useEu();
   const nav = useNavigate();
-  const [sursa, setSursa] = useState(getSursa());
-  useEffect(() => onSursa(setSursa), []);
-  const iesi = async () => {
+  const loc = useLocation();
+  const [source, setSource] = useState(getSursa());
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => onSursa(setSource), []);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  useEffect(() => setOpen(false), [loc.pathname]);
+  const signOut = async () => {
     await logout();
     nav("/");
   };
+  const landing = !eu && loc.pathname === "/";
+
   return (
     <>
-      <a href="#continut" className="skip">
-        Sari la conținut
+      <a href="#content" className="skip">
+        Skip to content
       </a>
-      <header className="top">
-        <NavLink to={eu ? (eu.rol === "admin" ? "/acasa" : "/biroul-meu") : "/"} className="brand" aria-label="retailagent, pagina de start">
-          retailagent<span className="dot" aria-hidden="true" />
-        </NavLink>
-        {eu?.rol === "consilier" && (
-          <nav aria-label="Principal">
-            <NavLink to="/biroul-meu">Biroul meu</NavLink>
-            <NavLink to="/cazuri">Cazurile mele</NavLink>
-          </nav>
-        )}
-        {eu?.rol === "admin" && (
-          <nav aria-label="Principal">
-            <NavLink to="/acasa">Acasă</NavLink>
-            <NavLink to="/cazuri">Cazuri</NavLink>
-            <NavLink to="/rezultate">Rezultate</NavLink>
-            <NavLink to="/motor">Motor de reguli</NavLink>
-          </nav>
-        )}
-        {sursa === "static" && <span className="ctx">date statice, serverul nu răspunde</span>}
-        {eu ? (
-          <span className="cine">
-            {eu.nume}
-            <button type="button" className="btn ghost sm" onClick={iesi}>
-              Ieși
+      <header className={`hdr ${scrolled || open ? "scrolled" : ""} ${open ? "open" : ""}`}>
+        <div className="container hdr-in">
+          <Brand to={homeFor(eu)} />
+          {eu?.rol === "consilier" && (
+            <nav className="nav" aria-label="Main">
+              <NavLink to="/desk">My desk</NavLink>
+              <NavLink to="/queue">My queue</NavLink>
+            </nav>
+          )}
+          {eu?.rol === "admin" && (
+            <nav className="nav" aria-label="Main">
+              <NavLink to="/overview">Overview</NavLink>
+              <NavLink to="/queue">Queue</NavLink>
+              <NavLink to="/reports">Reports</NavLink>
+              <NavLink to="/rules">Rules engine</NavLink>
+            </nav>
+          )}
+          {!eu && landing && (
+            <nav className="nav" aria-label="Main">
+              <a href="#how">How it works</a>
+              <a href="#signin">Sign in</a>
+            </nav>
+          )}
+          <div className="cta">
+            {source === "static" && <span className="who">static data · server offline</span>}
+            {eu ? (
+              <>
+                <span className="who">{eu.nume}</span>
+                <button type="button" className="btn ghost" onClick={signOut}>
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <a href="#signin" className="btn primary" onClick={(e) => { if (loc.pathname !== "/") { e.preventDefault(); nav("/#signin"); } }}>
+                Open the queue <span className="arrow">→</span>
+              </a>
+            )}
+            <button type="button" className="btn ghost menu-btn" aria-expanded={open} onClick={() => setOpen(!open)}>
+              Menu
             </button>
-          </span>
-        ) : (
-          <NavLink to="/" className="admin-link">
-            Intră în cont
-          </NavLink>
-        )}
+          </div>
+        </div>
       </header>
-      <main id="continut">
+      <main id="content" className={`container ${landing ? "landing" : ""}`}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/biroul-meu" element={<Protejat rol="consilier"><Birou /></Protejat>} />
-          <Route path="/acasa" element={<Protejat rol="admin"><Acasa /></Protejat>} />
-          <Route path="/cazuri" element={<Protejat><Coada /></Protejat>} />
-          <Route path="/cazuri/:id" element={<Protejat><CazPage /></Protejat>} />
-          <Route path="/cazuri/:id/decizie" element={<Protejat><DeciziePage /></Protejat>} />
-          <Route path="/rezultate" element={<Protejat rol="admin"><Dashboard /></Protejat>} />
-          <Route path="/motor" element={<Protejat rol="admin"><Motor /></Protejat>} />
-          <Route path="/dashboard" element={<Navigate to="/rezultate" replace />} />
-          <Route path="/admin" element={<Navigate to="/motor" replace />} />
+          <Route path="/desk" element={<Protected role="consilier"><Desk /></Protected>} />
+          <Route path="/overview" element={<Protected role="admin"><Overview /></Protected>} />
+          <Route path="/queue" element={<Protected><Queue /></Protected>} />
+          <Route path="/queue/:id" element={<Protected><Case /></Protected>} />
+          <Route path="/queue/:id/decide" element={<Protected><Decision /></Protected>} />
+          <Route path="/reports" element={<Protected role="admin"><Reports /></Protected>} />
+          <Route path="/rules" element={<Protected role="admin"><RulesEngine /></Protected>} />
+          <Route path="/biroul-meu" element={<Navigate to="/desk" replace />} />
+          <Route path="/acasa" element={<Navigate to="/overview" replace />} />
+          <Route path="/cazuri" element={<Navigate to="/queue" replace />} />
+          <Route path="/cazuri/:id" element={<CaseRedirect />} />
+          <Route path="/rezultate" element={<Navigate to="/reports" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/reports" replace />} />
+          <Route path="/motor" element={<Navigate to="/rules" replace />} />
+          <Route path="/admin" element={<Navigate to="/rules" replace />} />
         </Routes>
       </main>
     </>
   );
+}
+
+function CaseRedirect() {
+  const loc = useLocation();
+  return <Navigate to={loc.pathname.replace(/^\/cazuri/, "/queue").replace(/\/decizie$/, "/decide")} replace />;
 }

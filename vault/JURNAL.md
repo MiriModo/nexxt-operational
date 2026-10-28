@@ -196,3 +196,12 @@
 - UI: Home public cu „Intră în cont” (lista de nume + parolă), `AuthProvider` + `Protejat`, Biroul meu (consilier),
   Acasă / Cazuri / Rezultate / Motor de reguli (admin); fără server, login de demo și filtrare în browser.
 - Lecție: în Bash tool, backtick-urile din comenzi (chiar în heredoc) rup parsarea → scripturile mari se pun în fișier.
+
+## Keeper: rebrand + sistemul vizual din ghid (2026-10-28, seara)
+- Interfața devine Keeper („Find the case. Keep the client.”), în engleză, pe tokenii și componentele din
+  `Keeper_ghid_vizual_v2.pdf`: Instrument Sans / Wix Madefor Text / Fragment Mono (împachetate cu @fontsource), header
+  fix transparent → blur, butoane negre cu „→”, cadre gri r28 cu ferestre albe r14, etichete mono `[01] NAME`, badge-uri
+  Keep / Watch / Escalate, cifre mari cu unitate gri. Temă light numai (dark mode scos).
+- Landing: hero pe grilă de puncte, [01] Welcome, [02] How it works (4 ferestre), [03] Sign in. Rute englezești
+  (/desk, /overview, /queue, /queue/:id, /queue/:id/decide, /reports, /rules), cele vechi redirecționează.
+- Textele produse de backend rămân în română (pas separat). Verificat în browser la 1280 și 390 px.

@@ -1,6 +1,9 @@
-# retailagent — colegul virtual al consilierului de credite retail
+# Keeper — find the case, keep the client
 
-Hackathon NEXXT · challenge Raiffeisen „AI for Operational Efficiency". Referința de produs: [`MODEL_FINAL.md`](MODEL_FINAL.md).
+Colegul virtual al consilierului de credite retail. Hackathon NEXXT · challenge Raiffeisen „AI for Operational
+Efficiency". Referința de produs: [`MODEL_FINAL.md`](MODEL_FINAL.md). Pachetul Python se numește în continuare
+`retailagent`; interfața (`ui/`) e **Keeper**, în engleză, cu sistemul vizual din `Keeper_ghid_vizual_v2.pdf`
+(Instrument Sans / Wix Madefor Text / Fragment Mono, tokenii și componentele din ghid; fonturile sunt împachetate în build).
 
 Agentul găsește singur în portofoliu cazurile care trebuie lucrate, face verificările pe care le-ar face omul,
 calculează **cea mai ieftină implicare a băncii care păstrează clientul** și propune o recomandare. **Consilierul
@@ -81,14 +84,14 @@ Variabile de mediu: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`,
 
 ### Conturi și roluri
 
-Pagina publică (`/`) prezintă agentul și are un singur buton, **Intră în cont**: alegi cine ești (consilierii din
+Pagina publică (`/`) e landing-ul Keeper (hero, welcome, how it works, sign in): alegi cine ești (consilierii din
 `config/echipa.yaml` sau **Administrator**) și scrii parola. **Serverul** aplică rolul pe fiecare rută, interfața doar
 reflectă:
 
 | rol | parola | vede |
 |---|---|---|
-| consilier (Ana Pop, Mihai Ionescu, Ioana Dumitru, Radu Stan) | `parola` din `echipa.yaml` (demo: `1234`) | **Biroul meu** (coada lui + activitatea lui) și **Cazurile mele**; un caz al altui consilier → 403; decizia poartă numele lui, nu unul ales |
-| Administrator | `RETAILAGENT_ADMIN_PAROLA` (implicit `admin`) | tot: Acasă, Cazuri (cu filtru pe consilier), Rezultate, **Motor de reguli** |
+| advisor (Ana Pop, Mihai Ionescu, Ioana Dumitru, Radu Stan) | `parola` din `echipa.yaml` (demo: `1234`) | **My desk** (`/desk`: coada lui + activitatea lui) și **My queue** (`/queue`); un caz al altui consilier → 403; decizia poartă numele lui, nu unul ales |
+| Administrator | `RETAILAGENT_ADMIN_PAROLA` (implicit `admin`) | tot: **Overview**, **Queue** (cu filtru pe consilier), **Reports**, **Rules engine** (`/rules`) |
 
 Sesiunea e un token în memoria serverului (`POST /api/login` → `Authorization: Bearer`, 8 ore, `POST /api/logout`);
 `GET /api/utilizatori` dă lista pentru login, fără parole. Fără server (snapshot static) login-ul e de demonstrație
@@ -96,30 +99,32 @@ Sesiunea e un token în memoria serverului (`POST /api/login` → `Authorization
 
 ### Ecranele interfeței
 
-Interfața e pentru consilier: pe fiecare ecran doar ce îi trebuie ca să decidă (cine, de ce acum, ce propune
-agentul, ce costă / ce aduce, ce are de confirmat), restul într-un acordeon „Cum a ajuns agentul aici". Cele 6
-stări au aceeași culoare și același simbol peste tot (● ofertă, ◐ ofertă + produs, ○ nu interveni,
-▲ restructurare, ■ escaladare, ⊘ blocat).
+Interfața e în engleză și e pentru consilier: pe fiecare ecran doar ce îi trebuie ca să decidă (cine, de ce acum, ce
+propune agentul, ce costă / ce aduce, ce are de confirmat), restul într-un acordeon „How the agent got here". Cele 6
+stări sunt badge-urile din ghid: **Keep** (ofertă, ofertă + produs) verde, **Restructure** (watch) amber, **Escalate**
+roșu, **No action** / **Blocked** neutre. Textele produse de backend (motive, dovezi, etichetele intervențiilor,
+explicația) rămân în română — traducerea lor e un pas separat.
 
-* **Biroul meu** (consilier) — briefing-ul cozii lui cu link direct (urgente cu termenul azi, amânate peste plafon,
-  de confirmat, deschise), activitatea lui (decizii azi / total, recomandări schimbate, rămași la 90 de zile,
-  distribuția cozii), primele 5 cazuri după termen, ultimele decizii.
-* **Acasă** (administrator) — același briefing pe toată coada, apoi primele 5 după termen.
-* **Cazuri** — carduri pe bandă cu bara de termen (fereastră de 14 zile), filtre în URL (bandă, recomandare,
-  consilier — doar admin, căutare, „ascunde decise", listele din briefing) afișate ca chips cu ×, paginare (60 odată),
-  schelet la încărcare.
-* **Caz** — banda sticky cu clientul, recomandarea, rata veche → nouă, termenul și butonul **Ia decizia**; „De ce
-  acum" (motivele), clientul și creditul pe două rânduri, „Ce propune agentul" (dobândă, rată, economie, cost, ce e
-  de confirmat / de cerut, textul LLM când există); **verificările** un rând pe verificare, pe trepte, cu
-  **Reverifică** (rulează doar verificările acelui caz și le arată pas cu pas). În acordeon: semnalele, B / p / V,
-  meniul de intervenții ca grafic cost × p_după (aleasa plină, infezabilele gri), explicația completă, versiunea.
-* **Decizie** — aprobă / modifică / respinge cu motiv; consilierul e cel autentificat (administratorul poate alege în
-  numele cui decide), deciziile anterioare cu override și rezultatul la 90 de zile; confirmare (toast) și întoarcere la caz.
-* **Rezultate** (administrator) — economia față de „aceeași reducere pentru toți", cazurile fără cost, interogările
-  evitate, cerințele dure; costul pe strategie și distribuția recomandărilor ca bare; bugetul lunar ca bară folosit /
-  plafon; **calibrarea modelului** (AUC / Brier, 10 intervale prezis vs. real cu diagonala ideală); consilierii față de agent.
-* **Motor de reguli** (`/motor`, administrator) — editor pentru cele 7 YAML-uri cu validare pe server la salvare,
-  diff față de git, „Re-rulează fluxul"; rutele `/api/config*` și `/api/rescan` răspund 403 pentru consilieri.
+* **My desk** (`/desk`, advisor) — „Ana, here's your day." cu cifrele mari (urgent due today, deferred over cap, to
+  confirm, open) cu link direct, activitatea lui (decisions today, changed, still here at 90 days, queue by state),
+  „Start here" (primele 5 după termen), ultimele decizii.
+* **Overview** (`/overview`, administrator) — același briefing pe toată coada, apoi primele 5 după termen.
+* **Queue** (`/queue`) — rânduri albe pe fundalul gri, segmented control pentru benzi (P1 / P2 / P3 ca etichete mono),
+  select pe stare, consilier (doar admin), căutare, „Hide decided", filtre în URL afișate ca chips cu ×, bara de termen
+  (fereastră de 14 zile), paginare (60 odată), schelet la încărcare.
+* **Case** (`/queue/{id}`) — banda sticky cu clientul, starea, rata veche → nouă, termenul și **Decide →**; secțiuni
+  cu etichete mono: [01] Why now, [02] The client, [03] What the agent proposes (dobândă, rată, economie, cost în
+  display; to confirm / to request; textul LLM când există), [04] Checks — un rând pe verificare, pe trepte, cu
+  cercurile verde / amber / roșu din ghid și **Re-check** (rulează doar verificările acelui caz și le arată pas cu
+  pas). În acordeon „How the agent got here": semnalele, B / p / V, meniul ca grafic cost × p_după, explicația, versiunea.
+* **Decision** (`/queue/{id}/decide`) — Approve / Change / Reject cu motiv; consilierul e cel autentificat
+  (administratorul poate alege în numele cui decide), deciziile anterioare și rezultatul la 90 de zile; toast și
+  întoarcere la caz.
+* **Reports** (`/reports`, administrator) — cifrele mari (saved vs. uniform, no-cost cases, queries avoided, hard-rule
+  breaches), costul pe strategie și distribuția ca bare în paleta de chart, bugetul lunar ca bară, **calibrarea
+  modelului** cu diagonala ideală, consilierii față de agent, versiunea.
+* **Rules engine** (`/rules`, administrator) — editor pentru cele 7 YAML-uri cu validare pe server la salvare, diff
+  față de git, „Re-run the flow"; rutele `/api/config*` și `/api/rescan` răspund 403 pentru consilieri.
 
 ## Comenzi
 

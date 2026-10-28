@@ -1,23 +1,23 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 
-type Toast = { id: number; text: string; fel: "ok" | "fail" };
-const Ctx = createContext<(text: string, fel?: Toast["fel"]) => void>(() => undefined);
+type Toast = { id: number; text: string; kind: "ok" | "fail" };
+const Ctx = createContext<(text: string, kind?: Toast["kind"]) => void>(() => undefined);
 
-/** O confirmare scurtă, jos, după o acțiune (decizie trimisă, configurație salvată). Dispare singură. */
+/** A short confirmation at the bottom after an action (decision sent, rules saved). Disappears by itself. */
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [lista, setLista] = useState<Toast[]>([]);
-  const arata = useCallback((text: string, fel: Toast["fel"] = "ok") => {
+  const [list, setList] = useState<Toast[]>([]);
+  const show = useCallback((text: string, kind: Toast["kind"] = "ok") => {
     const id = Date.now() + Math.random();
-    setLista((l) => [...l, { id, text, fel }]);
-    setTimeout(() => setLista((l) => l.filter((t) => t.id !== id)), 4000);
+    setList((l) => [...l, { id, text, kind }]);
+    setTimeout(() => setList((l) => l.filter((t) => t.id !== id)), 4000);
   }, []);
-  const v = useMemo(() => arata, [arata]);
+  const v = useMemo(() => show, [show]);
   return (
     <Ctx.Provider value={v}>
       {children}
       <div className="toasts" role="status" aria-live="polite">
-        {lista.map((t) => (
-          <div key={t.id} className={`toast ${t.fel}`}>
+        {list.map((t) => (
+          <div key={t.id} className={`toast ${t.kind}`}>
             {t.text}
           </div>
         ))}

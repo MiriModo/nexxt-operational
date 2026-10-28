@@ -6,7 +6,9 @@ import { getEu, login as loginApi, logout as logoutApi, onDeconectare, type Rol,
 type Auth = { eu: Utilizator | null; login: (u: string, p: string) => Promise<Utilizator | null>; logout: () => Promise<void> };
 const Ctx = createContext<Auth>({ eu: null, login: async () => null, logout: async () => undefined });
 
-/** Cine e logat. Serverul aplică rolul; aici doar se ține minte utilizatorul și se golește cache-ul la schimbare. */
+export const homeFor = (u: Utilizator | null) => (!u ? "/" : u.rol === "admin" ? "/overview" : "/desk");
+
+/** Who is signed in. The server enforces the role; this only remembers the user and clears the cache on change. */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [eu, setEu] = useState<Utilizator | null>(() => getEu());
   const qc = useQueryClient();
@@ -33,10 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export const useEu = () => useContext(Ctx);
 
-/** Paginile cu cont: fără login → Home; cu rol nepotrivit → pagina lui. */
-export function Protejat({ rol, children }: { rol?: Rol; children: ReactNode }) {
+/** Pages behind sign-in: no session → landing; wrong role → that user's own home. */
+export function Protected({ role, children }: { role?: Rol; children: ReactNode }) {
   const { eu } = useEu();
   if (!eu) return <Navigate to="/" replace />;
-  if (rol && eu.rol !== rol) return <Navigate to={eu.rol === "admin" ? "/acasa" : "/biroul-meu"} replace />;
+  if (role && eu.rol !== role) return <Navigate to={homeFor(eu)} replace />;
   return <>{children}</>;
 }
