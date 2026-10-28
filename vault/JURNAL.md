@@ -115,3 +115,10 @@
   `ARTEFACTE`, `write_artifacts`, `main` (`--skip-evaluate`, `--skip-demo`; demo se apelează dacă modulul există).
 - Pe 50 de clienți: ~0,6 s fără evaluate (limita: 5 s). 2 teste în `tests/test_pipeline.py` (artefacte + schema queue.json
   neschimbată + timp; varianta cu evaluate).
+
+## M6-T2 — demo.html (done)
+- `demo.py`: `_case_payload` (doar câmpurile necesare din case / check / offer / rec), `build_html` (JSON încorporat în
+  `<script id="data" type="application/json">`, `</script` escapat), `TEMPLATE` (CSS cu tokeni + dark mode, JS vanilla:
+  KPI-uri, filtre pe bandă / cu ofertă / blocate, căutare, panou caz cu semnale, verificări planificate / omise / rezultate,
+  tabel intervenții, recomandare, ofertă, grafic, documente, butoane Aprobă / Modifică / Respinge → comanda `approve`).
+- Fără resurse externe; ~700 KB. 4 teste în `tests/test_demo.py` (parser HTML: fără `<script src>`, date încorporate, UI, CLI).

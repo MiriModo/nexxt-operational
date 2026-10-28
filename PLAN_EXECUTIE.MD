@@ -166,7 +166,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   evaluate → demo, cu `--skip-evaluate`) — Acceptance criteria: o singură comandă produce toate fișierele din
   `out/`; timp total pe 50 de clienți < 5 s fără evaluate; `explain`, `approve`, `evaluate` folosesc
   aceeași funcție `run_full()` ca să nu dubleze logica; test de integrare.
-- [ ] M6-T2 `python -m retailagent.demo` → `out/demo.html` — Acceptance criteria: pagină statică
+- [x] M6-T2 `python -m retailagent.demo` → `out/demo.html` — Acceptance criteria: pagină statică
   autonomă (JSON-urile încorporate, fără rețea), cu: antet cu metricile-vedetă; tabelul cozii (bandă,
   prioritate, termen, motiv, acțiune, recomandare) cu filtre pe bandă; panou caz: semnale cu dovezi,
   verificări (planificate / omise / rezultate), meniul de intervenții cu costuri și p_după, recomandarea și
