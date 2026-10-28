@@ -503,3 +503,12 @@ pre.diff { white-space: pre-wrap; font-size: 12px; max-height: 320px; overflow: 
 .tag.inc { background: var(--warn-bg); color: var(--warn); }
 .tag.indisponibil { background: var(--warn-bg); color: var(--warn); border-style: dashed; }
 .istoric > div + div { border-top: 1px solid var(--line-soft); }
+
+/* ---------- conturi: pagina publică, antet ---------- */
+.hero.home { padding-top: clamp(48px, 8vw, 96px); }
+.hero.home .hero-title { max-width: 18ch; font-size: clamp(34px, 1.6rem + 3.6vw, 68px); }
+.home-list { margin: 26px 0 0; padding-left: 20px; max-width: 64ch; color: var(--hero-ink); font-size: 15px; line-height: 1.5; display: grid; gap: 8px; }
+.home-list li::marker { color: var(--brand); }
+header.top .cine { margin-left: auto; display: inline-flex; align-items: center; gap: 10px; color: var(--ink-2); font-size: 13px; }
+header.top .ctx + .cine { margin-left: 16px; }
+.login { max-width: 420px; margin: 24px auto 60px; }

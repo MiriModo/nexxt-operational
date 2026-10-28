@@ -2,8 +2,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { DecizieInput, ParametriCoada } from "../types/api";
 import {
-  getCaz, getCoada, getConfig, getConfigDiff, getConfigLista, getContext, getEchipa, getFeedback, getIstoric, getMetrici, getModel,
-  getSumar, postDecizie, postRescan, postRezultat, postVerifica, putConfig,
+  getBirou, getCaz, getCoada, getConfig, getConfigDiff, getConfigLista, getContext, getEchipa, getFeedback, getIstoric, getMetrici, getModel,
+  getSumar, getUtilizatori, postDecizie, postRescan, postRezultat, postVerifica, putConfig,
 } from "./client";
 
 export const chei = {
@@ -19,10 +19,14 @@ export const chei = {
   config: ["config"] as const,
   configFisier: (n: string) => ["config", n] as const,
   configDiff: (n: string) => ["config", n, "diff"] as const,
+  birou: ["birou"] as const,
+  utilizatori: ["utilizatori"] as const,
 };
 
 export const useContext = () => useQuery({ queryKey: chei.context, queryFn: getContext, staleTime: 60_000 });
 export const useSumar = () => useQuery({ queryKey: chei.sumar, queryFn: getSumar });
+export const useBirou = () => useQuery({ queryKey: chei.birou, queryFn: getBirou });
+export const useUtilizatori = () => useQuery({ queryKey: chei.utilizatori, queryFn: getUtilizatori, staleTime: 5 * 60_000 });
 export const useMetrici = () => useQuery({ queryKey: chei.metrici, queryFn: getMetrici, staleTime: 60_000 });
 export const useCoada = (p: ParametriCoada) => useQuery({ queryKey: chei.coada(p), queryFn: () => getCoada(p), placeholderData: (prev) => prev });
 export const useCaz = (id: string) => useQuery({ queryKey: chei.caz(id), queryFn: () => getCaz(id), enabled: !!id });
@@ -42,6 +46,7 @@ export function useDecizie(id: string) {
       qc.invalidateQueries({ queryKey: chei.istoric(id) });
       qc.invalidateQueries({ queryKey: chei.sumar });
       qc.invalidateQueries({ queryKey: chei.feedback });
+      qc.invalidateQueries({ queryKey: chei.birou });
       qc.invalidateQueries({ queryKey: ["coada"] });
     },
   });

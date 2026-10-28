@@ -229,6 +229,28 @@ export interface Consilier {
   nume: string;
 }
 
+/** Biroul consilierului (GET /api/eu/birou): coada lui + activitatea lui. */
+export interface Birou {
+  utilizator: { id: string; nume: string; rol: "consilier" | "admin" };
+  coada: {
+    total: number;
+    deschise: number;
+    p1_azi: number;
+    peste_plafon: number;
+    de_confirmat: number;
+    pe_banda: Record<string, number>;
+    distributie: Record<string, number>;
+  };
+  activitate: {
+    decizii: number;
+    decizii_azi: number;
+    override: number;
+    rezultate: { n: number; ramasi: number; plecati: number };
+    ultimele: DecizieServer[];
+  };
+  primele: Caz[];
+}
+
 export interface Versiune {
   config: { hash: string; fisiere: Record<string, string> };
   model: { model: string; versiune: string | null; hash: string | null; tip?: string; antrenat_la?: string; n?: number };

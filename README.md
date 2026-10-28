@@ -79,6 +79,21 @@ mesajul la eroare) · `GET /api/config/{nume}/diff`, `POST /api/rescan`, `GET /a
 `http://127.0.0.1:8000/docs`; `cd ui && npm run types` generează `src/types/openapi.d.ts` din el.
 Variabile de mediu: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`, `RETAILAGENT_ADMIN_PAROLA`.
 
+### Conturi și roluri
+
+Pagina publică (`/`) prezintă agentul și are un singur buton, **Intră în cont**: alegi cine ești (consilierii din
+`config/echipa.yaml` sau **Administrator**) și scrii parola. **Serverul** aplică rolul pe fiecare rută, interfața doar
+reflectă:
+
+| rol | parola | vede |
+|---|---|---|
+| consilier (Ana Pop, Mihai Ionescu, Ioana Dumitru, Radu Stan) | `parola` din `echipa.yaml` (demo: `1234`) | **Biroul meu** (coada lui + activitatea lui) și **Cazurile mele**; un caz al altui consilier → 403; decizia poartă numele lui, nu unul ales |
+| Administrator | `RETAILAGENT_ADMIN_PAROLA` (implicit `admin`) | tot: Acasă, Cazuri (cu filtru pe consilier), Rezultate, **Motor de reguli** |
+
+Sesiunea e un token în memoria serverului (`POST /api/login` → `Authorization: Bearer`, 8 ore, `POST /api/logout`);
+`GET /api/utilizatori` dă lista pentru login, fără parole. Fără server (snapshot static) login-ul e de demonstrație
+(orice parolă) și filtrarea pe consilier se face în browser.
+
 ### Ecranele interfeței
 
 Interfața e pentru consilier: pe fiecare ecran doar ce îi trebuie ca să decidă (cine, de ce acum, ce propune
@@ -86,24 +101,25 @@ agentul, ce costă / ce aduce, ce are de confirmat), restul într-un acordeon �
 stări au aceeași culoare și același simbol peste tot (● ofertă, ◐ ofertă + produs, ○ nu interveni,
 ▲ restructurare, ■ escaladare, ⊘ blocat).
 
-* **Acasă** — briefing-ul zilei, cu link direct: cazuri urgente cu termenul azi, oferte amânate peste plafon, cazuri
-  cu ceva de confirmat, apoi primele 5 după termen.
+* **Biroul meu** (consilier) — briefing-ul cozii lui cu link direct (urgente cu termenul azi, amânate peste plafon,
+  de confirmat, deschise), activitatea lui (decizii azi / total, recomandări schimbate, rămași la 90 de zile,
+  distribuția cozii), primele 5 cazuri după termen, ultimele decizii.
+* **Acasă** (administrator) — același briefing pe toată coada, apoi primele 5 după termen.
 * **Cazuri** — carduri pe bandă cu bara de termen (fereastră de 14 zile), filtre în URL (bandă, recomandare,
-  consilier, căutare, „ascunde decise", listele din briefing) afișate ca chips cu ×, paginare (60 odată din ~6.000),
+  consilier — doar admin, căutare, „ascunde decise", listele din briefing) afișate ca chips cu ×, paginare (60 odată),
   schelet la încărcare.
 * **Caz** — banda sticky cu clientul, recomandarea, rata veche → nouă, termenul și butonul **Ia decizia**; „De ce
   acum" (motivele), clientul și creditul pe două rânduri, „Ce propune agentul" (dobândă, rată, economie, cost, ce e
   de confirmat / de cerut, textul LLM când există); **verificările** un rând pe verificare, pe trepte, cu
   **Reverifică** (rulează doar verificările acelui caz și le arată pas cu pas). În acordeon: semnalele, B / p / V,
   meniul de intervenții ca grafic cost × p_după (aleasa plină, infezabilele gri), explicația completă, versiunea.
-* **Decizie** — aprobă / modifică / respinge cu motiv, consilierul care decide (preselectat cel alocat din
-  `echipa.yaml`), deciziile anterioare cu override și rezultatul la 90 de zile; confirmare (toast) și întoarcere la caz.
-* **Rezultate** — economia față de „aceeași reducere pentru toți", cazurile fără cost, interogările evitate,
-  cerințele dure; costul pe strategie și distribuția recomandărilor ca bare; bugetul lunar ca bară folosit / plafon;
-  **calibrarea modelului** (AUC / Brier, 10 intervale prezis vs. real cu diagonala ideală); consilierii față de agent.
-* **Administrare** (`/admin`, link discret în antet) — **cu parolă**: `RETAILAGENT_ADMIN_PAROLA` în mediul API-ului
-  (implicit `admin`, doar pentru demo); rutele `/api/config*` și `/api/rescan` cer antetul `X-Admin-Parola`. Editor
-  pentru cele 7 YAML-uri cu validare pe server la salvare, diff față de git, „Re-rulează fluxul".
+* **Decizie** — aprobă / modifică / respinge cu motiv; consilierul e cel autentificat (administratorul poate alege în
+  numele cui decide), deciziile anterioare cu override și rezultatul la 90 de zile; confirmare (toast) și întoarcere la caz.
+* **Rezultate** (administrator) — economia față de „aceeași reducere pentru toți", cazurile fără cost, interogările
+  evitate, cerințele dure; costul pe strategie și distribuția recomandărilor ca bare; bugetul lunar ca bară folosit /
+  plafon; **calibrarea modelului** (AUC / Brier, 10 intervale prezis vs. real cu diagonala ideală); consilierii față de agent.
+* **Motor de reguli** (`/motor`, administrator) — editor pentru cele 7 YAML-uri cu validare pe server la salvare,
+  diff față de git, „Re-rulează fluxul"; rutele `/api/config*` și `/api/rescan` răspund 403 pentru consilieri.
 
 ## Comenzi
 

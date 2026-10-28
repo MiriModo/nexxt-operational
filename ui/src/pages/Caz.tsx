@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getCaz, getDeciziiLocale } from "../api/client";
+import { getCaz, getContext, getDeciziiLocale } from "../api/client";
 import { useVerifica } from "../api/hooks";
 import { Sla } from "../components/CaseCard";
 import { Stare, numeStare } from "../components/Stare";
@@ -143,9 +143,15 @@ export default function CazPage() {
   const [err, setErr] = useState<string | null>(null);
   const [azi, setAzi] = useState("");
   useEffect(() => {
-    getCaz(id).then((x) => setC(x ?? null)).catch((e) => setErr(String(e)));
-    import("../api/client").then((m) => m.getContext().then((ctx) => setAzi(ctx.azi)).catch(() => undefined));
+    getCaz(id).then((x) => setC(x ?? null)).catch((e) => setErr(e instanceof Error ? e.message : String(e)));
+    getContext().then((ctx) => setAzi(ctx.azi)).catch(() => undefined);
   }, [id]);
+  if (err?.includes("nu e în coada ta"))
+    return (
+      <div className="notice warn">
+        Cazul {id} nu e în coada ta. <Link to="/cazuri">Înapoi la cazurile tale</Link>
+      </div>
+    );
   if (c === undefined) return <Loading err={err} />;
   if (c === null)
     return (

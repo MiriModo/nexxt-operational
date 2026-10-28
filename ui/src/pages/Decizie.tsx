@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { comandaApprove, getCaz, getDeciziiLocale, getSursa, postDecizie } from "../api/client";
 import { useEchipa, useIstoric, useRezultat } from "../api/hooks";
+import { useEu } from "../auth";
 import { Stare } from "../components/Stare";
 import { useToast } from "../components/Toast";
 import { BandaBadge, Loading } from "../components/ui";
@@ -27,6 +28,7 @@ export default function DeciziePage() {
   const [motiv, setMotiv] = useState(existent?.motiv ?? "");
   const [consilier, setConsilier] = useState<string>(existent?.consilier ?? "");
   const [trimit, setTrimit] = useState(false);
+  const { eu } = useEu();
   const echipa = useEchipa();
   const istoric = useIstoric(id);
   const rezultat = useRezultat(id);
@@ -170,9 +172,10 @@ export default function DeciziePage() {
             )}
           </div>
 
-          {echipa.data && echipa.data.length > 0 && (
+          {eu?.rol !== "admin" && <p className="small muted">Decizi ca {eu?.nume}; intră în audit cu numele tău.</p>}
+          {eu?.rol === "admin" && echipa.data && echipa.data.length > 0 && (
             <div className="field">
-              <span>Consilierul care decide</span>
+              <span>Consilierul în numele căruia decizi</span>
               <select value={consilier} onChange={(e) => setConsilier(e.target.value)}>
                 <option value="">– nealocat –</option>
                 {echipa.data.map((x) => (

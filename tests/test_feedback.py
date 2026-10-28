@@ -93,6 +93,8 @@ def test_raportul_de_feedback(full):
 
 def test_rutele_api_de_feedback(pipeline, tmp_path):
     with TestClient(create_app(pipeline["dir"], tmp_path / "out", ROOT / "config")) as c:
+        tok = c.post("/api/login", json={"utilizator": "admin", "parola": "admin"}).json()["token"]
+        c.headers.update({"Authorization": f"Bearer {tok}"})           # rutele cer sesiune; adminul vede tot
         ctx = c.get("/api/metrici/context").json()
         assert ctx["versiune"]["scurt"].startswith("cfg:") and "buget_portofoliu" in ctx
         echipa = c.get("/api/echipa").json()["consilieri"]

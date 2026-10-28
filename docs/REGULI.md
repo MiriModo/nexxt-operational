@@ -87,7 +87,8 @@ conține pe toate și evaluarea le verifică recomandarea și incertitudinile a�
 
 | regulă | unde |
 |---|---|
-| Agentul recomandă, **omul decide**: aprobă / modifică / respinge cu motiv; override-ul intră în audit cu autorul (`consilier`) | `approve.decide`, `config/echipa.yaml` |
+| Agentul recomandă, **omul decide**: aprobă / modifică / respinge cu motiv; override-ul intră în audit cu autorul (`consilier`) — **cel autentificat**, nu unul ales; doar administratorul poate decide în numele altcuiva | `approve.decide`, `api.py` (login, roluri), `config/echipa.yaml` |
+| Un consilier vede și decide **doar pe cazurile alocate lui** (alocare deterministă pe `client_id`); administratorul vede tot și editează regulile | `api.py → ale_mele / al_meu`, `EchipaConfig.pentru` |
 | Rezultatul la 90 de zile (`ramas` / `plecat`) se înregistrează pe ultima decizie a cazului | `approve.inregistreaza_rezultat`, `POST /api/cazuri/{id}/rezultat` |
 | Raportul de feedback: rata de override pe intervenție / nivel / produs / consilier, rămânere reală vs prezisă, **propuneri** de ajustare (sugestii, nu se aplică automat) | `python -m retailagent.feedback`, `GET /api/feedback`, Dashboard |
 | Fiecare recomandare, rând de audit și evaluare poartă versiunea: hash SHA-256 al YAML-urilor + versiunea și hash-ul modelului + commit-ul de cod | `versiune_completa`, `GET /api/metrici/context` |

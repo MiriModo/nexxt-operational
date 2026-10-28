@@ -1,8 +1,10 @@
 # Echipa de consilieri. Cazurile se alocă determinist (hash pe client_id), ca același client să ajungă mereu la
 # același consilier; deciziile din approvals.json poartă `consilier`, iar feedback-ul se raportează și pe consilier.
+# `parola` e parola de login a consilierului (valori de demo, datele sunt sintetice). Administratorul nu stă aici:
+# parola lui vine din mediu (RETAILAGENT_ADMIN_PAROLA, implicit `admin`).
 consilieri:
-  - { id: ana.pop, nume: "Ana Pop" }
-  - { id: mihai.ionescu, nume: "Mihai Ionescu" }
-  - { id: ioana.dumitru, nume: "Ioana Dumitru" }
-  - { id: radu.stan, nume: "Radu Stan" }
+  - { id: ana.pop, nume: "Ana Pop", parola: "1234" }
+  - { id: mihai.ionescu, nume: "Mihai Ionescu", parola: "1234" }
+  - { id: ioana.dumitru, nume: "Ioana Dumitru", parola: "1234" }
+  - { id: radu.stan, nume: "Radu Stan", parola: "1234" }
 alocare: hash          # hash (determinist pe client_id) | primul (toate cazurile la primul consilier)

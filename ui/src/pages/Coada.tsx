@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getCoada, getContext, getDeciziiLocale } from "../api/client";
 import { useEchipa } from "../api/hooks";
+import { useEu } from "../auth";
 import { CaseCard } from "../components/CaseCard";
 import { STARI, numeStare } from "../components/Stare";
 import { Loading } from "../components/ui";
@@ -29,6 +30,7 @@ export default function Coada() {
   const [incarca, setIncarca] = useState(false);
   const [q, setQ] = useState(sp.get("q") ?? "");
   const [qAplicat, setQAplicat] = useState(q);
+  const { eu } = useEu();
   const echipa = useEchipa();
   const decizii = getDeciziiLocale();
 
@@ -110,7 +112,7 @@ export default function Coada() {
     <>
       <div className="page-head">
         <div>
-          <h1>Cazuri</h1>
+          <h1>{eu?.rol === "admin" ? "Cazuri" : "Cazurile mele"}</h1>
           <p className="muted" style={{ margin: 0 }}>
             {items ? `${total} ${total === 1 ? "caz" : "cazuri"}` : "se încarcă"}
           </p>
@@ -134,7 +136,7 @@ export default function Coada() {
             </option>
           ))}
         </select>
-        {echipa.data && echipa.data.length > 0 && (
+        {eu?.rol === "admin" && echipa.data && echipa.data.length > 0 && (
           <>
             <label className="sr-only" htmlFor="consilier">
               Consilier

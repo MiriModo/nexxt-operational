@@ -186,3 +186,13 @@
   `vite.config.ts` nu poate folosi `process` fără `@types/node` → `loadEnv`; `.treapta` ca bloc, nu pilulă.
 - Neterminat din roadmap: pasul 3 (agentul LLM pentru ofertă; cere `ANTHROPIC_API_KEY` în mediul utilizatorului) și
   introducerea de date noi prin API (`POST /api/cereri`, `POST /api/evenimente`).
+
+## Conturi și roluri (2026-10-28, seara)
+- Problema semnalată: orice consilier vedea tot — nu exista identitate; `consilier` era doar etichetă pe caz și câmp pe decizie.
+- Soluție: `POST /api/login` (consilierii din `echipa.yaml` cu `parola` de demo, administratorul din
+  `RETAILAGENT_ADMIN_PAROLA`), sesiuni în memorie (token Bearer, 8 h), dependențe `utilizator_curent` / `doar_admin`;
+  serverul filtrează (`ale_mele`, `al_meu` → 403) pe coadă, sumar, caz, decizii, feedback, verifica, rezultat; decizia
+  poartă consilierul autentificat. `GET /api/eu/birou` = dashboard-ul consilierului.
+- UI: Home public cu „Intră în cont” (lista de nume + parolă), `AuthProvider` + `Protejat`, Biroul meu (consilier),
+  Acasă / Cazuri / Rezultate / Motor de reguli (admin); fără server, login de demo și filtrare în browser.
+- Lecție: în Bash tool, backtick-urile din comenzi (chiar în heredoc) rup parsarea → scripturile mari se pun în fișier.

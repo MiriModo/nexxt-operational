@@ -327,6 +327,7 @@ class ChecksConfig(BaseModel):
 class ConsilierCfg(BaseModel):
     id: str
     nume: str
+    parola: str | None = None          # parola de login (demo: date sintetice); fără ea contul nu se poate loga
 
 
 class EchipaConfig(BaseModel):

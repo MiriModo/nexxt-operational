@@ -2,13 +2,15 @@
 
     uvicorn retailagent.api:app --reload --port 8000          # apoi: cd ui && npm run dev (proxy /api → 8000)
 
-    GET  /api/metrici/context        {azi, clienti, p_tinta}
-    GET  /api/cazuri                 toate cazurile din coadă (snapshot-ul per caz, ca în demo.html)
-    GET  /api/cazuri/{id}            un caz
-    GET  /api/metrici                cifra-vedetă, nu interveni, interogări evitate, acuratețe, cerințe dure
-    POST /api/cazuri/{id}/decizie    {decizie, interventie?, motiv?} → approve.decide + persist (approvals.json, audit.jsonl)
-    GET  /api/decizii                deciziile înregistrate (approvals.json)
-    POST /api/rescan                 reface fluxul complet (după ce s-au schimbat datele sau YAML-urile)
+    POST /api/login                  {utilizator, parola} → {token, utilizator}; apoi Authorization: Bearer <token>
+    GET  /api/utilizatori            conturile pentru login (fără parole); GET /api/eu, GET /api/eu/birou (biroul consilierului)
+    GET  /api/metrici/context        {azi, clienti, p_tinta, versiune, buget_portofoliu}  (public)
+    GET  /api/coada, /api/cazuri     coada utilizatorului: toată pentru admin, doar cazurile alocate pentru consilier
+    GET  /api/cazuri/{id}            un caz (403 dacă nu e al tău)
+    GET  /api/metrici, /api/model    rezultatele agentului (admin)
+    POST /api/cazuri/{id}/decizie    {decizie, interventie?, motiv?} → approve.decide + persist; consilierul = cel autentificat
+    GET  /api/decizii, /api/feedback deciziile / raportul utilizatorului (toate pentru admin)
+    GET/PUT /api/config/{nume}, POST /api/rescan   motorul de reguli (admin)
 
 Fluxul rulează o dată la pornire și stă în memorie; deciziile se scriu pe disc exact ca din CLI.
 """
@@ -16,7 +18,7 @@ from __future__ import annotations
 
 import os
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
@@ -47,12 +49,16 @@ class ConfigInput(BaseModel):
     text: str
 
 
-class ParolaInput(BaseModel):
+class LoginInput(BaseModel):
+    utilizator: str
     parola: str
 
 
-# parola ecranului Admin (editarea YAML-urilor, re-rularea); pentru demo e `admin`, în producție vine din mediu
+# Conturi: consilierii (cu parola de demo) vin din config/echipa.yaml; administratorul are parola din mediu
+# (RETAILAGENT_ADMIN_PAROLA; implicit `admin` pentru demo). Sesiunile stau în memorie, cu expirare.
 ADMIN_PAROLA = os.environ.get("RETAILAGENT_ADMIN_PAROLA", "admin")
+ADMIN = {"id": "admin", "nume": "Administrator", "rol": "admin"}
+SESIUNE_ORE = 8
 
 
 def compact_caz(c: dict) -> dict:
@@ -73,6 +79,7 @@ def compact_caz(c: dict) -> dict:
 class Stare:
     def __init__(self, data_dir, out_dir, config_dir):
         self.data_dir, self.out_dir, self.config_dir = Path(data_dir), Path(out_dir), Path(config_dir)
+        self.sesiuni: dict[str, dict] = {}                      # token → {id, nume, rol, expira}
         self.refresh()
 
     def refresh(self) -> None:
@@ -104,6 +111,96 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
 
     stare = _Lazy()
 
+    # ---- conturi și roluri: serverul filtrează după cine ești, interfața doar reflectă
+    def utilizatori_cunoscuti() -> list[dict]:
+        cons = [{"id": c.id, "nume": c.nume, "rol": "consilier"} for c in stare.full.cfg.echipa.consilieri]
+        return [*cons, ADMIN]
+
+    def utilizator_curent(authorization: str | None = Header(default=None)) -> dict:
+        tok = authorization.removeprefix("Bearer ").strip() if authorization else ""
+        s = stare.sesiuni.get(tok)
+        if not s or s["expira"] < datetime.now():
+            stare.sesiuni.pop(tok, None)
+            raise HTTPException(401, "nu ești autentificat sau sesiunea a expirat")
+        return s
+
+    def doar_admin(eu: dict = Depends(utilizator_curent)) -> dict:
+        if eu["rol"] != "admin":
+            raise HTTPException(403, "doar administratorul poate face asta")
+        return eu
+
+    def ale_mele(rows: list[dict], eu: dict) -> list[dict]:
+        """Cazurile pe care le vede utilizatorul: toate pentru admin, doar cele alocate lui pentru consilier."""
+        return rows if eu["rol"] == "admin" else [c for c in rows if c.get("consilier") == eu["id"]]
+
+    def al_meu(case_id: str, eu: dict) -> dict:
+        c = stare.cazuri.get(case_id)
+        if c is None:
+            raise HTTPException(404, f"cazul {case_id} nu există")
+        if eu["rol"] != "admin" and c.get("consilier") != eu["id"]:
+            raise HTTPException(403, f"cazul {case_id} nu e în coada ta")
+        return c
+
+    def aprobarile(eu: dict) -> list[dict]:
+        p = stare.out_dir / "approvals.json"
+        rows = read_json(p) if p.exists() else []
+        return rows if eu["rol"] == "admin" else [d for d in rows if d.get("consilier") == eu["id"]]
+
+    @app.get("/api/utilizatori")
+    def utilizatori():
+        """Lista de conturi pentru ecranul de login (fără parole)."""
+        return utilizatori_cunoscuti()
+
+    @app.post("/api/login")
+    def login(body: LoginInput):
+        u = next((x for x in utilizatori_cunoscuti() if x["id"] == body.utilizator), None)
+        if u is None:
+            raise HTTPException(401, "utilizator necunoscut")
+        if u["rol"] == "admin":
+            asteptata = ADMIN_PAROLA
+        else:
+            asteptata = next(c.parola for c in stare.full.cfg.echipa.consilieri if c.id == u["id"]) or ""
+        if not asteptata or not secrets.compare_digest(body.parola, asteptata):
+            raise HTTPException(401, "parolă greșită")
+        tok = secrets.token_urlsafe(24)
+        stare.sesiuni[tok] = {**u, "expira": datetime.now() + timedelta(hours=SESIUNE_ORE)}
+        return {"token": tok, "utilizator": u}
+
+    @app.post("/api/logout")
+    def logout(authorization: str | None = Header(default=None)):
+        stare.sesiuni.pop(authorization.removeprefix("Bearer ").strip() if authorization else "", None)
+        return {"ok": True}
+
+    @app.get("/api/eu")
+    def eu_(eu: dict = Depends(utilizator_curent)):
+        return {k: eu[k] for k in ("id", "nume", "rol")}
+
+    @app.get("/api/eu/birou")
+    def birou(eu: dict = Depends(utilizator_curent)):
+        """Biroul consilierului: briefing-ul cozii lui + activitatea lui (decizii, override, rezultate la 90 de zile)."""
+        rows = ale_mele(stare.data["cazuri"], eu)
+        azi = stare.data["azi"]
+        decise = {d["case_id"]: d for d in aprobarile(eu)}
+        deschise = [c for c in rows if c["case"]["case_id"] not in decise]
+        primele = sorted(deschise, key=lambda c: (c["case"]["deadline"], -c["case"]["scoruri"]["prioritate"]))[:5]
+        dec = aprobarile(eu)
+        cu_rez = [d for d in dec if d.get("rezultat")]
+        return {
+            "utilizator": {k: eu[k] for k in ("id", "nume", "rol")},
+            "coada": {"total": len(rows), "deschise": len(deschise),
+                      "p1_azi": sum(1 for c in deschise if c["case"]["banda"] == "P1" and c["case"]["deadline"] <= azi),
+                      "peste_plafon": sum(1 for c in deschise if (c["rec"].get("oferta") or {}).get("amanata_buget")),
+                      "de_confirmat": sum(1 for c in deschise if c["rec"].get("incertitudini")),
+                      "pe_banda": dict(Counter(c["case"]["banda"] for c in deschise)),
+                      "distributie": dict(Counter(c["rec"]["recomandare"] for c in rows))},
+            "activitate": {"decizii": len(dec), "decizii_azi": sum(1 for d in dec if d["timestamp"][:10] == datetime.now().strftime("%Y-%m-%d")),
+                           "override": sum(1 for d in dec if d.get("override")),
+                           "rezultate": {"n": len(cu_rez), "ramasi": sum(1 for d in cu_rez if d["rezultat"] == "ramas"),
+                                         "plecati": sum(1 for d in cu_rez if d["rezultat"] == "plecat")},
+                           "ultimele": dec[-5:][::-1]},
+            "primele": [compact_caz(c) for c in primele],
+        }
+
     @app.get("/api/metrici/context")
     def context():
         d = stare.data
@@ -113,10 +210,11 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "buget_portofoliu": stare.full.buget}
 
     @app.get("/api/cazuri")
-    def cazuri(limit: int = 500, compact: bool = True, banda: str | None = None, q: str | None = None):
+    def cazuri(limit: int = 500, compact: bool = True, banda: str | None = None, q: str | None = None,
+               eu: dict = Depends(utilizator_curent)):
         """Coada, în ordinea priorității. Implicit compactă (fără verificări detaliate, meniu, grafic): la 10.000 de
         clienți lista completă ar avea ~60 MB; detaliul unui caz vine din GET /api/cazuri/{id}."""
-        rows = stare.data["cazuri"]
+        rows = ale_mele(stare.data["cazuri"], eu)
         if banda:
             rows = [c for c in rows if c["case"]["banda"] == banda]
         if q:
@@ -137,10 +235,10 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     @app.get("/api/coada")
     def coada(limit: int = 60, offset: int = 0, banda: str | None = None, q: str | None = None,
               sort: str = "prioritate", ascunde_decise: bool = False, recomandare: str | None = None,
-              consilier: str | None = None, doar: str | None = None):
+              consilier: str | None = None, doar: str | None = None, eu: dict = Depends(utilizator_curent)):
         """Pagina de coadă: filtre + sortare + paginare pe server (UI-ul nu încarcă toate cazurile).
         `doar` = una din listele briefing-ului: termen_azi | peste_plafon | de_confirmat."""
-        rows = stare.data["cazuri"]
+        rows = ale_mele(stare.data["cazuri"], eu)
         benzi = set(banda.split(",")) if banda else None
         decise = _decise() if ascunde_decise else {}
         if benzi:
@@ -172,10 +270,10 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "items": [compact_caz(c) for c in rows[offset:offset + limit]]}
 
     @app.get("/api/cazuri/sumar")
-    def sumar():
-        """Contoarele paginii de start (briefing-ul consilierului), pe toată coada: deschise, P1 cu termen azi,
+    def sumar(eu: dict = Depends(utilizator_curent)):
+        """Contoarele paginii de start (briefing-ul), pe coada utilizatorului: deschise, P1 cu termen azi,
         oferte amânate peste plafon, cazuri cu ceva de confirmat, blocate, decise, primele 5."""
-        rows = stare.data["cazuri"]
+        rows = ale_mele(stare.data["cazuri"], eu)
         azi = stare.data["azi"]
         decise = _decise()
         deschise = [c for c in rows if c["case"]["case_id"] not in decise]
@@ -190,23 +288,21 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "primele": [compact_caz(c) for c in primele]}
 
     @app.get("/api/cazuri/{case_id}")
-    def caz(case_id: str):
-        c = stare.cazuri.get(case_id)
-        if c is None:
-            raise HTTPException(404, f"cazul {case_id} nu există")
-        return c
+    def caz(case_id: str, eu: dict = Depends(utilizator_curent)):
+        return al_meu(case_id, eu)
 
-    @app.get("/api/metrici")
+    @app.get("/api/metrici", dependencies=[Depends(doar_admin)])
     def metrici():
         return stare.data["metrici"]
 
     @app.post("/api/cazuri/{case_id}/decizie")
-    def decizie(case_id: str, d: DecizieInput):
-        if case_id not in stare.recs:
-            raise HTTPException(404, f"cazul {case_id} nu există")
+    def decizie(case_id: str, d: DecizieInput, eu: dict = Depends(utilizator_curent)):
+        """Decizia poartă consilierul autentificat; doar administratorul poate decide în numele altcuiva."""
+        al_meu(case_id, eu)
+        consilier = d.consilier if eu["rol"] == "admin" else eu["id"]
         try:
             rec = decide(stare.recs[case_id], stare.offers[case_id], d.decizie, d.interventie, d.motiv, stare.full.cfg,
-                         datetime.now(), stare.data_dir, d.consilier)
+                         datetime.now(), stare.data_dir, consilier)
         except ApprovalError as e:
             raise HTTPException(400, str(e)) from e
         persist(rec, stare.out_dir)
@@ -215,39 +311,41 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "documente_lipsa": rec["documente_lipsa"], "consilier": rec["consilier"], "versiune": rec.get("versiune")}
 
     @app.get("/api/decizii")
-    def decizii():
-        p = stare.out_dir / "approvals.json"
-        return read_json(p) if p.exists() else []
+    def decizii(eu: dict = Depends(utilizator_curent)):
+        return aprobarile(eu)
 
     @app.get("/api/cazuri/{case_id}/decizii")
-    def decizii_caz(case_id: str):
+    def decizii_caz(case_id: str, eu: dict = Depends(utilizator_curent)):
         """Istoricul deciziilor (aprobări, override-uri, rezultate) ale unui caz, cronologic."""
+        al_meu(case_id, eu)
         p = stare.out_dir / "approvals.json"
         return [d for d in (read_json(p) if p.exists() else []) if d["case_id"] == case_id]
 
     @app.post("/api/cazuri/{case_id}/rezultat")
-    def rezultat(case_id: str, r: RezultatInput):
+    def rezultat(case_id: str, r: RezultatInput, eu: dict = Depends(utilizator_curent)):
+        al_meu(case_id, eu)
         try:
             return inregistreaza_rezultat(case_id, r.rezultat, datetime.now(), stare.out_dir)
         except ApprovalError as e:
             raise HTTPException(400, str(e)) from e
 
     @app.get("/api/feedback")
-    def feedback():
+    def feedback(eu: dict = Depends(utilizator_curent)):
+        """Raportul de feedback: pe toate deciziile pentru admin, doar pe ale lui pentru consilier."""
         from .feedback import raport_feedback
-        p = stare.out_dir / "approvals.json"
-        approvals = read_json(p) if p.exists() else []
-        return raport_feedback(approvals, stare.full.recs, stare.full.offers)
+        return raport_feedback(aprobarile(eu), stare.full.recs, stare.full.offers)
 
     @app.get("/api/echipa")
-    def echipa():
-        return {"consilieri": [c.model_dump() for c in stare.full.cfg.echipa.consilieri], "alocare": stare.full.cfg.echipa.alocare}
+    def echipa(eu: dict = Depends(utilizator_curent)):
+        return {"consilieri": [c.model_dump(exclude={"parola"}) for c in stare.full.cfg.echipa.consilieri],
+                "alocare": stare.full.cfg.echipa.alocare}
 
     @app.post("/api/cazuri/{case_id}/verifica")
-    def verifica(case_id: str):
+    def verifica(case_id: str, eu: dict = Depends(utilizator_curent)):
         """Reia doar verificările acestui caz (plan după produse + motiv, apoi treptele în ordine) și întoarce rezultatele
         treaptă cu treaptă — UI-ul le afișează „în timp real"."""
         from .checks import build_context, plan_checks, run_checks
+        al_meu(case_id, eu)
         case = next((c for c in stare.full.res.cases if c["case_id"] == case_id), None)
         if case is None:
             raise HTTPException(404, f"cazul {case_id} nu există")
@@ -267,7 +365,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "oprit_la": r["oprit_la"], "verificare_picata": r["verificare_picata"], "incertitudini": r["incertitudini"],
                 "concluzii": r["concluzii"], "interogari_externe": r["interogari_externe"]}
 
-    @app.get("/api/model")
+    @app.get("/api/model", dependencies=[Depends(doar_admin)])
     def model():
         """Metadatele modelului de churn (metrici, calibrare, coeficienți) pentru Dashboard."""
         from .versiune import versiune_model
@@ -276,20 +374,9 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         meta = read_json(meta_p) if meta_p.exists() else {}
         return {"activ": versiune_model(stare.full.cfg), "antrenat": meta}
 
-    # ---- configurație (Admin): editare YAML cu validare pe server, apoi re-rulare. Rutele cer parola de administrare
-    # (RETAILAGENT_ADMIN_PAROLA; implicit `admin` pentru demo) în antetul X-Admin-Parola.
+    # ---- motorul de reguli (administrator): editare YAML cu validare pe server, apoi re-rulare
     EDITABILE = ("priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa")
-
-    def admin(x_admin_parola: str | None = Header(default=None)):
-        if not x_admin_parola or not secrets.compare_digest(x_admin_parola, ADMIN_PAROLA):
-            raise HTTPException(401, "parola de administrare lipsește sau e greșită")
-        return True
-
-    @app.post("/api/admin/login")
-    def admin_login(body: ParolaInput):
-        if not secrets.compare_digest(body.parola, ADMIN_PAROLA):
-            raise HTTPException(401, "parolă greșită")
-        return {"ok": True}
+    admin = doar_admin
 
     @app.get("/api/config", dependencies=[Depends(admin)])
     def config_lista():

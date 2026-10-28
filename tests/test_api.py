@@ -20,7 +20,14 @@ def client(pipeline, tmp_path_factory):
     app = create_app(pipeline["dir"], out, ROOT / "config")
     with TestClient(app) as c:
         c.out = out
+        c.headers.update(autentificare(c, "admin", "admin"))       # testele vechi rulează ca administrator
         yield c
+
+
+def autentificare(c, utilizator: str, parola: str) -> dict:
+    r = c.post("/api/login", json={"utilizator": utilizator, "parola": parola})
+    assert r.status_code == 200, r.text
+    return {"Authorization": f"Bearer {r.json()['token']}"}
 
 
 def test_context_si_metrici(client):
@@ -92,39 +99,35 @@ def test_verifica_si_model(client, pipeline):
     assert m["activ"]["model"] in ("sigmoid", "antrenat")
 
 
-ADMIN = {"X-Admin-Parola": "admin"}
-
-
 def test_config_admin(client, tmp_path):
-    # fără parolă (sau cu una greșită) rutele de administrare sunt închise
-    assert client.get("/api/config").status_code == 401
-    assert client.get("/api/config/retention", headers={"X-Admin-Parola": "nu"}).status_code == 401
-    assert client.post("/api/rescan").status_code == 401
-    assert client.post("/api/admin/login", json={"parola": "nu"}).status_code == 401
-    assert client.post("/api/admin/login", json={"parola": "admin"}).json() == {"ok": True}
-    lista = client.get("/api/config", headers=ADMIN).json()
+    # fără sesiune → 401; consilier → 403: motorul de reguli e doar al administratorului
+    assert client.get("/api/config", headers={"Authorization": ""}).status_code == 401
+    cons = autentificare(client, "ana.pop", "1234")
+    assert client.get("/api/config", headers=cons).status_code == 403
+    assert client.post("/api/rescan", headers=cons).status_code == 403
+    lista = client.get("/api/config").json()
     assert {x["nume"] for x in lista} >= {"priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa"}
-    r = client.get("/api/config/retention", headers=ADMIN).json()
+    r = client.get("/api/config/retention").json()
     assert "p_tinta" in r["text"]
-    assert client.get("/api/config/parola", headers=ADMIN).status_code == 404
+    assert client.get("/api/config/parola").status_code == 404
     # invalid: p_tinta în afara intervalului → 400 cu mesaj; fișierul nu se schimbă
     original = r["text"]
-    rau = client.put("/api/config/retention", json={"text": original.replace("p_tinta: 0.20", "p_tinta: 1.5")}, headers=ADMIN)
+    rau = client.put("/api/config/retention", json={"text": original.replace("p_tinta: 0.20", "p_tinta: 1.5")})
     assert rau.status_code == 400 and "respins" in rau.json()["detail"]
-    assert client.get("/api/config/retention", headers=ADMIN).json()["text"] == original
-    assert client.put("/api/config/retention", json={"text": "p_tinta: [unclosed"}, headers=ADMIN).status_code == 400
+    assert client.get("/api/config/retention").json()["text"] == original
+    assert client.put("/api/config/retention", json={"text": "p_tinta: [unclosed"}).status_code == 400
     # valid: aceeași configurație rescrisă cu un comentariu → salvat, versiunea se schimbă
-    ok = client.put("/api/config/retention", json={"text": original + "\n# editat din Admin\n"}, headers=ADMIN).json()
+    ok = client.put("/api/config/retention", json={"text": original + "\n# editat din Admin\n"}).json()
     assert ok["salvat"] and ok["versiune"]
-    assert client.get("/api/config/retention", headers=ADMIN).json()["text"].endswith("# editat din Admin\n")
-    client.put("/api/config/retention", json={"text": original}, headers=ADMIN)            # restaurare
-    assert client.get("/api/config/retention", headers=ADMIN).json()["text"] == original
-    d = client.get("/api/config/retention/diff", headers=ADMIN).json()
+    assert client.get("/api/config/retention").json()["text"].endswith("# editat din Admin\n")
+    client.put("/api/config/retention", json={"text": original})            # restaurare
+    assert client.get("/api/config/retention").json()["text"] == original
+    d = client.get("/api/config/retention/diff").json()
     assert "diff" in d
 
 
 def test_rescan(client):
-    r = client.post("/api/rescan", headers=ADMIN).json()
+    r = client.post("/api/rescan").json()
     assert r["cazuri"] > 0
 
 
@@ -160,3 +163,35 @@ def test_sync_ui_scrie_snapshotul(pipeline, tmp_path):
     dest = sync_ui(data, tmp_path / "out", ui)
     assert dest and (dest / "demo.json").exists() and not (dest / "queue.json").exists()
     assert json.loads((dest / "demo.json").read_text(encoding="utf-8"))["clienti"] == 50
+
+
+def test_conturi_si_roluri(client):
+    u = client.get("/api/utilizatori", headers={"Authorization": ""}).json()          # public, fără parole
+    assert [x["id"] for x in u][-1] == "admin" and all("parola" not in x for x in u) and len(u) == 5
+    assert client.post("/api/login", json={"utilizator": "ana.pop", "parola": "nu"}).status_code == 401
+    assert client.post("/api/login", json={"utilizator": "nimeni", "parola": "1234"}).status_code == 401
+    assert client.get("/api/coada", headers={"Authorization": "Bearer fals"}).status_code == 401
+    ana = autentificare(client, "ana.pop", "1234")
+    assert client.get("/api/eu", headers=ana).json() == {"id": "ana.pop", "nume": "Ana Pop", "rol": "consilier"}
+    # consilierul vede doar cazurile lui, administratorul pe toate
+    toate = client.get("/api/coada?limit=500").json()
+    ale_anei = client.get("/api/coada?limit=500", headers=ana).json()
+    assert 0 < ale_anei["total"] < toate["total"] and all(c["consilier"] == "ana.pop" for c in ale_anei["items"])
+    assert client.get("/api/cazuri/sumar", headers=ana).json()["total"] == ale_anei["total"]
+    strain = next(c["case"]["case_id"] for c in toate["items"] if c["consilier"] != "ana.pop")
+    assert client.get(f"/api/cazuri/{strain}", headers=ana).status_code == 403
+    assert client.post(f"/api/cazuri/{strain}/verifica", headers=ana).status_code == 403
+    assert client.get("/api/metrici", headers=ana).status_code == 403
+    assert "parola" not in client.get("/api/echipa", headers=ana).json()["consilieri"][0]
+    # decizia poartă consilierul autentificat, chiar dacă body-ul spune altceva
+    al_ei = ale_anei["items"][0]["case"]["case_id"]
+    r = client.post(f"/api/cazuri/{al_ei}/decizie", json={"decizie": "aproba", "consilier": "radu.stan"}, headers=ana).json()
+    assert r["consilier"] == "ana.pop"
+    assert all(d["consilier"] == "ana.pop" for d in client.get("/api/decizii", headers=ana).json())
+    b = client.get("/api/eu/birou", headers=ana).json()
+    assert b["utilizator"]["id"] == "ana.pop" and b["coada"]["total"] == ale_anei["total"] and b["activitate"]["decizii"] >= 1
+    assert {"p1_azi", "peste_plafon", "de_confirmat", "distributie"} <= set(b["coada"]) and len(b["primele"]) <= 5
+    assert client.get("/api/feedback", headers=ana).json()["decizii"] == b["activitate"]["decizii"]
+    # logout invalidează tokenul
+    client.post("/api/logout", headers=ana)
+    assert client.get("/api/eu", headers=ana).status_code == 401

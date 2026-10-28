@@ -47,3 +47,10 @@ Aici se consemnează doar deciziile luate de loop în timpul execuției, cu moti
 - **UI: Admin editează prin API, nu fișiere direct**: validarea folosește aceleași modele pydantic ca la pornire,
   pe o copie temporară; fișierul se scrie doar dacă trece.
 - **Docker montează `config/`**: editările din Admin ajung în YAML-urile reale, iar `data/` / `out/` sunt comune cu rulările locale.
+
+## Conturi și roluri (2026-10-28)
+- **Rolul se aplică pe server**, nu în interfață: un consilier primește 403 pe cazul altuia și decizia lui poartă
+  numele lui indiferent de ce trimite browserul. Interfața doar reflectă (navigație diferită pe rol).
+- **Parolele consilierilor stau în `echipa.yaml`** (demo, date sintetice); administratorul rămâne pe variabila de
+  mediu, ca să nu existe o parolă de admin în repo. Sesiuni în memorie, fără bază de date, ca restul platformei.
+- **„Administrare” → „Motor de reguli”**: numele spune ce e (configurația motorului), nu cine o folosește.
