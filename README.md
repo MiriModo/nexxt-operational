@@ -45,7 +45,7 @@ recomandare și butoanele de aprobare.
 ## Interfața React + API
 
 ```bash
-uvicorn retailagent.api:app --reload --port 8000     # API-ul (FastAPI) peste fluxul din memorie
+python -m retailagent.api [--port 8000] [--reload]  # API-ul (FastAPI); nu cere `uvicorn` în PATH
 cd ui && npm install && VITE_API_URL=/api npm run dev # http://localhost:5173 (Vite proxy-ază /api → 8000)
 ```
 

@@ -30,7 +30,7 @@ python -m retailagent.pipeline      # tot fluxul; apelează demo la final, deci 
 `public/data/` e generat și ignorat de git. Cu API-ul pornit:
 
 ```
-uvicorn retailagent.api:app --reload --port 8000      # din rădăcină
+python -m retailagent.api --reload                    # din rădăcină (sau: python -m uvicorn retailagent.api:app)
 cd ui && VITE_API_URL=/api npm run dev                 # Vite proxy-ază /api → 8000
 ```
 

@@ -199,3 +199,24 @@ def _resolve(p: str | Path) -> Path:
 
 app = create_app(_resolve(os.environ.get("RETAILAGENT_DATA", DATA_DIR)), _resolve(os.environ.get("RETAILAGENT_OUT", OUT_DIR)),
                  _resolve(os.environ.get("RETAILAGENT_CONFIG", CONFIG_DIR)))
+
+
+def main(argv: list[str] | None = None) -> None:
+    """`python -m retailagent.api [--port 8000] [--reload]` — pornește serverul fără să depindă de `uvicorn` în PATH."""
+    import argparse
+
+    import uvicorn
+
+    from .common import setup_console
+    setup_console()
+    ap = argparse.ArgumentParser(description="API-ul interfeței retailagent (FastAPI + uvicorn).")
+    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument("--reload", action="store_true", help="repornește la modificări de cod (dezvoltare)")
+    a = ap.parse_args(argv)
+    print(f"retailagent API → http://{a.host}:{a.port}/docs  (încarcă fluxul la pornire: ~15–45 s pe 10.000 de clienți)")
+    uvicorn.run("retailagent.api:app", host=a.host, port=a.port, reload=a.reload, app_dir=str(ROOT))
+
+
+if __name__ == "__main__":
+    main()
