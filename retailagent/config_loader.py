@@ -242,13 +242,78 @@ class RetentionConfig(BaseModel):
         return {i.id: i for i in self.interventii}
 
 
+# ---------------------------------------------------------------- checks.yaml
+
+class VerificareCfg(BaseModel):
+    id: str
+    treapta: str
+    externa: bool
+    strat: Literal["baza", "produs", "motiv"]
+    produse: list[str] = Field(default_factory=list)
+    descriere: str
+    necesita_consimtamant: str | None = None
+    parametri: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _check(self) -> "VerificareCfg":
+        if self.strat == "produs" and not self.produse:
+            raise ValueError(f"verificarea {self.id}: strat=produs fără listă de produse")
+        return self
+
+
+class MotivCfg(BaseModel):
+    adauga: list[str] = Field(default_factory=list)
+    sare: list[str] = Field(default_factory=list)
+    doar: list[str] | None = None
+
+
+class DocumentCfg(BaseModel):
+    tip: str
+    valabil: bool = False
+    max_zile: int | None = None
+    tipologii: list[str] | None = None
+    produse: list[str] | None = None
+
+
+class ChecksConfig(BaseModel):
+    trepte: list[str]
+    verificari: list[VerificareCfg]
+    motive: dict[str, MotivCfg]
+    documente_necesare: dict[str, list[DocumentCfg]]
+
+    @model_validator(mode="after")
+    def _check(self) -> "ChecksConfig":
+        ids = [v.id for v in self.verificari]
+        dup = {i for i in ids if ids.count(i) > 1}
+        if dup:
+            raise ValueError(f"verificări duplicate în checks.yaml: {sorted(dup)}")
+        if len(self.trepte) != len(set(self.trepte)):
+            raise ValueError("checks.yaml: trepte duplicate")
+        for v in self.verificari:
+            if v.treapta not in self.trepte:
+                raise ValueError(f"verificarea {v.id}: treapta {v.treapta!r} nu e în {self.trepte}")
+        known = set(ids)
+        for motiv, m in self.motive.items():
+            for vid in m.adauga + m.sare + (m.doar or []):
+                if vid not in known:
+                    raise ValueError(f"checks.yaml: motivul {motiv!r} referă verificarea necunoscută {vid!r}")
+        return self
+
+    def by_id(self) -> dict[str, VerificareCfg]:
+        return {v.id: v for v in self.verificari}
+
+
 # ---------------------------------------------------------------- agregare
+
+MOTIVE_SPECIALE = ("risc", "blocaj")
+
 
 class Config(BaseModel):
     signals: SignalsConfig
     priority: PriorityConfig
     constraints: ConstraintsConfig
     retention: RetentionConfig
+    checks: ChecksConfig
 
     @model_validator(mode="after")
     def _cross(self) -> "Config":
@@ -267,6 +332,10 @@ class Config(BaseModel):
         for tier in self.retention.legaturi.nivel_scor:
             if tier not in self.priority.buget_retentie_pp:
                 raise ValueError(f"retention.yaml: nivelul {tier!r} nu are buget în priority.yaml")
+        valid = set(sig) | set(self.priority.cereri) | set(MOTIVE_SPECIALE)
+        for motiv in self.checks.motive:
+            if motiv not in valid:
+                raise ValueError(f"checks.yaml: motivul {motiv!r} nu e semnal, tip de cerere sau {MOTIVE_SPECIALE}")
         return self
 
 
@@ -280,4 +349,5 @@ def load_config(config_dir: Path | str = CONFIG_DIR) -> Config:
     return Config(signals=SignalsConfig(**_load_yaml(config_dir / "signals.yaml")),
                   priority=PriorityConfig(**_load_yaml(config_dir / "priority.yaml")),
                   constraints=ConstraintsConfig(**_load_yaml(config_dir / "constraints.yaml")),
-                  retention=RetentionConfig(**_load_yaml(config_dir / "retention.yaml")))
+                  retention=RetentionConfig(**_load_yaml(config_dir / "retention.yaml")),
+                  checks=ChecksConfig(**_load_yaml(config_dir / "checks.yaml")))

@@ -25,3 +25,11 @@
 - Metricile Modulului 1 rămân 100% (verificat cu `evaluate`); suita completă verde.
 - Lecție: orice plantare nouă în generator trebuie să nu schimbe numărul de apeluri rng, altfel se mută
   valorile tuturor clienților următori.
+
+## M2-T1 — checks.yaml + ChecksConfig (done)
+- 18 verificări pe 5 trepte (intern, anaf, biroul_credit, crc, garantie), straturi baza / produs / motiv,
+  `necesita_consimtamant` pentru ANAF și BC, `parametri` per verificare.
+- `motive`: chei = semnale + tipuri de cereri + `risc` + `blocaj` (validat încrucișat în `Config`);
+  `blocaj.doar = [identitate_kyc]`; `adauga` câștigă în fața lui `sare` (regula se aplică în M2-T2).
+- `documente_necesare` per tip de recomandare (valabil / max_zile / tipologii / produse).
+- 4 teste noi în `tests/test_config_final.py`.

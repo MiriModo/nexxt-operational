@@ -1,0 +1,204 @@
+# Verificări alese după produse deținute + motiv (MODEL_FINAL §2).
+#
+# Trepte: se rulează în ordine și fluxul se oprește la prima treaptă cu o verificare picată.
+# Straturi:  baza   = mereu;  produs = dacă clientul deține produsul;  motiv = adăugată de un motiv.
+# Motive: chei = id-uri de semnale (signals.yaml), tipuri de cereri (priority.yaml → cereri), `risc`
+# (risc_credit ≥ prag) și `blocaj` (blocaj de proces activ). `adauga` câștigă în fața lui `sare`.
+# `blocaj.doar` = singurele verificări care rulează; restul așteaptă rezolvarea task-ului.
+
+trepte: [intern, anaf, biroul_credit, crc, garantie]
+
+verificari:
+  # ---- strat de bază (intern, fără cost)
+  - id: identitate_kyc
+    treapta: intern
+    externa: false
+    strat: baza
+    descriere: CI valabilă, KYC actualizat, consimțăminte ANAF / Biroul de Credit, flag-uri blocante
+    parametri: { kyc_max_ani: 2, ci_avertizare_zile: 30 }
+  - id: expuneri_interne
+    treapta: intern
+    externa: false
+    strat: baza
+    descriere: creditele și cardurile la noi (rate, % din limită), expuneri ca codebitor / garant
+  - id: venit_observat
+    treapta: intern
+    externa: false
+    strat: baza
+    descriere: venitul lunar dedus din încasări (salariu / pensie) și transferuri proprii
+    parametri: { luni: 3 }
+  - id: sold_cont
+    treapta: intern
+    externa: false
+    strat: baza
+    descriere: sold curent, sold mediu și minim pe ultimele luni
+    parametri: { luni: 3 }
+
+  # ---- strat produse deținute (intern)
+  - id: ltv
+    treapta: intern
+    externa: false
+    strat: produs
+    produse: [ipotecar, imobiliar]
+    descriere: LTV pe ultima evaluare din dosar
+  - id: asigurare_garantie
+    treapta: intern
+    externa: false
+    strat: produs
+    produse: [ipotecar, imobiliar]
+    descriere: polița imobilului cesionată băncii și valabilă
+    parametri: { avertizare_zile: 30 }
+  - id: utilizare_limita_card
+    treapta: intern
+    externa: false
+    strat: produs
+    produse: [card_credit]
+    descriere: utilizarea limitei și plățile minime
+    parametri: { prag_avertizare: 0.90 }
+
+  # ---- strat motiv (intern)
+  - id: scenarii_rata
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: "scenarii rămâi / refinanțezi la noi / pleci: dobânda totală rămasă în fiecare caz"
+  - id: cost_mutare
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: costul mutării creditului la altă bancă (evaluare, notar, OCPI, asigurări, comisioane)
+  - id: comision_rambursare_anticipata
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: comisionul OUG 50 (0 la variabilă) pentru suma din simulare
+  - id: fond_urgenta
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: cât rămâne în cont după rambursarea anticipată față de cheltuielile lunare
+    parametri: { luni_cheltuieli: 3 }
+  - id: capacitate_plata_actuala
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: DTI pe venitul actual (ANAF sau observat) cu toate ratele, inclusiv la alți creditori
+  - id: eligibilitate_produs_nou
+    treapta: intern
+    externa: false
+    strat: motiv
+    descriere: eligibilitatea pe produsul vizat (venit minim, DTI după rata nouă, vârstă la scadență, LTV)
+
+  # ---- externe (mock-uri în data/externe/)
+  - id: venit_anaf
+    treapta: anaf
+    externa: true
+    strat: motiv
+    necesita_consimtamant: consimtamant_anaf
+    descriere: venitul raportat la ANAF pe surse; confirmă sau infirmă venitul observat
+    parametri: { luni: 3 }
+  - id: istoric_biroul_credit
+    treapta: biroul_credit
+    externa: true
+    strat: motiv
+    necesita_consimtamant: consimtamant_biroul_credit
+    descriere: întârzieri la alte instituții, scor, interogări recente (își caută bancă?)
+    parametri: { max_zile_intarziere_24l: 90, scor_minim: 500 }
+  - id: expuneri_crc
+    treapta: crc
+    externa: true
+    strat: motiv
+    descriere: expuneri ≥ 20.000 RON la alte bănci, ca debitor sau garant, cu restanțe
+  - id: extras_cf
+    treapta: garantie
+    externa: true
+    strat: motiv
+    produse: [ipotecar, imobiliar]
+    descriere: extrasul de carte funciară (ipotecă rang 1, sarcini, litigii, interdicții)
+  - id: reevaluare_garantie
+    treapta: garantie
+    externa: true
+    strat: motiv
+    produse: [ipotecar, imobiliar]
+    descriere: reevaluarea imobilului → LTV actual
+
+motive:
+  # expirare dobândă fixă / refinanțare → scenarii, cost mutare, meniu intervenții; nu sare nimic din eligibilitate
+  expirare_dobanda_fixa:
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    sare: []
+  cerere_adeverinta_sold:
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    sare: []
+  adeverinta_sold:
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+    sare: []
+  refinantare:
+    adauga: [scenarii_rata, cost_mutare, venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie,
+             eligibilitate_produs_nou, capacitate_plata_actuala]
+    sare: []
+  salariu_mutat:
+    adauga: [venit_anaf, scenarii_rata, cost_mutare, istoric_biroul_credit]
+    sare: []
+  rata_alt_creditor:
+    adauga: [istoric_biroul_credit]
+    sare: []
+  gap_piata_bani:
+    adauga: [scenarii_rata, cost_mutare]
+    sare: []
+  simulare_in_app:
+    adauga: [comision_rambursare_anticipata, fond_urgenta]
+    sare: []
+  # simulare rambursare anticipată → comision OUG 50, fond de urgență; sare BC, CRC, garanție
+  simulare_rambursare_anticipata:
+    adauga: [comision_rambursare_anticipata, fond_urgenta]
+    sare: [istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+  # credit nou / majorare limită → eligibilitate completă pe produsul-țintă
+  credit_nou:
+    adauga: [venit_anaf, istoric_biroul_credit, expuneri_crc, capacitate_plata_actuala, eligibilitate_produs_nou]
+    sare: []
+  majorare_limita_card:
+    adauga: [venit_anaf, istoric_biroul_credit, expuneri_crc, capacitate_plata_actuala, eligibilitate_produs_nou]
+    sare: []
+  # întârziere / venit în scădere / card stres → capacitate de plată actuală; grila de retenție blocată
+  risc:
+    adauga: [venit_anaf, capacitate_plata_actuala]
+    sare: [scenarii_rata, cost_mutare, extras_cf]
+  restructurare:
+    adauga: [venit_anaf, capacitate_plata_actuala]
+    sare: [scenarii_rata, cost_mutare, extras_cf]
+  ltv_depasit:
+    adauga: [reevaluare_garantie]
+    sare: []
+  actualizare_date:
+    adauga: []
+    sare: [venit_anaf, istoric_biroul_credit, expuneri_crc, extras_cf, reevaluare_garantie]
+  # CI expirată / consimțământ lipsă / KYC / asigurare / flag → doar task-ul; restul așteaptă
+  blocaj:
+    doar: [identitate_kyc]
+
+# Documentele din dosar (data/documente.json) necesare pentru fiecare tip de recomandare.
+#   valabil: documentul trebuie să fie în termen;  max_zile: emis în ultimele N zile;
+#   tipologii / produse: regula se aplică doar acelor clienți / credite.
+documente_necesare:
+  nu_interveni: []
+  respins_escaladat: []
+  blocat:
+    - { tip: carte_identitate, valabil: true }
+  oferta_minima:
+    - { tip: carte_identitate, valabil: true }
+    - { tip: adeverinta_venit, max_zile: 90, tipologii: [salariat, tanar_fara_istoric] }
+    - { tip: decizie_pensie, tipologii: [pensionar] }
+    - { tip: declaratie_unica, tipologii: [independent, antreprenor] }
+    - { tip: extras_cf, max_zile: 30, produse: [ipotecar, imobiliar] }
+    - { tip: polita_asigurare_imobil, valabil: true, produse: [ipotecar, imobiliar] }
+  oferta_produs:
+    - { tip: carte_identitate, valabil: true }
+    - { tip: adeverinta_venit, max_zile: 90, tipologii: [salariat, tanar_fara_istoric] }
+    - { tip: extras_cf, max_zile: 30, produse: [ipotecar, imobiliar] }
+    - { tip: polita_asigurare_imobil, valabil: true, produse: [ipotecar, imobiliar] }
+  restructurare:
+    - { tip: carte_identitate, valabil: true }
+    - { tip: adeverinta_venit, max_zile: 30, tipologii: [salariat, tanar_fara_istoric] }
+    - { tip: decizie_pensie, tipologii: [pensionar] }
+    - { tip: declaratie_unica, tipologii: [independent, antreprenor] }

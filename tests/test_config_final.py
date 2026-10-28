@@ -69,3 +69,53 @@ def test_tip_interventie_necunoscut_ridica_eroare(tmp_path):
     _rewrite(d / "retention.yaml", lambda y: y["interventii"][0].update(tip="magie"))
     with pytest.raises(ValueError):
         load_config(d)
+
+
+# ---------------------------------------------------------------- checks.yaml (M2-T1)
+
+def test_checks_config_se_incarca(cfg):
+    ch = cfg.checks
+    assert ch.trepte == ["intern", "anaf", "biroul_credit", "crc", "garantie"]
+    ids = [v.id for v in ch.verificari]
+    assert len(ids) == len(set(ids))
+    assert {"identitate_kyc", "expuneri_interne", "venit_observat", "sold_cont", "ltv", "utilizare_limita_card",
+            "venit_anaf", "istoric_biroul_credit", "expuneri_crc", "extras_cf", "reevaluare_garantie",
+            "scenarii_rata", "cost_mutare", "comision_rambursare_anticipata", "fond_urgenta",
+            "capacitate_plata_actuala", "eligibilitate_produs_nou"} <= set(ids)
+    v = ch.by_id()
+    assert v["identitate_kyc"].strat == "baza" and v["identitate_kyc"].externa is False
+    assert v["ltv"].strat == "produs" and set(v["ltv"].produse) == {"ipotecar", "imobiliar"}
+    assert v["venit_anaf"].treapta == "anaf" and v["venit_anaf"].externa and v["venit_anaf"].necesita_consimtamant == "consimtamant_anaf"
+    assert v["istoric_biroul_credit"].necesita_consimtamant == "consimtamant_biroul_credit"
+    assert all(x.treapta in ch.trepte for x in ch.verificari)
+    # motive: semnale, cereri, risc, blocaj
+    assert "expirare_dobanda_fixa" in ch.motive and "credit_nou" in ch.motive
+    assert "istoric_biroul_credit" in ch.motive["simulare_rambursare_anticipata"].sare
+    assert "comision_rambursare_anticipata" in ch.motive["simulare_rambursare_anticipata"].adauga
+    assert ch.motive["blocaj"].doar == ["identitate_kyc"]
+    assert "scenarii_rata" in ch.motive["risc"].sare and "capacitate_plata_actuala" in ch.motive["risc"].adauga
+    # documente necesare per recomandare
+    assert {"oferta_minima", "oferta_produs", "restructurare", "blocat", "nu_interveni", "respins_escaladat"} <= set(ch.documente_necesare)
+    assert any(d.tip == "carte_identitate" and d.valabil for d in ch.documente_necesare["oferta_minima"])
+
+
+def test_checks_id_necunoscut_in_motive_ridica_eroare(tmp_path):
+    d = _copy_config(tmp_path)
+    _rewrite(d / "checks.yaml", lambda y: y["motive"]["credit_nou"]["adauga"].append("verificare_fantoma"))
+    with pytest.raises(ValueError, match="verificare_fantoma"):
+        load_config(d)
+
+
+def test_checks_treapta_necunoscuta_ridica_eroare(tmp_path):
+    d = _copy_config(tmp_path)
+    _rewrite(d / "checks.yaml", lambda y: y["verificari"][0].update(treapta="marte"))
+    with pytest.raises(ValueError, match="treapt"):
+        load_config(d)
+
+
+def test_checks_motiv_necunoscut_ridica_eroare(tmp_path):
+    """Cheile din `motive` trebuie să fie semnale, tipuri de cereri sau `risc` / `blocaj`."""
+    d = _copy_config(tmp_path)
+    _rewrite(d / "checks.yaml", lambda y: y["motive"].update(semnal_inexistent={"adauga": [], "sare": []}))
+    with pytest.raises(ValueError, match="semnal_inexistent"):
+        load_config(d)

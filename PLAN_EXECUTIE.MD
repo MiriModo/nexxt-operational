@@ -91,7 +91,7 @@ externe. După acest plan utilizatorul începe modificările pe o platformă car
   100% (`python -m retailagent.evaluate`).
 
 ## Milestone 2: Verificări după produse deținute + motiv
-- [ ] M2-T1 `config/checks.yaml` + model pydantic — Acceptance criteria: definește `trepte`
+- [x] M2-T1 `config/checks.yaml` + model pydantic — Acceptance criteria: definește `trepte`
   (`intern, anaf, biroul_credit, crc, garantie`), lista de verificări (id, treapta, externa, strat:
   `baza | produs:<produs> | motiv`, descriere, parametri), maparea `motive` (chei = id-uri de semnale,
   tipuri de cereri, `risc`, `blocaj`) cu `adauga` / `sare`, și `documente_necesare` per tip de
