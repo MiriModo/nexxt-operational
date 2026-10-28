@@ -155,6 +155,12 @@
   `ui/` intră în git (scos din `.git/info/exclude`; `public/data`, `dist`, `node_modules` ignorate). 5 teste API (TestClient).
 - Dependențe noi: fastapi, uvicorn, httpx (teste).
 
+## Platforma pe 10.000 de clienți implicit (2026-10-28)
+- `generate --n` implicit 10.000; `data/` scos din git (regenerabil din seed, ~150 MB). `GET /api/cazuri` compact
+  (`compact_caz`: aceeași formă, fără liste mari) + `?limit`, `?banda`, `?q`; detaliul din `GET /api/cazuri/{id}`.
+  `api.py` inițializează starea în lifespan, nu la import (importul citea `data/` pe jumătate scris în timpul generării).
+  `evaluate` face comparația sigmoid vs antrenat doar ≤ 500 clienți sau cu `--compara-churn`.
+
 ## Raport final — OBIECTIV ATINS (2026-10-28)
 - 16/16 taskuri done; 148 teste verzi; compileall OK; metricile Modulului 1 neschimbate (F1 1,00, 100%, 708/708, 0, 5/5).
 - Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;

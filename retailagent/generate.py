@@ -734,7 +734,7 @@ def generate(n: int = 50, seed: int = 42, today: str = DEFAULT_TODAY, out: Path 
 def main(argv: list[str] | None = None) -> None:
     setup_console()
     ap = argparse.ArgumentParser(description="Generează portofoliul sintetic + ground truth.")
-    ap.add_argument("--n", type=int, default=50)
+    ap.add_argument("--n", type=int, default=10000, help="implicit 10.000: 50 etalon + 9.950 statistici (--n 50 = doar etalonul)")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--today", default=DEFAULT_TODAY)
     ap.add_argument("--out", default=str(DATA_DIR))

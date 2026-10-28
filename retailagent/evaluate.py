@@ -234,6 +234,7 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--config-dir", default=str(CONFIG_DIR))
     ap.add_argument("--scale", type=int, default=0, help="nr. clienți pentru testul de scalare (ex. 5000; 0 = fără)")
+    ap.add_argument("--compara-churn", action="store_true", help="sigmoid vs antrenat și pe portofolii mari (dublează timpul)")
     a = ap.parse_args(argv)
 
     cfg = load_config(a.config_dir)
@@ -259,7 +260,9 @@ def main(argv: list[str] | None = None) -> None:
     timing["clienti_50"]["secunde_flux_complet"] = round(time.perf_counter() - t0, 3)
     model_final = raport_model_final(full, gt)
 
-    comparatie = compara_modele_churn(a.data_dir, a.out_dir, a.config_dir, cfg, gt)
+    # sigmoid vs antrenat rulează fluxul de două ori: implicit doar pe portofolii mici, altfel cu --compara-churn
+    comparatie = compara_modele_churn(a.data_dir, a.out_dir, a.config_dir, cfg, gt) \
+        if (a.compara_churn or len(pf.clients) <= 500) else None
 
     report = {"detectie": detection, "clasificare_tranzactii": inflows, **queue, "capcane": traps, "timp": timing,
               "model_final": model_final, "scalare": scalare, "comparatie_churn": comparatie}

@@ -117,5 +117,845 @@
     "client_al_bancii": true,
     "status": "dizolvare",
     "trend_plati_salarii_3l": -0.35
+  },
+  {
+    "angajator_id": "F0018",
+    "nume": "RUSU CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.12
+  },
+  {
+    "angajator_id": "F0019",
+    "nume": "DINU CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.02
+  },
+  {
+    "angajator_id": "F0020",
+    "nume": "VOICU AGRO SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.09
+  },
+  {
+    "angajator_id": "F0021",
+    "nume": "PREDA MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0022",
+    "nume": "RUSU AGRO SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.0
+  },
+  {
+    "angajator_id": "F0023",
+    "nume": "TOMA RETAIL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0024",
+    "nume": "TUDOR LOGISTIC SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0025",
+    "nume": "POP MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "insolventa",
+    "trend_plati_salarii_3l": -0.35
+  },
+  {
+    "angajator_id": "F0026",
+    "nume": "FLOREA TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0027",
+    "nume": "SANDU LOGISTIC SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0028",
+    "nume": "POPESCU TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.13
+  },
+  {
+    "angajator_id": "F0029",
+    "nume": "IONESCU SERVICES SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0030",
+    "nume": "IONESCU ENERGY SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0031",
+    "nume": "STOICA MEDICAL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.1
+  },
+  {
+    "angajator_id": "F0032",
+    "nume": "MOLDOVAN TRADING SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0033",
+    "nume": "PREDA TRADING SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.09
+  },
+  {
+    "angajator_id": "F0034",
+    "nume": "TUDOR ENERGY SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.14
+  },
+  {
+    "angajator_id": "F0035",
+    "nume": "STOICA SERVICES SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.1
+  },
+  {
+    "angajator_id": "F0036",
+    "nume": "CIOBANU MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0037",
+    "nume": "MARIN CONSTRUCT SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.1
+  },
+  {
+    "angajator_id": "F0038",
+    "nume": "NISTOR TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0039",
+    "nume": "MARIN RETAIL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.06
+  },
+  {
+    "angajator_id": "F0040",
+    "nume": "DUMITRU TRADING SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0041",
+    "nume": "DINU ENERGY SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0042",
+    "nume": "DUMITRU SOFTWARE SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0043",
+    "nume": "GHEORGHE SERVICES SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.05
+  },
+  {
+    "angajator_id": "F0044",
+    "nume": "POPESCU MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.15
+  },
+  {
+    "angajator_id": "F0045",
+    "nume": "NEAGU TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.0
+  },
+  {
+    "angajator_id": "F0046",
+    "nume": "BARBU AGRO SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0047",
+    "nume": "ILIE AGRO SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0048",
+    "nume": "MARIN SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0049",
+    "nume": "SANDU TRADING SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.0
+  },
+  {
+    "angajator_id": "F0050",
+    "nume": "STOICA TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0051",
+    "nume": "NISTOR SOFTWARE SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0052",
+    "nume": "CONSTANTIN CONSTRUCT SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.06
+  },
+  {
+    "angajator_id": "F0053",
+    "nume": "NISTOR CONSTRUCT SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0054",
+    "nume": "CIOBANU ENERGY SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.1
+  },
+  {
+    "angajator_id": "F0055",
+    "nume": "STOICA SOFTWARE SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.03
+  },
+  {
+    "angajator_id": "F0056",
+    "nume": "IONESCU AGRO SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0057",
+    "nume": "IONESCU TRADING SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0058",
+    "nume": "VOICU TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0059",
+    "nume": "POP LOGISTIC SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0060",
+    "nume": "POP TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0061",
+    "nume": "TUDOR CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0062",
+    "nume": "FLOREA AGRO SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.15
+  },
+  {
+    "angajator_id": "F0063",
+    "nume": "IONESCU TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.03
+  },
+  {
+    "angajator_id": "F0064",
+    "nume": "NISTOR MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0065",
+    "nume": "CRISTEA TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.05
+  },
+  {
+    "angajator_id": "F0066",
+    "nume": "STOICA LOGISTIC SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0067",
+    "nume": "IONESCU RETAIL SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0068",
+    "nume": "GHEORGHE SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0069",
+    "nume": "ENE MEDICAL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0070",
+    "nume": "OPREA AGRO SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0071",
+    "nume": "FLOREA TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.0
+  },
+  {
+    "angajator_id": "F0072",
+    "nume": "CRISTEA TECH SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.08
+  },
+  {
+    "angajator_id": "F0073",
+    "nume": "CRISTEA AGRO SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0074",
+    "nume": "DOBRE LOGISTIC SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0075",
+    "nume": "MATEI SERVICES SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0076",
+    "nume": "MOLDOVAN SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0077",
+    "nume": "DUMITRU MEDICAL SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0078",
+    "nume": "LUNGU AGRO SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0079",
+    "nume": "ILIE TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0080",
+    "nume": "BARBU TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.03
+  },
+  {
+    "angajator_id": "F0081",
+    "nume": "NISTOR SERVICES SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0082",
+    "nume": "MARIN AGRO SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.13
+  },
+  {
+    "angajator_id": "F0083",
+    "nume": "DINU AGRO SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0084",
+    "nume": "POP SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.1
+  },
+  {
+    "angajator_id": "F0085",
+    "nume": "DINU LOGISTIC SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.12
+  },
+  {
+    "angajator_id": "F0086",
+    "nume": "STAN MEDICAL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.05
+  },
+  {
+    "angajator_id": "F0087",
+    "nume": "TOMA CONSTRUCT SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0088",
+    "nume": "ILIE RETAIL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.1
+  },
+  {
+    "angajator_id": "F0089",
+    "nume": "STAN TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0090",
+    "nume": "MARIN TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0091",
+    "nume": "DOBRE RETAIL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.12
+  },
+  {
+    "angajator_id": "F0092",
+    "nume": "STAN RETAIL SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0093",
+    "nume": "MUNTEANU SOFTWARE SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0094",
+    "nume": "DUMITRU SERVICES SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0095",
+    "nume": "STOICA RETAIL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0096",
+    "nume": "DINU TRADING SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.03
+  },
+  {
+    "angajator_id": "F0097",
+    "nume": "TOMA LOGISTIC SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.01
+  },
+  {
+    "angajator_id": "F0098",
+    "nume": "GHEORGHE TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0099",
+    "nume": "TUDOR SOFTWARE SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0100",
+    "nume": "RUSU LOGISTIC SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0101",
+    "nume": "PREDA SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.03
+  },
+  {
+    "angajator_id": "F0102",
+    "nume": "CONSTANTIN AGRO SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.13
+  },
+  {
+    "angajator_id": "F0103",
+    "nume": "MOLDOVAN LOGISTIC SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0104",
+    "nume": "STAN AGRO SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.09
+  },
+  {
+    "angajator_id": "F0105",
+    "nume": "DOBRE SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.09
+  },
+  {
+    "angajator_id": "F0106",
+    "nume": "TOMA TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.14
+  },
+  {
+    "angajator_id": "F0107",
+    "nume": "RUSU RETAIL SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0108",
+    "nume": "VOICU ENERGY SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.06
+  },
+  {
+    "angajator_id": "F0109",
+    "nume": "DUMITRU CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.01
+  },
+  {
+    "angajator_id": "F0110",
+    "nume": "TUDOR SERVICES SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.09
+  },
+  {
+    "angajator_id": "F0111",
+    "nume": "OPREA ENERGY SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0112",
+    "nume": "DOBRE AGRO SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0113",
+    "nume": "OPREA CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.0
+  },
+  {
+    "angajator_id": "F0114",
+    "nume": "ENE TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0115",
+    "nume": "GHEORGHE CONSTRUCT SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0116",
+    "nume": "DOBRE TRADING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0117",
+    "nume": "ILIE CONSTRUCT SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.06
+  },
+  {
+    "angajator_id": "F0118",
+    "nume": "IONESCU LOGISTIC SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.01
+  },
+  {
+    "angajator_id": "F0119",
+    "nume": "DINU TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0120",
+    "nume": "TOMA SERVICES SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.14
+  },
+  {
+    "angajator_id": "F0121",
+    "nume": "LUNGU RETAIL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0122",
+    "nume": "MUNTEANU LOGISTIC SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0123",
+    "nume": "POPESCU TRADING SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0124",
+    "nume": "MUNTEANU RETAIL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.01
+  },
+  {
+    "angajator_id": "F0125",
+    "nume": "POP CONSTRUCT SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.08
+  },
+  {
+    "angajator_id": "F0126",
+    "nume": "MOLDOVAN MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.02
+  },
+  {
+    "angajator_id": "F0127",
+    "nume": "MUNTEANU SERVICES SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0128",
+    "nume": "FLOREA MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.07
+  },
+  {
+    "angajator_id": "F0129",
+    "nume": "STAN ENERGY SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.08
+  },
+  {
+    "angajator_id": "F0130",
+    "nume": "CONSTANTIN TECH SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0131",
+    "nume": "ENE CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0132",
+    "nume": "TUDOR TECH SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.1
+  },
+  {
+    "angajator_id": "F0133",
+    "nume": "NEAGU TECH SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.06
+  },
+  {
+    "angajator_id": "F0134",
+    "nume": "POP ENERGY SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.0
+  },
+  {
+    "angajator_id": "F0135",
+    "nume": "POP AGRO SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0136",
+    "nume": "DINU SOFTWARE SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.11
+  },
+  {
+    "angajator_id": "F0137",
+    "nume": "CRISTEA RETAIL SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.14
   }
 ]

@@ -33,11 +33,12 @@ Cereri clienți ────────────┘            │
 
 ```bash
 pip install -r requirements.txt
-python -m retailagent.generate --n 50 --seed 42
-python -m retailagent.pipeline
+python -m retailagent.generate            # 10.000 de clienți (50 etalon + 9.950 statistici), ~30 s; --n 50 = doar etalonul
+python -m retailagent.pipeline            # tot fluxul (~45 s), evaluarea și out/demo.html
 ```
 
-A treia comandă rulează tot fluxul (sub o secundă pe 50 de clienți), evaluarea și generează `out/demo.html`.
+`data/` nu e versionat: se regenerează identic din seed. A treia comandă rulează tot fluxul, evaluarea și generează
+`out/demo.html` (primele 200 de cazuri din coadă; metricile pe tot portofoliul).
 Deschide `out/demo.html` în browser: coada, fiecare caz cu semnale / verificări / meniu de intervenții /
 recomandare și butoanele de aprobare.
 
@@ -52,7 +53,9 @@ Fără API, `cd ui && npm run dev` folosește snapshot-ul static din `ui/public/
 deciziile rămân în `localStorage` și ecranul arată comanda `approve` echivalentă. Cu API, deciziile intră în
 `out/approvals.json` + `out/audit.jsonl`. Rute: `GET /api/metrici/context`, `GET /api/cazuri`,
 `GET /api/cazuri/{id}`, `GET /api/metrici`, `POST /api/cazuri/{id}/decizie`, `GET /api/decizii`, `POST /api/rescan`;
-documentația OpenAPI la `http://127.0.0.1:8000/docs`. Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
+documentația OpenAPI la `http://127.0.0.1:8000/docs`. `GET /api/cazuri` întoarce coada **compact** (fără meniu,
+verificări detaliate, grafic — la 10.000 de clienți lista completă ar avea ~60 MB) cu `?limit=`, `?banda=`, `?q=`;
+`GET /api/cazuri/{id}` dă detaliul complet. API-ul rulează fluxul la pornire (~45 s pe 10.000). Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
 bandă, filtre, căutare), Caz (semnale, verificări, model de retenție cu p-ul din modelul antrenat și contribuțiile
 lui, recomandare, grafic, documente), Decizie (aprobă / modifică / respinge cu motiv), Dashboard (metrici).
 Variabile de mediu pentru API: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`.
@@ -60,10 +63,9 @@ Variabile de mediu pentru API: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGE
 ## Comenzi
 
 ```bash
-python -m retailagent.generate --n 50 --seed 42   # data/*.json, data/externe/*.json, ground_truth.json
-python -m retailagent.generate --n 10000 --seed 42 --out out/scale_10000   # portofoliu realist: 50 etalon + 9.950 statistici
-python -m retailagent.churn.labels --data-dir out/scale_10000             # eticheta de churn (a_plecat) + feature-uri
-python -m retailagent.churn.train --labels out/scale_10000/churn_labels.json   # models/churn_v1.pkl + .json (metrici)
+python -m retailagent.generate [--n 10000] [--seed 42] [--profil realist|blocuri]   # data/ (implicit 10.000)
+python -m retailagent.churn.labels                   # data/churn_labels.json: eticheta de churn (a_plecat) + feature-uri
+python -m retailagent.churn.train                    # models/churn_v1.pkl + .json (metrici, calibrare, coeficienți)
 python -m retailagent.churn.train --din-approvals                           # reantrenare pe rezultate reale (schelet)
 python -m retailagent.pipeline [--skip-evaluate] [--skip-demo]   # tot fluxul → out/*.json, audit.jsonl, demo.html
 python -m retailagent.explain Q0001               # explicația completă a unui caz (coadă → verificări → retenție → recomandare)
@@ -86,7 +88,7 @@ python -m retailagent.recommend   # out/recommendations.json + out/audit.jsonl
 Toate comenzile acceptă `--today AAAA-LL-ZZ`, `--data-dir`, `--out-dir`, `--config-dir`. Implicit azi = data din
 `data/market.json` (2026-10-28). Logurile structurate (JSON lines) sunt în `out/run.log`.
 
-## Rezultate pe setul sintetic (50 clienți, seed 42)
+## Rezultate pe etalon (cei 50 de clienți cu scenarii scrise de mână, primii din portofoliu; seed 42)
 
 | metrică | valoare |
 |---|---|

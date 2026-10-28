@@ -31,13 +31,17 @@ def test_context_si_metrici(client):
 
 
 def test_cazuri_si_caz(client, pipeline):
-    cazuri = client.get("/api/cazuri").json()
+    cazuri = client.get("/api/cazuri").json()                       # lista compactă (coada)
     assert len(cazuri) == len(pipeline["cases"])
     c = cazuri[0]
-    assert {"case", "client", "loan", "check", "offer", "rec"} <= set(c)
-    assert "model" in c["offer"] and "contributii" in c["offer"]
-    one = client.get(f"/api/cazuri/{c['case']['case_id']}").json()
-    assert one == c
+    assert {"case", "client", "loan", "check", "offer", "rec"} <= set(c) and c["compact"]
+    assert c["offer"]["interventii"] == [] and c["rec"]["grafic"] is None and c["check"]["rezultate"] == []
+    one = client.get(f"/api/cazuri/{c['case']['case_id']}").json()   # detaliul complet
+    assert one["case"] == c["case"] and one["offer"]["interventii"] and "model" in one["offer"] and "contributii" in one["offer"]
+    assert client.get("/api/cazuri?compact=false").json()[0] == one
+    assert len(client.get("/api/cazuri?limit=5").json()) == 5
+    assert all(x["case"]["banda"] == "P1" for x in client.get("/api/cazuri?banda=P1").json())
+    assert all("C0013" in x["case"]["client_id"] for x in client.get("/api/cazuri?q=c0013").json())
     assert client.get("/api/cazuri/Q9999").status_code == 404
 
 

@@ -35,6 +35,21 @@ class DecizieInput(BaseModel):
     motiv: str | None = None
 
 
+def compact_caz(c: dict) -> dict:
+    """Aceeași formă ca un caz complet (contractul UI), dar fără listele mari — pentru coadă și pagina de start."""
+    o, ch, r = c["offer"], c["check"], c["rec"]
+    return {
+        "case": c["case"], "client": c["client"], "loan": c["loan"],
+        "check": {"motive": ch["motive"], "plan": [], "omise": [], "rezultate": [], "oprit_la": ch["oprit_la"],
+                  "verificare_picata": ch["verificare_picata"], "interogari": ch["interogari"], "concluzii": ch["concluzii"]},
+        "offer": {**{k: o[k] for k in ("B", "B_detalii", "p", "p_tinta", "V", "legaturi", "semnale_active", "aleasa",
+                                        "motiv_alegere", "explicatie", "model")}, "interventii": [], "contributii": None},
+        "rec": {**{k: r[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "documente_lipsa")},
+                "grafic": None, "explicatie": ""},
+        "compact": True,
+    }
+
+
 class Stare:
     def __init__(self, data_dir, out_dir, config_dir):
         self.data_dir, self.out_dir, self.config_dir = Path(data_dir), Path(out_dir), Path(config_dir)
@@ -50,11 +65,24 @@ class Stare:
 
 
 def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> FastAPI:
-    app = FastAPI(title="retailagent API", version="1.0")
+    """Fluxul se rulează la pornirea serverului (lifespan), nu la import: `import retailagent.api` nu citește date."""
+    from contextlib import asynccontextmanager
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        app.state.stare = Stare(data_dir, out_dir, config_dir)
+        yield
+
+    app = FastAPI(title="retailagent API", version="1.0", lifespan=lifespan)
     app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
                        allow_methods=["*"], allow_headers=["*"])
-    stare = Stare(data_dir, out_dir, config_dir)
-    app.state.stare = stare
+
+    class _Lazy:
+        """Acces la starea încărcată în lifespan (TestClient o pornește cu `with TestClient(app)`)."""
+        def __getattr__(self, name):
+            return getattr(app.state.stare, name)
+
+    stare = _Lazy()
 
     @app.get("/api/metrici/context")
     def context():
@@ -63,8 +91,19 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
                 "total_cazuri": d["total_cazuri"]}
 
     @app.get("/api/cazuri")
-    def cazuri():
-        return stare.data["cazuri"]
+    def cazuri(limit: int = 0, compact: bool = True, banda: str | None = None, q: str | None = None):
+        """Coada, în ordinea priorității. Implicit compactă (fără verificări detaliate, meniu, grafic): la 10.000 de
+        clienți lista completă ar avea ~60 MB; detaliul unui caz vine din GET /api/cazuri/{id}."""
+        rows = stare.data["cazuri"]
+        if banda:
+            rows = [c for c in rows if c["case"]["banda"] == banda]
+        if q:
+            ql = q.lower()
+            rows = [c for c in rows if ql in f"{c['case']['case_id']} {c['case']['client_id']} {c['client']['nume']} "
+                                           f"{c['case']['produs']} {c['rec']['recomandare']}".lower()]
+        if limit:
+            rows = rows[:limit]
+        return [compact_caz(c) for c in rows] if compact else rows
 
     @app.get("/api/cazuri/{case_id}")
     def caz(case_id: str):
