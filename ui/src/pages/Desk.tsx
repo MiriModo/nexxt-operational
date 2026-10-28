@@ -31,7 +31,7 @@ export default function Desk() {
         </div>
         {coada.peste_plafon > 0 && (
           <p className="meta" style={{ marginTop: 18 }}>
-            <Link to="/queue?only=over_cap">{coada.peste_plafon} offers deferred over this month's cap</Link> — approve them explicitly or pick them up next month.
+            <Link to="/queue?only=over_cap">{coada.peste_plafon} offers deferred over this month's cap</Link>: approve them explicitly or pick them up next month.
           </p>
         )}
       </section>

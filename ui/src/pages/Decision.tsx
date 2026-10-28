@@ -148,7 +148,7 @@ export default function Decision() {
             <label key={o.id} className={`opt ${decision === o.id ? "on" : ""}`}>
               <input type="radio" name="decision" checked={decision === o.id} onChange={() => setDecision(o.id)} />
               <span>
-                <b>{o.title}</b> <span className="muted">— {o.desc}</span>
+                <b>{o.title}</b> <span className="muted">· {o.desc}</span>
               </span>
             </label>
           ))}

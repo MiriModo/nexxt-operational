@@ -46,7 +46,7 @@ export function Login() {
         <label key={u.id} className={`opt ${picked === u.id ? "on" : ""}`}>
           <input type="radio" name="user" checked={picked === u.id} onChange={() => setPicked(u.id)} />
           <span>
-            <b>{u.nume}</b> <span className="muted">— {u.rol === "admin" ? "administrator" : "advisor"}</span>
+            <b>{u.nume}</b> <span className="muted">· {u.rol === "admin" ? "administrator" : "advisor"}</span>
           </span>
         </label>
       ))}

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Banda } from "../types/api";
 
-const BAND_TITLE: Record<string, string> = { P1: "priority 1 — act today", P2: "priority 2 — this week", P3: "priority 3 — can wait" };
+const BAND_TITLE: Record<string, string> = { P1: "priority 1, act today", P2: "priority 2, this week", P3: "priority 3, can wait" };
 
 export function Band({ b }: { b: Banda | string }) {
   return (

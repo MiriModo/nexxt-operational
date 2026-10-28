@@ -37,7 +37,7 @@ function Row({ r, live }: { r: VerificareRezultat; live?: boolean }) {
       <span>{label(r.id)}</span>
       <span className="ev">
         {r.dovada}
-        {r.incertitudine ? ` — ${r.incertitudine}` : ""}
+        {r.incertitudine ? ` · ${r.incertitudine}` : ""}
       </span>
     </div>
   );
@@ -124,7 +124,7 @@ function MenuChart({ offer }: { offer: OfferInfo }) {
         <circle key={i.id} className={`pt ${i.id === offer.aleasa ? "chosen" : ""} ${!i.fezabil ? "infeasible" : ""}`} cx={x(i.cost)} cy={y(i.p_dupa)} r={i.id === offer.aleasa ? 7 : 4.5}>
           <title>
             {i.eticheta}: cost {ron(i.cost)}, p after {pct(i.p_dupa, 0)}
-            {!i.fezabil ? ` — ${i.motiv_infezabil ?? "infeasible"}` : ""}
+            {!i.fezabil ? ` · ${i.motiv_infezabil ?? "infeasible"}` : ""}
           </title>
         </circle>
       ))}
@@ -328,7 +328,7 @@ export default function Case() {
             <ul className="plain small">
               {cs.semnale.map((s) => (
                 <li key={s.id}>
-                  <b>{label(s.id)}</b> {num(s.scor, 1)} — {s.dovada}
+                  <b>{label(s.id)}</b> {num(s.scor, 1)} · {s.dovada}
                 </li>
               ))}
             </ul>

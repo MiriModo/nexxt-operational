@@ -1,5 +1,5 @@
-/** The product mockup under the hero (guide A3 / C3): a white app window in the blue–peach gradient frame —
- *  scan pill, stepper, a slice of the queue — and, floating beside it, the case card with the p gauge, the score
+/** The product mockup under the hero (guide A3 / C3): a white app window in the blue–peach gradient frame:
+ *  scan pill, stepper, a slice of the queue, and, floating beside it, the case card with the p gauge, the score
  *  and the checks (verified / check / not allowed). Static and illustrative; the real screens are behind sign-in. */
 export function Mockup() {
   const R = 46, C = 2 * Math.PI * R;

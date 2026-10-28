@@ -5,9 +5,9 @@ import { Mockup } from "../components/Mockup";
 import { Reveal } from "../components/Reveal";
 
 const STEPS = [
-  { n: "01", t: "Scan the portfolio", d: "Departure and risk signals from transactions, requests and external sources — every client, every morning." },
+  { n: "01", t: "Scan the portfolio", d: "Departure and risk signals from transactions, requests and external sources, every client, every morning." },
   { n: "02", t: "Build the queue", d: "One prioritised list: leaving × value × what can still be done. Risk runs on its own lane." },
-  { n: "03", t: "Verify only what matters", d: "Checks chosen by products and reason, in stages, stopping at the first failure — with the evidence." },
+  { n: "03", t: "Verify only what matters", d: "Checks chosen by products and reason, in stages, stopping at the first failure, with the evidence." },
   { n: "04", t: "Propose the cheapest keep", d: "The least the bank can do that keeps the client, within BNR limits and internal caps. You decide." },
 ];
 

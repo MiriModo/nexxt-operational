@@ -154,7 +154,7 @@ export default function Reports() {
 
       {v && (
         <p className="meta" style={{ marginTop: 20 }} title={v.scurt}>
-          Configuration version {v.config.hash.slice(0, 6)} · model {v.model.versiune ?? v.model.model} · code {v.cod ?? "—"}. Every decision carries the version it was made with.
+          Configuration version {v.config.hash.slice(0, 6)} · model {v.model.versiune ?? v.model.model} · code {v.cod ?? "n/a"}. Every decision carries the version it was made with.
         </p>
       )}
     </>
