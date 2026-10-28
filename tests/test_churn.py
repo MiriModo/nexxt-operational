@@ -52,7 +52,10 @@ def test_sigmoid_churn_reproduce_formula(cfg):
     for B, n, leg in ((0, 0, 0.0), (15_000, 1, 0.5), (60_000, 2, 1.0)):
         x = {"B_norm": min(B / cfg.retention.B_referinta_ron, cfg.retention.B_norm_max), "n_active": n, "legaturi": leg}
         assert sigmoid(m.predict_logit(x)) == pytest.approx(prob_plecare(B, n, leg, cfg))
-    assert get_model(cfg).nume == "sigmoid"
+    c = cfg.model_copy(deep=True)
+    c.retention.churn.model = "sigmoid"
+    assert get_model(c).nume == "sigmoid"
+    assert get_model(cfg).nume == cfg.retention.churn.model          # configurația decide modelul folosit de platformă
 
 
 def test_etichetele_contin_feature_urile(antrenat):

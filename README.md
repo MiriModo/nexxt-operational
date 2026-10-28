@@ -214,8 +214,8 @@ Pentru `--n > 50` generatorul nu mai repetă cele 50 de scenarii în blocuri: pr
 
 ## Modelul de churn antrenat (`retailagent/churn/`, `models/`)
 
-`p_plecare` poate veni din două surse, alese în `retention.yaml → churn.model`: **`sigmoid`** (formula cu parametri
-scriși de noi, implicit) sau **`antrenat`** (`models/churn_v1.pkl`). Tot restul — meniul, constrângerile,
+`p_plecare` poate veni din două surse, alese în `retention.yaml → churn.model`: **`antrenat`** (`models/churn_v1.pkl`,
+implicit — platforma pornește pe modelul antrenat) sau **`sigmoid`** (formula cu parametri scriși de noi, fallback). Tot restul — meniul, constrângerile,
 optimizarea — e identic; modelul dă doar `p_înainte`, iar intervențiile rămân deplasări pe logit. Cu `sigmoid`
 rezultatele sunt identice cu cele de dinainte (test de aur).
 
