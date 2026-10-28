@@ -6,5 +6,5 @@ out/
 *.pdf
 .venv/
 .playwright-mcp/
-data/                 # generat din seed: python -m retailagent.generate (10.000 clienți, ~150 MB)
+data/
 models/labels_din_approvals.json
