@@ -41,6 +41,10 @@ class RezultatInput(BaseModel):
     rezultat: Literal["ramas", "plecat"]
 
 
+class ConfigInput(BaseModel):
+    text: str
+
+
 def compact_caz(c: dict) -> dict:
     """Aceeași formă ca un caz complet (contractul UI), dar fără listele mari — pentru coadă și pagina de start."""
     o, ch, r = c["offer"], c["check"], c["rec"]
@@ -216,6 +220,102 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     @app.get("/api/echipa")
     def echipa():
         return {"consilieri": [c.model_dump() for c in stare.full.cfg.echipa.consilieri], "alocare": stare.full.cfg.echipa.alocare}
+
+    @app.post("/api/cazuri/{case_id}/verifica")
+    def verifica(case_id: str):
+        """Reia doar verificările acestui caz (plan după produse + motiv, apoi treptele în ordine) și întoarce rezultatele
+        treaptă cu treaptă — UI-ul le afișează „în timp real"."""
+        from .checks import build_context, plan_checks, run_checks
+        case = next((c for c in stare.full.res.cases if c["case_id"] == case_id), None)
+        if case is None:
+            raise HTTPException(404, f"cazul {case_id} nu există")
+        full = stare.full
+        ci = full.res.inputs[case_id]
+        plan = plan_checks(case, ci.client, full.pf.loans_by_client.get(case["client_id"], []), ci.cereri, full.cfg)
+        ctx = build_context(full.pf, full.mocks, full.cfg, case, ci.cereri, [m["motiv"] for m in plan["motive"]])
+        r = run_checks(plan, ctx)
+        trepte = []
+        for t in full.cfg.checks.trepte:
+            rez = [x for x in r["rezultate"] if x["treapta"] == t]
+            if not rez:
+                continue
+            stare_t = "oprita" if r["oprit_la"] == t else ("neexecutata" if all(x["status"] == "neexecutat" for x in rez) else "executata")
+            trepte.append({"treapta": t, "stare": stare_t, "rezultate": rez})
+        return {"case_id": case_id, "motive": r["motive"], "plan": r["plan"], "omise": r["omise"], "trepte": trepte,
+                "oprit_la": r["oprit_la"], "verificare_picata": r["verificare_picata"], "incertitudini": r["incertitudini"],
+                "concluzii": r["concluzii"], "interogari_externe": r["interogari_externe"]}
+
+    @app.get("/api/model")
+    def model():
+        """Metadatele modelului de churn (metrici, calibrare, coeficienți) pentru Dashboard."""
+        from .versiune import versiune_model
+        ch = stare.full.cfg.retention.churn
+        meta_p = Path(ch.cale).with_suffix(".json")
+        meta = read_json(meta_p) if meta_p.exists() else {}
+        return {"activ": versiune_model(stare.full.cfg), "antrenat": meta}
+
+    # ---- configurație (Admin): editare YAML cu validare pe server, apoi re-rulare
+    EDITABILE = ("priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa")
+
+    @app.get("/api/config")
+    def config_lista():
+        from .versiune import versiune_config
+        v = versiune_config(stare.config_dir)
+        return [{"nume": n, "fisier": f"{n}.yaml", "hash": v["fisiere"].get(f"{n}.yaml"),
+                 "exista": (stare.config_dir / f"{n}.yaml").exists()} for n in EDITABILE]
+
+    @app.get("/api/config/{nume}")
+    def config_citeste(nume: str):
+        if nume not in EDITABILE:
+            raise HTTPException(404, f"configurația {nume!r} nu e editabilă: {EDITABILE}")
+        p = stare.config_dir / f"{nume}.yaml"
+        if not p.exists():
+            raise HTTPException(404, f"{p} lipsește")
+        return {"nume": nume, "text": p.read_text(encoding="utf-8")}
+
+    @app.put("/api/config/{nume}")
+    def config_scrie(nume: str, body: ConfigInput):
+        """Validează noul YAML cu aceleași modele pydantic ca la încărcare (pe o copie), apoi îl scrie. 400 = invalid."""
+        import shutil
+        import tempfile
+
+        import yaml
+        from .config_loader import load_config
+        from .profil import load_profil
+        if nume not in EDITABILE:
+            raise HTTPException(404, f"configurația {nume!r} nu e editabilă")
+        try:
+            yaml.safe_load(body.text)
+        except yaml.YAMLError as e:
+            raise HTTPException(400, f"YAML invalid: {e}") from e
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp) / "config"
+            shutil.copytree(stare.config_dir, d)
+            (d / f"{nume}.yaml").write_text(body.text, encoding="utf-8")
+            try:
+                if nume == "portofoliu":
+                    load_profil(d / "portofoliu.yaml")
+                else:
+                    load_config(d)
+            except Exception as e:                      # pydantic / ValueError: mesajul e explicația pentru om
+                raise HTTPException(400, f"configurație respinsă: {e}") from e
+        (stare.config_dir / f"{nume}.yaml").write_text(body.text, encoding="utf-8")
+        from .versiune import versiune_config
+        return {"nume": nume, "salvat": True, "versiune": versiune_config(stare.config_dir)["hash"],
+                "nota": "rulează POST /api/rescan ca schimbarea să intre în coadă"}
+
+    @app.get("/api/config/{nume}/diff")
+    def config_diff(nume: str):
+        """Diferența față de versiunea din git (dacă proiectul e într-un repo)."""
+        import subprocess
+        if nume not in EDITABILE:
+            raise HTTPException(404, f"configurația {nume!r} nu e editabilă")
+        p = stare.config_dir / f"{nume}.yaml"
+        try:
+            out = subprocess.run(["git", "diff", "--", str(p)], capture_output=True, text=True, timeout=10, cwd=ROOT)
+            return {"nume": nume, "diff": out.stdout, "git": out.returncode == 0}
+        except (OSError, subprocess.SubprocessError):
+            return {"nume": nume, "diff": "", "git": False}
 
     @app.post("/api/rescan")
     def rescan():

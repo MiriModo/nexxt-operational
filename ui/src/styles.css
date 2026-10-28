@@ -368,3 +368,30 @@ details > summary { cursor: pointer; }
   .cc-rec { align-items: flex-start; text-align: left; }
   .cc-motiv { white-space: normal; }
 }
+
+/* ---- pasul 5: trepte de verificare, incertitudini, buget, admin ---- */
+.tag.indisponibil { background: var(--warn-bg); color: var(--warn); border-style: dashed; }
+.tag.inc { background: var(--warn-bg); color: var(--warn); }
+.tag.buget { background: transparent; color: var(--ink-2); border-color: var(--line-strong); }
+.trepte { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
+.treapta { padding: 8px 10px; border: 1px solid var(--line); border-left: 4px solid var(--line-strong); border-radius: 8px; background: var(--panel); }
+.treapta > .small { margin-bottom: 4px; }
+.treapta table { margin: 0; }
+.treapta td { padding: 4px 6px; vertical-align: top; }
+.treapta.executata { border-left-color: var(--ok); }
+.treapta.oprita { border-left-color: var(--err); background: var(--err-bg, var(--panel)); }
+.treapta.neexecutata { color: var(--ink-3); border-style: dashed; }
+.treapta.activa { animation: puls 0.9s ease-in-out infinite; }
+@keyframes puls { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .treapta.activa { animation: none; } }
+.inc-list { margin: 8px 0 0; padding-left: 18px; }
+.inc-list li { margin-bottom: 4px; }
+.editor { width: 100%; min-height: 420px; font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; font-size: 12.5px; line-height: 1.5; tab-size: 2; }
+pre.diff { white-space: pre-wrap; font-size: 12px; max-height: 320px; overflow: auto; }
+.calib { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; align-items: end; height: 120px; margin: 8px 0; }
+.calib > div { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 2px; }
+.calib .b { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.calib .b.p { background: var(--ink-3); }
+.calib .b.r { background: var(--ok); }
+.calib .lbl { font-size: 10px; color: var(--ink-3); }
+.istoric li { margin-bottom: 6px; }

@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Coada from "./pages/Coada";
 import CazPage from "./pages/Caz";
 import DeciziePage from "./pages/Decizie";
+import Admin from "./pages/Admin";
 
 export default function App() {
   const [ctx, setCtx] = useState<Context | null>(null);
@@ -29,6 +30,7 @@ export default function App() {
           </NavLink>
           <NavLink to="/cazuri">Coadă</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/admin">Admin</NavLink>
         </nav>
         <span className="ctx">
           {ctx ? `${ctx.clienti} clienți în portofoliu` : ""}
@@ -44,6 +46,7 @@ export default function App() {
           <Route path="/cazuri" element={<Coada />} />
           <Route path="/cazuri/:id" element={<CazPage />} />
           <Route path="/cazuri/:id/decizie" element={<DeciziePage />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
     </>

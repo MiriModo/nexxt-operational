@@ -29,10 +29,18 @@ export function CaseCard({ c, azi, decizie }: { c: Caz; azi: string; decizie?: D
           <span className="cc-id">{cs.case_id}</span>
           {decizie && <span className={`tag ${decizie.decizie === "respinge" ? "fail" : "ok"}`}>{decizie.decizie}</span>}
           {blocat && !decizie && <span className="tag fail">blocat</span>}
+          {rec.incertitudini && rec.incertitudini.length > 0 && (
+            <span className="tag inc" title={rec.incertitudini.map((i) => i.text).join("; ")}>
+              {rec.incertitudini.length === 1 ? "1 incertitudine" : `${rec.incertitudini.length} incertitudini`}
+            </span>
+          )}
+          {rec.oferta?.amanata_buget && <span className="tag buget">peste plafon</span>}
         </div>
         <div className="cc-meta">
           {eticheta(cs.produs)}
-          {loan ? `, sold ${ron(loan.sold)}` : ""}, <span className={urgent ? "cc-urgent" : undefined}>{termen(cs.deadline, azi)}</span>
+          {loan ? `, sold ${ron(loan.sold)}${loan.moneda && loan.moneda !== "RON" ? ` (${loan.moneda})` : ""}` : ""},{" "}
+          <span className={urgent ? "cc-urgent" : undefined}>{termen(cs.deadline, azi)}</span>
+          {c.consilier ? ` · ${c.consilier}` : ""}
         </div>
         {cs.motive_top3[0] && <div className="cc-motiv">{cs.motive_top3[0]}</div>}
       </div>

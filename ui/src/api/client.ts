@@ -3,7 +3,10 @@
 // Sursa: API-ul (implicit /api, proxy-at de Vite către 127.0.0.1:8000; se poate schimba cu VITE_API_URL).
 // Dacă API-ul nu răspunde, cade pe snapshot-ul static public/data/demo.json (scris de `python -m retailagent.demo`),
 // iar deciziile se țin în localStorage. `getSursa()` spune ce sursă e activă (pentru antet).
-import type { Caz, DecizieInput, DecizieRecord, Metrici, PaginaCoada, ParametriCoada, Snapshot, Sumar } from "../types/api";
+import type {
+  BugetPortofoliu, Caz, ConfigFisier, Consilier, DecizieInput, DecizieRecord, DecizieServer, Feedback, Metrici, ModelInfo,
+  PaginaCoada, ParametriCoada, Reverificare, Snapshot, Sumar, Versiune,
+} from "../types/api";
 
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? "/api";
 const LS_KEY = "retailagent.decizii";
@@ -60,13 +63,110 @@ export interface Context {
   clienti: number;
   p_tinta: number;
   model_churn?: { nume: string; versiune: string } | null;
+  total_cazuri?: number;
+  versiune?: Versiune | null;
+  buget_portofoliu?: BugetPortofoliu | null;
 }
 
 export async function getContext(): Promise<Context> {
   return viaApi<Context>("/metrici/context", async () => {
     const s = await loadSnapshot();
-    return { azi: s.azi, clienti: s.clienti, p_tinta: s.p_tinta, model_churn: s.model_churn };
+    return { azi: s.azi, clienti: s.clienti, p_tinta: s.p_tinta, model_churn: s.model_churn, total_cazuri: s.total_cazuri };
   });
+}
+
+/** Reia verificările unui caz (doar cu API); fără API, regrupează pe trepte ce e deja în snapshot. */
+export async function postVerifica(id: string): Promise<Reverificare> {
+  if (sursa !== "static") {
+    try {
+      const r = await fetch(`${API}/cazuri/${id}/verifica`, { method: "POST" });
+      if (r.ok) {
+        setSursa("api");
+        return (await r.json()) as Reverificare;
+      }
+      if (r.status === 404) throw new Error(`cazul ${id} nu există`);
+    } catch (e) {
+      if (e instanceof Error && e.message.startsWith("cazul")) throw e;
+      setSursa("static");
+    }
+  }
+  const c = await getCaz(id);
+  if (!c) throw new Error(`cazul ${id} nu există`);
+  const ordine = ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"];
+  const trepte = ordine
+    .map((t) => ({ treapta: t, rezultate: c.check.rezultate.filter((r) => r.treapta === t) }))
+    .filter((t) => t.rezultate.length)
+    .map((t) => ({
+      ...t,
+      stare: (c.check.oprit_la === t.treapta ? "oprita" : t.rezultate.every((r) => r.status === "neexecutat") ? "neexecutata" : "executata") as
+        | "executata"
+        | "oprita"
+        | "neexecutata",
+    }));
+  return {
+    case_id: id, motive: c.check.motive, plan: c.check.plan, omise: c.check.omise, trepte, oprit_la: c.check.oprit_la,
+    verificare_picata: c.check.verificare_picata, incertitudini: c.rec.incertitudini ?? [], concluzii: c.check.concluzii as Record<string, unknown>,
+    interogari_externe: c.check.interogari,
+  };
+}
+
+export async function getIstoric(id: string): Promise<DecizieServer[]> {
+  return viaApi<DecizieServer[]>(`/cazuri/${id}/decizii`, async () => {
+    const d = getDeciziiLocale()[id];
+    return d
+      ? [{ timestamp: d.la, case_id: id, client_id: "", consilier: d.consilier ?? null, decizie: d.decizie, override: d.decizie !== "aproba",
+           recomandare_agent: "nu_interveni", interventie_agent: null, interventie_finala: d.interventie ?? null, motiv: d.motiv ?? null,
+           rezultat: null, rezultat_la: null }]
+      : [];
+  });
+}
+
+export async function postRezultat(id: string, rezultat: "ramas" | "plecat"): Promise<DecizieServer> {
+  const r = await fetch(`${API}/cazuri/${id}/rezultat`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rezultat }) });
+  if (r.status === 400) throw new Error(((await r.json()) as { detail?: string }).detail ?? "rezultat refuzat");
+  if (!r.ok) throw new Error(`rezultat: ${r.status} (rezultatul la 90 de zile se înregistrează doar prin API)`);
+  return (await r.json()) as DecizieServer;
+}
+
+export async function getEchipa(): Promise<Consilier[]> {
+  return viaApi<{ consilieri: Consilier[] }>("/echipa", async () => ({ consilieri: [] })).then((r) => r.consilieri);
+}
+
+export async function getFeedback(): Promise<Feedback | null> {
+  return viaApi<Feedback | null>("/feedback", async () => null);
+}
+
+export async function getModel(): Promise<ModelInfo | null> {
+  return viaApi<ModelInfo | null>("/model", async () => null);
+}
+
+export async function getConfigLista(): Promise<ConfigFisier[]> {
+  return viaApi<ConfigFisier[]>("/config", async () => []);
+}
+
+export async function getConfig(nume: string): Promise<{ nume: string; text: string }> {
+  const r = await fetch(`${API}/config/${nume}`);
+  if (!r.ok) throw new Error(`config ${nume}: ${r.status}`);
+  return (await r.json()) as { nume: string; text: string };
+}
+
+export async function putConfig(nume: string, text: string): Promise<{ salvat: boolean; versiune: string; nota: string }> {
+  const r = await fetch(`${API}/config/${nume}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+  if (r.status === 400) throw new Error(((await r.json()) as { detail?: string }).detail ?? "configurație respinsă");
+  if (!r.ok) throw new Error(`config ${nume}: ${r.status}`);
+  return (await r.json()) as { salvat: boolean; versiune: string; nota: string };
+}
+
+export async function getConfigDiff(nume: string): Promise<{ diff: string; git: boolean }> {
+  const r = await fetch(`${API}/config/${nume}/diff`);
+  if (!r.ok) throw new Error(`diff ${nume}: ${r.status}`);
+  return (await r.json()) as { diff: string; git: boolean };
+}
+
+export async function postRescan(): Promise<{ cazuri: number; azi: string }> {
+  const r = await fetch(`${API}/rescan`, { method: "POST" });
+  if (!r.ok) throw new Error(`rescan: ${r.status}`);
+  return (await r.json()) as { cazuri: number; azi: string };
 }
 
 export async function getCazuri(): Promise<Caz[]> {
@@ -83,6 +183,8 @@ export async function getCoada(p: ParametriCoada = {}): Promise<PaginaCoada> {
   const offset = p.offset ?? 0;
   const qs = new URLSearchParams({ limit: String(limit), offset: String(offset), sort: p.sort ?? "prioritate" });
   if (p.benzi && p.benzi.length) qs.set("banda", p.benzi.join(","));
+  if (p.recomandari && p.recomandari.length) qs.set("recomandare", p.recomandari.join(","));
+  if (p.consilier) qs.set("consilier", p.consilier);
   if (p.q?.trim()) qs.set("q", p.q.trim());
   if (p.ascundeDecise) qs.set("ascunde_decise", "true");
   return viaApi<PaginaCoada>(`/coada?${qs}`, async () => {
@@ -90,6 +192,8 @@ export async function getCoada(p: ParametriCoada = {}): Promise<PaginaCoada> {
     const needle = (p.q ?? "").trim().toLowerCase();
     let rows = (await loadSnapshot()).cazuri.filter((c) => {
       if (p.benzi && p.benzi.length && !p.benzi.includes(c.case.banda)) return false;
+      if (p.recomandari && p.recomandari.length && !p.recomandari.includes(c.rec.recomandare)) return false;
+      if (p.consilier && c.consilier !== p.consilier) return false;
       if (p.ascundeDecise && decizii[c.case.case_id]) return false;
       if (!needle) return true;
       return [c.case.case_id, c.case.client_id, c.client.nume, c.case.produs, c.case.actiune_propusa, c.rec.recomandare, ...c.case.motive_top3]
@@ -182,5 +286,6 @@ export function comandaApprove(caseId: string, d: DecizieInput): string {
   const p = [`python -m retailagent.approve ${caseId} --decizie ${d.decizie}`];
   if (d.decizie === "modifica" && d.interventie) p.push(`--interventie ${d.interventie}`);
   if (d.motiv) p.push(`--motiv "${d.motiv.replace(/"/g, "'")}"`);
+  if (d.consilier) p.push(`--consilier ${d.consilier}`);
   return p.join(" ");
 }

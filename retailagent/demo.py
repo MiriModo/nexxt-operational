@@ -38,7 +38,8 @@ def _case_payload(full: FullRun, case: dict) -> dict:
         "client": {"nume": cl["nume"], "nivel": cl["nivel_relatie"], "tipologie": cl["tipologie_declarata"],
                    "client_din": cl["client_din"], "produse": cl.get("produse_atasate", [])},
         "loan": ({"sold": ci.loan["sold_ramas"], "tip_dobanda": ci.loan["tip_dobanda"], "dobanda": ci.loan["dobanda_curenta"],
-                  "expira": ci.loan.get("dobanda_fixa_expira_la"), "scadenta": ci.loan["data_scadenta"], "rata": ci.loan["rata_lunara"]}
+                  "expira": ci.loan.get("dobanda_fixa_expira_la"), "scadenta": ci.loan["data_scadenta"], "rata": ci.loan["rata_lunara"],
+                  "moneda": ci.loan.get("moneda", "RON"), "sold_valuta": ci.loan.get("sold_valuta")}
                  if ci.loan else None),
         "check": {"motive": check["motive"], "plan": check["plan"], "omise": check["omise"],
                   "rezultate": [{k: x.get(k) for k in ("id", "treapta", "externa", "status", "dovada", "sursa")} for x in check["rezultate"]],

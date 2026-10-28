@@ -82,6 +82,38 @@ def test_coada_paginata_si_sumar(client, pipeline):
     assert client.get("/api/coada?ascunde_decise=true&limit=1").json()["total"] == s["deschise"]
 
 
+def test_verifica_si_model(client, pipeline):
+    cid = pipeline["cases"][0]["case_id"]
+    v = client.post(f"/api/cazuri/{cid}/verifica").json()
+    assert v["case_id"] == cid and v["trepte"] and all(t["stare"] in ("executata", "oprita", "neexecutata") for t in v["trepte"])
+    assert sum(len(t["rezultate"]) for t in v["trepte"]) == len(v["plan"]) and "incertitudini" in v
+    assert client.post("/api/cazuri/Q9999/verifica").status_code == 404
+    m = client.get("/api/model").json()
+    assert m["activ"]["model"] in ("sigmoid", "antrenat")
+
+
+def test_config_admin(client, tmp_path):
+    lista = client.get("/api/config").json()
+    assert {x["nume"] for x in lista} >= {"priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa"}
+    r = client.get("/api/config/retention").json()
+    assert "p_tinta" in r["text"]
+    assert client.get("/api/config/parola").status_code == 404
+    # invalid: p_tinta în afara intervalului → 400 cu mesaj; fișierul nu se schimbă
+    original = r["text"]
+    rau = client.put("/api/config/retention", json={"text": original.replace("p_tinta: 0.20", "p_tinta: 1.5")})
+    assert rau.status_code == 400 and "respins" in rau.json()["detail"]
+    assert client.get("/api/config/retention").json()["text"] == original
+    assert client.put("/api/config/retention", json={"text": "p_tinta: [unclosed"}).status_code == 400
+    # valid: aceeași configurație rescrisă cu un comentariu → salvat, versiunea se schimbă
+    ok = client.put("/api/config/retention", json={"text": original + "\n# editat din Admin\n"}).json()
+    assert ok["salvat"] and ok["versiune"]
+    assert client.get("/api/config/retention").json()["text"].endswith("# editat din Admin\n")
+    client.put("/api/config/retention", json={"text": original})            # restaurare
+    assert client.get("/api/config/retention").json()["text"] == original
+    d = client.get("/api/config/retention/diff").json()
+    assert "diff" in d
+
+
 def test_rescan(client):
     r = client.post("/api/rescan").json()
     assert r["cazuri"] > 0

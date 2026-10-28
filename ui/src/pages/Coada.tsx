@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { getCoada, getContext, getDeciziiLocale } from "../api/client";
+import { useEchipa } from "../api/hooks";
 import { CaseCard } from "../components/CaseCard";
 import { Loading } from "../components/ui";
-import type { Banda, Caz, ParametriCoada } from "../types/api";
+import { eticheta } from "../format";
+import type { Banda, Caz, ParametriCoada, Recomandare } from "../types/api";
 
 type SortKey = NonNullable<ParametriCoada["sort"]>;
 const PAGINA = 60;
+const RECOMANDARI: Recomandare[] = ["oferta_minima", "oferta_produs", "nu_interveni", "restructurare", "respins_escaladat", "blocat"];
 
 const GRUPE: { b: Banda; titlu: string; desc: string }[] = [
   { b: "P1", titlu: "Acționează azi", desc: "Termen apropiat sau semnal puternic. Fiecare zi contează." },
@@ -27,6 +30,9 @@ export default function Coada() {
   const [qAplicat, setQAplicat] = useState("");
   const [sort, setSort] = useState<SortKey>("prioritate");
   const [ascundeDecise, setAscundeDecise] = useState(false);
+  const [recomandari, setRecomandari] = useState<Set<Recomandare>>(new Set());
+  const [consilier, setConsilier] = useState("");
+  const echipa = useEchipa();
   const decizii = getDeciziiLocale();
 
   useEffect(() => {
@@ -39,7 +45,9 @@ export default function Coada() {
     return () => clearTimeout(t);
   }, [q]);
 
-  const parametri = (offset: number): ParametriCoada => ({ benzi: [...benzi], q: qAplicat, sort, ascundeDecise, limit: PAGINA, offset });
+  const parametri = (offset: number): ParametriCoada => ({
+    benzi: [...benzi], recomandari: [...recomandari], consilier: consilier || undefined, q: qAplicat, sort, ascundeDecise, limit: PAGINA, offset,
+  });
 
   useEffect(() => {
     let activ = true;
@@ -57,7 +65,7 @@ export default function Coada() {
       activ = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [benzi, qAplicat, sort, ascundeDecise]);
+  }, [benzi, recomandari, consilier, qAplicat, sort, ascundeDecise]);
 
   const incaOPagina = async () => {
     if (!items) return;
@@ -80,6 +88,12 @@ export default function Coada() {
     if (s.has(b)) s.delete(b);
     else s.add(b);
     setBenzi(s);
+  };
+  const toggleRec = (r: Recomandare) => {
+    const s = new Set(recomandari);
+    if (s.has(r)) s.delete(r);
+    else s.add(r);
+    setRecomandari(s);
   };
 
   return (
@@ -122,6 +136,30 @@ export default function Coada() {
           onChange={(e) => setQ(e.target.value)}
           style={{ maxWidth: 300 }}
         />
+      </div>
+
+      <div className="filters" role="group" aria-label="Filtre pe recomandare și consilier">
+        {RECOMANDARI.map((r) => (
+          <button key={r} type="button" className={`chip ${recomandari.has(r) ? "on" : ""}`} aria-pressed={recomandari.has(r)} onClick={() => toggleRec(r)}>
+            {eticheta(r)}
+          </button>
+        ))}
+        <span style={{ flex: 1 }} />
+        {echipa.data && echipa.data.length > 0 && (
+          <>
+            <label className="sr-only" htmlFor="consilier">
+              Consilier
+            </label>
+            <select id="consilier" value={consilier} onChange={(e) => setConsilier(e.target.value)} style={{ width: "auto" }}>
+              <option value="">Toți consilierii</option>
+              {echipa.data.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nume}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
       </div>
 
       <p className="sr-only" role="status">

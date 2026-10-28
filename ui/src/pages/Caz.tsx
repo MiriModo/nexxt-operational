@@ -1,9 +1,122 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getCaz, getDeciziiLocale } from "../api/client";
+import { useVerifica } from "../api/hooks";
 import { BandaBadge, Bar, Loading, StatusTag } from "../components/ui";
 import { eticheta, num, pct, pp, ron } from "../format";
-import type { Caz } from "../types/api";
+import type { Caz, CheckInfo, Reverificare } from "../types/api";
+
+const ORDINE_TREPTE = ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"];
+type Treapta = Reverificare["trepte"][number];
+
+/** Rezultatele deja calculate, regrupate pe trepte în ordinea din checks.yaml (același format ca răspunsul la „Reverifică"). */
+function grupeazaTrepte(check: CheckInfo): Treapta[] {
+  return ORDINE_TREPTE.map((t) => ({ treapta: t, rezultate: check.rezultate.filter((r) => r.treapta === t) }))
+    .filter((t) => t.rezultate.length)
+    .map((t) => ({
+      ...t,
+      stare: check.oprit_la === t.treapta ? "oprita" : t.rezultate.every((r) => r.status === "neexecutat") ? "neexecutata" : "executata",
+    }));
+}
+
+/** Verificările pe trepte. La „Reverifică", treptele apar una câte una (treapta curentă pulsează), ca să se vadă
+ *  că fluxul se oprește la prima treaptă picată și nu interoghează sursele externe de după ea. */
+function Trepte({ check, caseId }: { check: CheckInfo; caseId: string }) {
+  const verifica = useVerifica(caseId);
+  const [trepte, setTrepte] = useState<Treapta[]>(() => grupeazaTrepte(check));
+  const [vizibile, setVizibile] = useState<number>(Infinity);
+  const [sursaNoua, setSursaNoua] = useState<Reverificare | null>(null);
+
+  useEffect(() => {
+    if (vizibile === Infinity || !sursaNoua) return;
+    if (vizibile >= sursaNoua.trepte.length) {
+      setVizibile(Infinity);
+      return;
+    }
+    const t = setTimeout(() => setVizibile(vizibile + 1), 450);
+    return () => clearTimeout(t);
+  }, [vizibile, sursaNoua]);
+
+  const reverifica = () =>
+    verifica.mutate(undefined, {
+      onSuccess: (r) => {
+        setSursaNoua(r);
+        setTrepte(r.trepte);
+        setVizibile(0);
+      },
+    });
+  const inCurs = verifica.isPending || vizibile !== Infinity;
+  const activ = sursaNoua ? sursaNoua : null;
+
+  return (
+    <>
+      <div className="actions" style={{ marginBottom: 8 }}>
+        <button type="button" className="btn secondary sm" disabled={inCurs} onClick={reverifica}>
+          {inCurs ? "Se verifică…" : "Reverifică acum"}
+        </button>
+        {verifica.error && <span className="small" style={{ color: "var(--fail, #b00)" }}>{String(verifica.error)}</span>}
+        {activ && !inCurs && (
+          <span className="small muted">
+            Reluat: {activ.interogari_externe.executate} interogări externe executate, {activ.interogari_externe.evitate_vs_tot} evitate.
+          </span>
+        )}
+      </div>
+      <div className="trepte">
+        {trepte.map((t, i) => {
+          const ascunsa = vizibile !== Infinity && i > vizibile;
+          const activa = vizibile !== Infinity && i === vizibile;
+          if (ascunsa) return <div key={t.treapta} className="treapta neexecutata" aria-hidden="true" style={{ opacity: 0.35 }}><b>{eticheta(t.treapta)}</b> <span className="small muted">în așteptare</span></div>;
+          return (
+            <div key={t.treapta} className={`treapta ${t.stare} ${activa ? "activa" : ""}`}>
+              <div className="small" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <b>{eticheta(t.treapta)}</b>
+                <span className={`tag ${t.stare === "oprita" ? "fail" : t.stare === "neexecutata" ? "neexecutat" : "ok"}`}>
+                  {t.stare === "oprita" ? "oprit aici" : t.stare === "neexecutata" ? "neexecutată" : "executată"}
+                </span>
+              </div>
+              <table>
+                <tbody>
+                  {t.rezultate.map((r) => (
+                    <tr key={r.id}>
+                      <td style={{ width: "32%" }}>
+                        {eticheta(r.id)}
+                        {r.externa && <span className="evidence">extern</span>}
+                      </td>
+                      <td style={{ width: 110 }}>
+                        <StatusTag s={r.status} />
+                      </td>
+                      <td className="small">
+                        {r.dovada}
+                        {r.sursa && <span className="evidence">{r.sursa}</span>}
+                        {r.incertitudine && <div className="small" style={{ color: "var(--warn, #8a5a00)" }}>⚠ {r.incertitudine}</div>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+      {check.omise.length > 0 && (
+        <details style={{ marginTop: 8 }}>
+          <summary className="small">{check.omise.length} verificări omise (nu sunt relevante pentru motivul cazului)</summary>
+          <table>
+            <tbody>
+              {check.omise.map((r) => (
+                <tr key={`om-${r.id}`} className="infeasible">
+                  <td className="small">{eticheta(r.treapta)}</td>
+                  <td>{eticheta(r.id)}</td>
+                  <td className="small">{r.motiv}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      )}
+    </>
+  );
+}
 
 export default function CazPage() {
   const { id = "" } = useParams();
@@ -46,12 +159,26 @@ export default function CazPage() {
         <span className="sub">
           {cs.client_id}, {eticheta(cs.produs)}
           {cs.loan_id ? `, ${cs.loan_id}` : ", cerere nouă"}
+          {c.consilier ? ` · consilier ${c.consilier}` : ""}
+          {c.versiune ? <span title={c.versiune}> · versiune {c.versiune.split(" ")[0].replace("cfg:", "cfg ")}</span> : ""}
         </span>
       </h1>
 
       {blocat && (
         <div className="notice fail" role="status">
           Caz blocat: {cs.blocaje.length ? cs.blocaje.map(eticheta).join(", ") : rec.motiv}
+        </div>
+      )}
+      {rec.incertitudini && rec.incertitudini.length > 0 && (
+        <div className="notice warn" role="status">
+          <b>Incertitudini ({rec.incertitudini.length})</b>: situații neașteptate tratate prin degradare controlată, nu prin oprirea fluxului.
+          <ul className="inc-list">
+            {rec.incertitudini.map((i) => (
+              <li key={i.id}>
+                <span className="tag inc">{eticheta(i.id)}</span> {i.text}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -74,7 +201,12 @@ export default function CazPage() {
           {loan ? (
             <dl className="kv">
               <dt>Sold</dt>
-              <dd>{ron(loan.sold)}</dd>
+              <dd>
+                {ron(loan.sold)}
+                {loan.moneda && loan.moneda !== "RON" && loan.sold_valuta != null && (
+                  <span className="small muted"> ({num(loan.sold_valuta, 0)} {loan.moneda}, în RON la cursul curent)</span>
+                )}
+              </dd>
               <dt>Rată</dt>
               <dd>{ron(loan.rata)}</dd>
               <dt>Dobândă</dt>
@@ -151,46 +283,7 @@ export default function CazPage() {
               </>
             )}
           </p>
-          <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Treaptă</th>
-                <th>Verificare</th>
-                <th>Status</th>
-                <th>Dovadă</th>
-              </tr>
-            </thead>
-            <tbody>
-              {check.rezultate.map((r) => (
-                <tr key={r.id}>
-                  <td className="small muted">{r.treapta}</td>
-                  <td>
-                    {eticheta(r.id)}
-                    {r.externa && <span className="evidence">extern</span>}
-                  </td>
-                  <td>
-                    <StatusTag s={r.status} />
-                  </td>
-                  <td className="small">
-                    {r.dovada}
-                    {r.sursa && <span className="evidence">{r.sursa}</span>}
-                  </td>
-                </tr>
-              ))}
-              {check.omise.map((r) => (
-                <tr key={`om-${r.id}`} className="infeasible">
-                  <td className="small">{r.treapta}</td>
-                  <td>{eticheta(r.id)}</td>
-                  <td>
-                    <span className="tag neexecutat">omisă</span>
-                  </td>
-                  <td className="small">{r.motiv}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
+          <Trepte check={check} caseId={cs.case_id} />
           <h2 style={{ marginTop: 16 }}>Concluzii</h2>
           <dl className="kv">
             <dt>Venit lunar</dt>
@@ -282,8 +375,24 @@ export default function CazPage() {
       <section className="panel">
         <h2>
           Recomandare: <span className="tag">{eticheta(rec.recomandare)}</span> {rec.eticheta}
+          {rec.oferta?.amanata_buget && <span className="tag buget">peste plafonul lunii</span>}
+          {rec.buget && rec.buget.in_buget && <span className="tag ok">în buget · rang {rec.buget.rang}</span>}
         </h2>
         <p style={{ marginTop: 0 }}>{rec.motiv}</p>
+        {rec.oferta?.conditii_de_confirmat && rec.oferta.conditii_de_confirmat.length > 0 && (
+          <div className="notice warn">
+            <b>Ofertă condiționată</b>, de confirmat înainte de comunicare: {rec.oferta.conditii_de_confirmat.join("; ")}
+          </div>
+        )}
+        {rec.llm && (
+          <div className="panel" style={{ background: "var(--bg-soft, #f6f7f9)", marginBottom: 12 }}>
+            <h2 style={{ marginTop: 0 }}>Argumentul și textul ofertei (agent LLM{rec.llm.model ? `, ${rec.llm.model}` : ""})</h2>
+            <p className="small">
+              <b>Argument:</b> {rec.llm.argument}
+            </p>
+            <pre className="mono" style={{ whiteSpace: "pre-wrap", margin: 0 }}>{rec.llm.text_client}</pre>
+          </div>
+        )}
         <div className="grid c2">
           <div>
             {rec.oferta ? (
@@ -302,6 +411,21 @@ export default function CazPage() {
                 <dd>{ron(rec.oferta.cost_banca)}</dd>
                 <dt>Economie client</dt>
                 <dd>{ron(rec.oferta.economie_client)}</dd>
+                {rec.oferta.conditie && (
+                  <>
+                    <dt>Condiție</dt>
+                    <dd>{rec.oferta.conditie}</dd>
+                  </>
+                )}
+                {rec.buget && (
+                  <>
+                    <dt>Buget portofoliu</dt>
+                    <dd>
+                      rang {rec.buget.rang}, {ron(rec.buget.valoare_retinuta)} reținut la cost {ron(rec.buget.cost)}
+                      {rec.buget.scor_v_pe_cost != null ? ` (×${num(rec.buget.scor_v_pe_cost, 1)})` : ""}
+                    </dd>
+                  </>
+                )}
               </dl>
             ) : (
               <span className="muted">Fără ofertă concretă.</span>

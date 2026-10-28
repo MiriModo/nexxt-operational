@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { comandaApprove, getCaz, getDeciziiLocale, postDecizie } from "../api/client";
+import { comandaApprove, getCaz, getDeciziiLocale, getSursa, postDecizie } from "../api/client";
+import { useEchipa, useIstoric, useRezultat } from "../api/hooks";
 import { BandaBadge, Loading } from "../components/ui";
 import { eticheta, pct, ron } from "../format";
 import type { Caz, Decizie, DecizieInput } from "../types/api";
@@ -20,16 +21,27 @@ export default function DeciziePage() {
   const [decizie, setDecizie] = useState<Decizie>(existent?.decizie ?? "aproba");
   const [interventie, setInterventie] = useState<string>(existent?.interventie ?? "");
   const [motiv, setMotiv] = useState(existent?.motiv ?? "");
+  const [consilier, setConsilier] = useState<string>(existent?.consilier ?? "");
   const [salvat, setSalvat] = useState<string | null>(null);
   const [trimit, setTrimit] = useState(false);
+  const echipa = useEchipa();
+  const istoric = useIstoric(id);
+  const rezultat = useRezultat(id);
 
   useEffect(() => {
     getCaz(id).then((x) => setC(x ?? null)).catch((e) => setErr(String(e)));
   }, [id]);
+  // consilierul alocat cazului (echipa.yaml) e preselectat; ofițerul poate alege altul
+  useEffect(() => {
+    if (!consilier && c?.consilier) setConsilier(c.consilier);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [c]);
 
   const input: DecizieInput = useMemo(
-    () => ({ decizie, interventie: decizie === "modifica" ? interventie || undefined : undefined, motiv: motiv.trim() || undefined }),
-    [decizie, interventie, motiv],
+    () => ({
+      decizie, interventie: decizie === "modifica" ? interventie || undefined : undefined, motiv: motiv.trim() || undefined, consilier: consilier || undefined,
+    }),
+    [decizie, interventie, motiv, consilier],
   );
   const valid = decizie === "aproba" || (motiv.trim().length > 0 && (decizie !== "modifica" || interventie));
 
@@ -49,6 +61,7 @@ export default function DeciziePage() {
     try {
       const r = await postDecizie(cs.case_id, input);
       setSalvat(r.sursa === "api" ? "Decizia a fost înregistrată prin API." : "Decizia a fost salvată local (fără API). Rulează comanda de mai jos ca să intre în approvals.json și audit.jsonl.");
+      istoric.refetch();
     } catch (e) {
       setErr(String(e));
     } finally {
@@ -84,6 +97,47 @@ export default function DeciziePage() {
               Există deja o decizie {existent.sursa === "local" ? "locală" : "prin API"} din {new Date(existent.la).toLocaleString("ro-RO")}:{" "}
               <b>{existent.decizie}</b>
               {existent.interventie ? ` → ${eticheta(existent.interventie)}` : ""}. Trimiterea o înlocuiește.
+            </div>
+          )}
+
+          <h2 style={{ marginTop: 16 }}>Istoricul deciziilor pe acest caz</h2>
+          {getSursa() === "static" ? (
+            <p className="small muted">Istoricul (approvals.json) vine prin API.</p>
+          ) : !istoric.data || istoric.data.length === 0 ? (
+            <p className="small muted">Nicio decizie înregistrată încă.</p>
+          ) : (
+            <div className="istoric">
+              {istoric.data.map((d, i) => (
+                <div key={i} className="small" style={{ padding: "6px 0", borderTop: i ? "1px solid var(--line, #e5e7eb)" : undefined }}>
+                  <b>{d.decizie}</b>
+                  {d.override && <span className="tag avertizare">override</span>}
+                  {d.interventie_finala && d.interventie_finala !== d.interventie_agent ? ` → ${eticheta(d.interventie_finala)}` : ""}
+                  <span className="muted">
+                    {" "}· {new Date(d.timestamp).toLocaleString("ro-RO")}
+                    {d.consilier ? ` · ${d.consilier}` : ""}
+                    {d.versiune ? <span title={d.versiune}> · {d.versiune.split(" ")[0].replace("cfg:", "cfg ")}</span> : ""}
+                  </span>
+                  {d.motiv && <div className="muted">„{d.motiv}”</div>}
+                  <div>
+                    {d.rezultat ? (
+                      <span className={`tag ${d.rezultat === "ramas" ? "ok" : "fail"}`}>la 90 de zile: {d.rezultat === "ramas" ? "a rămas" : "a plecat"}</span>
+                    ) : (
+                      i === 0 && (
+                        <span className="actions" style={{ gap: 6, marginTop: 4 }}>
+                          <span className="muted">Rezultat la 90 de zile:</span>
+                          <button type="button" className="btn secondary sm" disabled={rezultat.isPending} onClick={() => rezultat.mutate("ramas")}>
+                            a rămas
+                          </button>
+                          <button type="button" className="btn secondary sm" disabled={rezultat.isPending} onClick={() => rezultat.mutate("plecat")}>
+                            a plecat
+                          </button>
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+              ))}
+              {rezultat.error && <div className="notice fail small">{String(rezultat.error)}</div>}
             </div>
           )}
         </section>
@@ -126,6 +180,21 @@ export default function DeciziePage() {
             <div className="field">
               <span>Observație (opțional)</span>
               <input type="text" value={motiv} onChange={(e) => setMotiv(e.target.value)} />
+            </div>
+          )}
+
+          {echipa.data && echipa.data.length > 0 && (
+            <div className="field">
+              <span>Consilierul care decide (intră în audit și în raportul de feedback)</span>
+              <select value={consilier} onChange={(e) => setConsilier(e.target.value)}>
+                <option value="">– nealocat –</option>
+                {echipa.data.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.nume}
+                    {x.id === c.consilier ? " (alocat cazului)" : ""}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
