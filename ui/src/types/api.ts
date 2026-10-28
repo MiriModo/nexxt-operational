@@ -210,9 +210,21 @@ export interface RecInfo {
   llm?: { argument: string; text_client: string; model?: string } | null;
 }
 
+/** Spending profile over the last months, by payment category (as in the bank's app). */
+export interface Cheltuieli {
+  luni: number;
+  total_out: number;
+  total_in: number;
+  venit_lunar: number;
+  categorii: { categorie: string; suma: number; procent: number; nr: number }[];
+  loan_payments: number;
+  internal_transfers: number;
+}
+
 export interface Caz {
   case: CaseInfo;
   client: ClientInfo;
+  cheltuieli?: Cheltuieli;
   loan: LoanInfo | null; // null pentru cereri de credit nou (fără credit existent)
   check: CheckInfo;
   offer: OfferInfo;

@@ -13,6 +13,7 @@ import json
 import time
 from pathlib import Path
 
+from .cheltuieli import profil_cheltuieli
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, log_event, read_json, setup_console
 from .evaluate_final import raport_model_final
 from .pipeline import FullRun, run_full
@@ -35,6 +36,7 @@ def _case_payload(full: FullRun, case: dict) -> dict:
         "case": {k: case[k] for k in ("case_id", "client_id", "loan_id", "produs", "sursa", "request_id", "semnale", "scoruri",
                                       "banda", "deadline", "motive_top3", "actiune_propusa", "blocaje")},
         "consilier": rec.get("consilier"), "versiune": rec.get("versiune"),
+        "cheltuieli": profil_cheltuieli(full.pf.tx_by_client.get(cl["client_id"], []), full.pf.today),
         "client": {"nume": cl["nume"], "nivel": cl["nivel_relatie"], "tipologie": cl["tipologie_declarata"],
                    "client_din": cl["client_din"], "produse": cl.get("produse_atasate", [])},
         "loan": ({"sold": ci.loan["sold_ramas"], "tip_dobanda": ci.loan["tip_dobanda"], "dobanda": ci.loan["dobanda_curenta"],

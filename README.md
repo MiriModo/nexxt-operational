@@ -347,6 +347,14 @@ LTV-ul depășit e confirmat de reevaluare). Situații plantate: C0005 litigiu �
 zile la un IFN, C0047 garant pe un credit cu restanțe, C0013 / C0014 salariu mutat cu / fără legături, C0027
 pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Portofoliul realist la scară".
 
+Fiecare tranzacție poartă și o **categorie de plată**, ca în aplicația băncii (`categorie`: groceries, restaurants,
+appliances_it, shopping, home_diy, transport, health, entertainment, services, travel, utilities_bills, housing,
+loan_payments, cash, legal, internal_transfers, other; la intrări income_salary / income_pension / income_rent /
+income_dividends / internal_transfers / transfers_in). Categoria se deduce din comerciant (`generate.categoria`) și
+nu consumă din RNG-ul principal: sumele, datele și semnalele rămân identice; pentru o parte din plățile „altele" se
+schimbă doar comerciantul (ponderi în `portofoliu.yaml → tranzactii.categorii`). `retailagent/cheltuieli.py` face
+profilul pe ultimele 3 luni (`cheltuieli` în `GET /api/cazuri/{id}`), afișat pe pagina cazului ca „Spending, last 3 months".
+
 ## Cum adaugi ceva nou (configurație, nu cod)
 
 * **Semnal:** intrare în `signals.yaml` + funcție `@signal(id, familie, nivel)` în `retailagent/signals/` +

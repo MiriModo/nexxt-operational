@@ -3,11 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import { EroareHttp, getCaz, getContext, getDeciziiLocale } from "../api/client";
 import { useVerifica } from "../api/hooks";
 import { Due } from "../components/CaseCard";
+import { CATEGORIES, categoryName } from "../components/Categories";
 import { State, decisionName } from "../components/State";
 import { Band, Loading } from "../components/ui";
 import { label, num, pct, pp, ron } from "../format";
 import { proposal } from "../proposal";
-import type { Caz, CheckInfo, OfferInfo, Reverificare, VerificareRezultat } from "../types/api";
+import type { Caz, CheckInfo, Cheltuieli, OfferInfo, Reverificare, VerificareRezultat } from "../types/api";
 
 const STAGES = ["intern", "anaf", "biroul_credit", "crc", "garantie", "eligibilitate"];
 const STAGE_NAME: Record<string, string> = {
@@ -124,6 +125,39 @@ function Checks({ check, caseId }: { check: CheckInfo; caseId: string }) {
         </div>
       </details>
     </section>
+  );
+}
+
+/** Spending over the last months by payment category (as in the bank's app): top categories as bars, then what
+ *  goes to other banks and to the client's own accounts. */
+function Spending({ s }: { s: Cheltuieli }) {
+  const top = s.categorii.slice(0, 6);
+  const rest = s.categorii.slice(6).reduce((a, c) => a + c.suma, 0);
+  const rows = [...top.map((c) => ({ k: categoryName(c.categorie), v: c.suma, text: `${ron(c.suma)} · ${pct(c.procent, 0)}`, kind: CATEGORIES[c.categorie]?.kind ?? "" }))];
+  if (rest > 0) rows.push({ k: "Other", v: rest, text: `${ron(rest)} · ${pct(rest / s.total_out, 0)}`, kind: "mute" });
+  const max = Math.max(1, ...rows.map((r) => r.v));
+  return (
+    <div className="spending">
+      <p className="mono" style={{ margin: "18px 0 8px" }}>
+        Spending, last {s.luni} months · {ron(s.total_out)}
+      </p>
+      <div className="hbars">
+        {rows.map((r) => (
+          <div key={r.k} style={{ display: "contents" }}>
+            <span>{r.k}</span>
+            <span className="b">
+              <i className={r.kind} style={{ width: `${(r.v / max) * 100}%` }} />
+            </span>
+            <span className="v">{r.text}</span>
+          </div>
+        ))}
+      </div>
+      <p className="meta" style={{ margin: "8px 0 0" }}>
+        income {ron(s.venit_lunar)}/month
+        {s.loan_payments > 0 ? ` · ${ron(s.loan_payments)} to other banks` : ""}
+        {s.internal_transfers > 0 ? ` · ${ron(s.internal_transfers)} to own accounts` : ""}
+      </p>
+    </div>
   );
 }
 
@@ -252,6 +286,7 @@ export default function Case() {
             ))}
           </ul>
           <p className="meta" style={{ marginTop: 12 }}>{relationship}</p>
+          {c.cheltuieli && c.cheltuieli.categorii.length > 0 && <Spending s={c.cheltuieli} />}
         </section>
 
         <section className="sec" aria-labelledby="prop">
@@ -267,7 +302,7 @@ export default function Case() {
               </div>
               <div>
                 <dd>
-                  <s>{ron(of.rata_veche)}</s>
+                  {of.rata_veche > 0 && <s>{ron(of.rata_veche)}</s>}
                   {ron(of.rata_noua)}
                 </dd>
                 <dt>monthly payment</dt>

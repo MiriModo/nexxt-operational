@@ -217,6 +217,43 @@ CREDITORI = ["BCR RATA CREDIT", "BRD GROUPE SOCIETE GENERALE RATA", "BANCA TRANS
 UTILITATI = ["ENEL ENERGIE MUNTENIA", "ENGIE ROMANIA", "DIGI ROMANIA", "APA NOVA BUCURESTI", "ORANGE ROMANIA"]
 CUMPARATURI = ["KAUFLAND", "LIDL", "MEGA IMAGE", "EMAG MARKETPLACE", "OMV PETROM", "CARREFOUR", "DEDEMAN",
                "FARMACIA TEI", "DECATHLON", "ALTEX"]
+
+# Categoriile de plată (taxonomia aplicației băncii). Categoria se deduce din comerciant și nu consumă din RNG-ul
+# principal: sumele, datele și numărul de tranzacții rămân identice; pentru o parte din plățile „altele” se schimbă
+# doar numele comerciantului (RNG secundar per client), ca să existe restaurante, divertisment, transport etc.
+# Comercianții noi nu conțin SRL/SA/IFN/BANK/POPRIRE: regex-urile din signals.yaml nu i-ar confunda cu firme/creditori.
+CATEGORII_OUT = ["groceries", "restaurants", "appliances_it", "shopping", "home_diy", "transport", "health", "entertainment",
+                 "services", "travel", "utilities_bills", "housing", "loan_payments", "cash", "legal", "internal_transfers", "other"]
+CATEGORII_IN = ["income_salary", "income_pension", "income_rent", "income_dividends", "internal_transfers", "transfers_in"]
+CATEGORIE_COMERCIANT = {"KAUFLAND": "groceries", "LIDL": "groceries", "MEGA IMAGE": "groceries", "CARREFOUR": "groceries",
+                        "EMAG MARKETPLACE": "appliances_it", "ALTEX": "appliances_it", "DECATHLON": "shopping", "DEDEMAN": "home_diy",
+                        "OMV PETROM": "transport", "FARMACIA TEI": "health",
+                        **{u: "utilities_bills" for u in UTILITATI}, **{c: "loan_payments" for c in CREDITORI}}
+COMERCIANTI_CATEGORIE = {
+    "restaurants": ["RESTAURANT CASA DOINA", "STARBUCKS", "5 TO GO", "GLOVO", "TRATTORIA MONZA", "LA MAMA", "TAZZ BY EMAG"],
+    "entertainment": ["CINEMA CITY", "NETFLIX", "HBO MAX", "SPOTIFY", "THERME BUCURESTI", "CARTURESTI"],
+    "transport": ["BOLT", "UBER", "STB BUCURESTI", "CFR CALATORI", "MOL ROMANIA", "PARCARI BUCURESTI"],
+    "services": ["FRIZERIE CENTRAL", "SERVICE AUTO MOTOR", "CURATATORIE EXPRES", "REGINA MARIA ABONAMENT", "FITNESS WORLD CLASS"],
+    "travel": ["BOOKING.COM", "WIZZ AIR", "HOTEL ALPIN", "AIRBNB", "TRAVELMINIT"],
+    "cash": ["RETRAGERE ATM RAIFFEISEN", "RETRAGERE ATM"],
+}
+# cât din plățile „altele” își păstrează comerciantul tras (ponderi implicite, folosite și pentru etalon)
+CATEGORII_ALTELE_IMPLICIT = {"pastreaza": 0.55, "restaurants": 0.15, "entertainment": 0.08, "transport": 0.08,
+                             "services": 0.06, "cash": 0.05, "travel": 0.03}
+
+
+def categoria(cine: str, tip: str, directie: str) -> str:
+    """Categoria de plată a unei tranzacții, dedusă din comerciant și din eticheta de generare."""
+    if directie == "in":
+        return {"salariu": "income_salary", "pensie": "income_pension", "chirie_in": "income_rent", "dividende": "income_dividends",
+                "transfer_propriu": "internal_transfers"}.get(tip, "transfers_in")
+    if cine in CATEGORIE_COMERCIANT:
+        return CATEGORIE_COMERCIANT[cine]
+    for cat, lista in COMERCIANTI_CATEGORIE.items():
+        if cine in lista:
+            return cat
+    return {"utilitati": "utilities_bills", "chirie_out": "housing", "rata_alt_creditor": "loan_payments", "poprire": "legal",
+            "transfer_propriu": "internal_transfers"}.get(tip, "other")
 PRODUSE_NON_CREDIT = ["cont_curent", "economii", "card_debit", "asigurare_viata", "depozit", "pensie_privata"]
 
 # ---------------------------------------------------------------- generator
@@ -367,6 +404,7 @@ class Generator:
         self.today = today
         self.profil, self.mod = profil, mod
         self.tx_profile = None                      # None = zgomotul tranzacțiilor ca la cele 50 de scenarii
+        self._rng_categorii: dict[str, random.Random] = {}
         self.plante_ext: dict[str, dict] = {}       # client_id -> plante pentru mock-urile externe (clienți statistici)
         self.cur_month = month_key(today)
         self.tx_months = last_months(self.cur_month, 12)                  # tranzacții: 12 luni, inclusiv luna curentă
@@ -394,8 +432,20 @@ class Generator:
         if dt and directie == "out" and mkey in self._luni_fara_iesiri:
             return                                    # contul nu mai e folosit (plantat): ieșirile dispar
         if dt:
+            if directie == "out" and tip == "altele":
+                cine = self.comerciant_altele(cid, cine)
             self.transactions.append({"client_id": cid, "data": dt, "suma": round(suma, 2), "directie": directie,
-                                      "platitor_beneficiar": cine, "tip_etichetat": tip})
+                                      "platitor_beneficiar": cine, "tip_etichetat": tip, "categorie": categoria(cine, tip, directie)})
+
+    def comerciant_altele(self, cid: str, cine: str) -> str:
+        """Pentru plățile „altele”: păstrează comerciantul tras sau îl înlocuiește cu unul dintr-o categorie nouă
+        (restaurante, divertisment…). RNG separat per client, deci RNG-ul principal (sume, date) rămâne identic."""
+        rng = self._rng_categorii.get(cid)
+        if rng is None:
+            rng = self._rng_categorii[cid] = random.Random(f"{self.seed}:{cid}:categorii")
+        ponderi = (self.tx_profile.categorii if self.tx_profile and self.tx_profile.categorii else CATEGORII_ALTELE_IMPLICIT)
+        cat = rng.choices(list(ponderi), weights=list(ponderi.values()))[0]
+        return cine if cat == "pastreaza" else rng.choice(COMERCIANTI_CATEGORIE[cat])
 
     @staticmethod
     def annuity(sold: float, rate_pct: float, months: int) -> float:

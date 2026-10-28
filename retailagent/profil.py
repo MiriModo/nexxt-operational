@@ -149,6 +149,20 @@ class TranzactiiCfg(BaseModel):
     nr_utilitati: int = Field(ge=0, le=5)
     prob_chirie_in: Prob
     prob_chirie_out: Prob
+    # cât din plățile „altele” rămân pe comerciantul tras (`pastreaza`) sau devin restaurante / divertisment /
+    # transport / servicii / cash / călătorii; lipsă = ponderile implicite din generate.py
+    categorii: dict[str, Prob] | None = None
+
+    @model_validator(mode="after")
+    def _categorii(self) -> "TranzactiiCfg":
+        if self.categorii is not None:
+            permise = {"pastreaza", "restaurants", "entertainment", "transport", "services", "cash", "travel"}
+            rele = set(self.categorii) - permise
+            if rele:
+                raise ValueError(f"tranzactii.categorii: chei necunoscute {sorted(rele)}; permise {sorted(permise)}")
+            if abs(sum(self.categorii.values()) - 1.0) > 1e-6:
+                raise ValueError("tranzactii.categorii: ponderile trebuie să însumeze 1.0")
+        return self
 
 
 class AngajatoriCfg(BaseModel):
