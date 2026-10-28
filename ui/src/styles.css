@@ -502,3 +502,9 @@ dl.stats dt { font-size: 12px; color: var(--body-2); margin-bottom: 6px; line-he
 @media (prefers-reduced-motion: reduce) { .hero .glow { animation: none; } }
 .signin-frame { padding: 28px 16px; }
 .signin-frame .login { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 24px 56px rgba(15, 23, 42, 0.18); }
+
+/* hero legibility: the halo stays behind the title only, the subtitle is darker than the default body grey */
+.hero .glow { top: 70px; height: 280px; background: radial-gradient(50% 50% at 50% 50%, rgba(254, 230, 0, 0.38), rgba(254, 230, 0, 0.1) 55%, transparent 72%); }
+.hero p:not(.hero-kicker) { color: #3a3c42; }
+@media (max-width: 760px) { .hero .glow { top: 30px; height: 220px; } }
+.hero .glow { top: 60px; height: 230px; }
