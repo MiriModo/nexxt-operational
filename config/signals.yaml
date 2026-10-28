@@ -1,0 +1,338 @@
+# Catalogul de semnale. Un semnal nou = o intrare aici + o funcție @signal("<id>") în retailagent/signals/.
+#
+# Câmpuri:
+#   familie       plecare | risc_credit | blocaj_proces
+#   nivel         client (rulează o dată per client) | credit (rulează per credit)
+#   declansator   true  -> semnalul singur poate pune un credit în coadă
+#                 false -> semnal de context: contează în scor, dar nu creează caz
+#   evaluat       true  -> intră în precizie/recall în evaluate.py (are etalon în ground_truth)
+#   sursa_cerere  true  -> semnalul vine dintr-o cerere a clientului (cazul are sursa = client_request)
+#   motiv         șablon pentru motive_top3; câmpurile {x} vin din `detalii` ale rezultatului
+#   parametri     praguri și trepte citite de funcția de calcul (nimic hardcodat în cod)
+
+versiune: 1
+
+# Tipare (regex, case-insensitive) pentru deducerea tipului tranzacțiilor — scanner-ul NU citește tip_etichetat.
+tipare:
+  pensie: ['CASA (JUDETEANA |NATIONALA )?DE PENSII', '\bCNPP\b']
+  dividende: ['DIVIDEND']
+  firma: ['\bS\.?R\.?L\.?(\b|$)', '\bS\.?A\.?$', '\bS\.A\.(\b|$)']
+  creditor: ['\bBCR\b', '\bBRD\b', 'BANCA TRANSILVANIA', '\bING BANK\b', '\bCEC BANK\b', 'UNICREDIT', 'GARANTI',
+             '\bIFN\b', 'PROVIDENT', 'CREDIUM', '\bTBI BANK\b', 'LIBRA INTERNET']
+  poprire: ['POPRIRE', '\bBEJ\b', 'EXECUTOR']
+
+recurenta:
+  luni_analizate: 12
+  salariu_min_luni_consecutive: 3   # încasare de la firmă, lunar, minim 3 luni la rând -> salariu
+  creditor_min_luni: 3              # plată către creditor în minim 3 luni distincte -> rată
+  creditor_activ_ultimele_luni: 2   # ultima plată în ultimele 2 luni -> rată încă activă
+
+semnale:
+  # ------------------------------------------------------------------ PLECARE
+  - id: expirare_dobanda_fixa
+    familie: plecare
+    nivel: credit
+    descriere: Perioada de dobândă fixă se termină; creditul trece pe IRCC + marjă.
+    inputs: [loans.tip_dobanda, loans.dobanda_fixa_expira_la, loans.marja, market.ircc]
+    regula: "zile până la expirare: ≤30 → 1.0; 31–60 → 0.8; 61–90 → 0.5; 91–180 → 0.2; altfel 0"
+    dovada: data expirării, dobânda după expirare = IRCC + marjă
+    motiv: "Dobânda fixă expiră în {zile} zile ({data}); după: {dobanda_dupa}%"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      trepte_zile: [[30, 1.0], [60, 0.8], [90, 0.5], [180, 0.2]]
+
+  - id: gap_piata_bani
+    familie: plecare
+    nivel: credit
+    declansator: false
+    evaluat: false
+    descriere: Câți lei ar economisi clientul dacă se refinanțează la dobânda pieței.
+    inputs: [loans.dobanda_curenta, loans.marja, loans.sold_ramas, loans.data_scadenta, market.*]
+    regula: "(dobânda curentă sau post-expirare − dobânda pieței) × sold × ani rămași; ≥30.000 RON → 1.0, liniar"
+    dovada: suma în lei pe care ar economisi-o
+    motiv: "Gap față de piață: {gap_pp} pp ≈ {economie_txt} RON"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      prag_economie_ron: 30000
+      fereastra_post_expirare_zile: 180   # dacă fixa expiră în această fereastră, se compară dobânda de după
+      piata_produs:
+        ipotecar: dobanda_fixa_piata_ipotecar
+        imobiliar: dobanda_fixa_piata_ipotecar
+        nevoi_personale: dobanda_piata_nevoi_personale
+        refinantare: dobanda_piata_nevoi_personale
+        card_credit: dobanda_piata_card
+
+  - id: cerere_adeverinta_sold
+    familie: plecare
+    nivel: credit
+    sursa_cerere: true
+    descriere: Clientul a cerut adeverință de sold sau refinanțare — semnal activ de plecare.
+    inputs: [requests.tip, requests.data, requests.detalii.produs_vizat]
+    regula: "cerere adeverinta_sold sau refinantare în ultimele 60 zile pe acest produs → 1.0"
+    dovada: data cererii
+    motiv: "A cerut {tip_cerere} pe {data} ({request_id})"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      tipuri: [adeverinta_sold, refinantare]
+      zile: 60
+
+  - id: rata_alt_creditor
+    familie: plecare
+    nivel: client
+    descriere: Plăți recurente către alt creditor, din contul nostru.
+    inputs: [transactions]
+    regula: "plăți recurente (≥3 luni) către alt creditor → 0.7; dacă au început în ultimele 3 luni → 1.0"
+    dovada: beneficiar, sumă lunară
+    motiv: "Plătește lunar ~{suma} RON către {beneficiar} (din {prima_luna})"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      scor_recurent: 0.7
+      scor_nou: 1.0
+      luni_nou: 3
+
+  - id: salariu_mutat
+    familie: plecare
+    nivel: client
+    descriere: Venitul (salariu/pensie) încasat istoric la noi nu mai intră.
+    inputs: [transactions]
+    regula: "încasări salariu existente istoric, lipsă în ultimele 2 luni consecutive → 0.8; dacă ratele sunt
+      acoperite din transferuri proprii de la altă bancă (salariul e mutat, nu pierdut) → 1.0"
+    dovada: ultima încasare
+    motiv: "Salariul nu mai intră la noi de {luni_lipsa} luni (ultima încasare {ultima_data}){nota}"
+    actiune_sugerata: contact_client
+    parametri:
+      luni_lipsa: 2
+      min_luni_istoric: 3
+      scor: 0.8
+      scor_confirmat: 1.0
+      acoperire_min: 1.0          # transferuri proprii ≥ 1.0 × ratele lunare la noi
+
+  - id: eligibilitate_externa
+    familie: plecare
+    nivel: credit
+    declansator: false
+    evaluat: false
+    descriere: Cât de ușor l-ar refinanța o altă bancă.
+    inputs: [payment_history, loans.garantie, loans.restructurat_anterior]
+    regula: "istoric curat 24 luni (1.0) × LTV < 0.8 (altfel ×0.3) × fără restructurare (altfel ×0.5)"
+    dovada: componentele
+    motiv: "Eligibil la concurență: {componente}"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      ltv_max: 0.8
+      factor_ltv_mare: 0.3
+      factor_restructurat: 0.5
+
+  - id: vechime_credit
+    familie: plecare
+    nivel: credit
+    declansator: false
+    evaluat: false
+    descriere: Credite vechi pe dobândă variabilă — clientul plătește marje istorice.
+    inputs: [loans.data_acordare, loans.tip_dobanda]
+    regula: "ani de la acordare, pe dobândă variabilă: ≥5 → 0.6; ≥8 → 0.8; altfel 0"
+    dovada: data acordării
+    motiv: "Credit variabil vechi de {ani} ani"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      trepte_ani: [[8, 0.8], [5, 0.6]]
+
+  - id: sold_ramas
+    familie: plecare
+    nivel: credit
+    declansator: false
+    evaluat: false
+    descriere: Sold mare rămas — refinanțarea merită pentru client.
+    inputs: [loans.sold_ramas, loans.suma_initiala, loans.data_scadenta]
+    regula: "sold / suma inițială, doar dacă ani rămași ≥ 3; altfel 0"
+    dovada: sold, ani rămași
+    motiv: "Sold rămas {sold} RON pe {ani}"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      ani_min: 3
+
+  - id: simulare_in_app
+    familie: plecare
+    nivel: credit
+    sursa_cerere: true
+    descriere: Clientul a simulat rambursarea anticipată.
+    inputs: [requests]
+    regula: "cerere simulare_rambursare_anticipata în ultimele 30 zile → 0.6"
+    dovada: data
+    motiv: "A simulat rambursarea anticipată pe {data}"
+    actiune_sugerata: retentie_refinantare
+    parametri:
+      tipuri: [simulare_rambursare_anticipata]
+      zile: 30
+      scor: 0.6
+
+  # ------------------------------------------------------------------ RISC_CREDIT
+  - id: intarziere_noua
+    familie: risc_credit
+    nivel: credit
+    descriere: Întârziere apărută în ultima lună închisă.
+    inputs: [payment_history]
+    regula: "zile_intarziere > 0 în luna curentă și 0 în precedenta → 0.9; > 30 zile → 1.0"
+    dovada: zile, sumă
+    motiv: "Întârziere nouă: {zile} zile în {luna}, restanță {suma} RON"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      scor: 0.9
+      prag_grav_zile: 30
+      scor_grav: 1.0
+
+  - id: venit_in_scadere
+    familie: risc_credit
+    nivel: client
+    descriere: Venitul recurent a scăzut semnificativ.
+    inputs: [transactions]
+    regula: "media salariului ultimele 3 luni < 80% din media lunilor 4–12 → 0.8; < 60% → 1.0"
+    dovada: mediile
+    motiv: "Venitul a scăzut la {procent}% ({medie_recenta} vs {medie_anterioara} RON/lună)"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      trepte_raport: [[0.6, 1.0], [0.8, 0.8]]
+      luni_recente: 3
+      min_luni_anterioare: 3
+
+  - id: venit_disparut
+    familie: risc_credit
+    nivel: client
+    descriere: Venitul nu mai intră (văzut ca risc de neplată).
+    inputs: [transactions]
+    regula: "încasări salariu lipsă 2 luni consecutive → 0.9; nu se declanșează dacă ratele sunt acoperite din
+      transferuri proprii (atunci e salariu mutat = risc de plecare, nu de neplată)"
+    dovada: ultima încasare
+    motiv: "Fără venit de {luni_lipsa} luni (ultima încasare {ultima_data})"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      luni_lipsa: 2
+      min_luni_istoric: 3
+      scor: 0.9
+      acoperire_min: 1.0
+
+  - id: card_stres
+    familie: risc_credit
+    nivel: credit
+    descriere: Card aproape de limită, cu plata minimă luni la rând.
+    inputs: [loans.utilizare_limita, payment_history.plata_minima_card]
+    regula: "utilizare_limita ≥ 0.9 și plata minimă 2 luni la rând → 0.9"
+    dovada: utilizare, luni
+    motiv: "Card la {utilizare}% din limită, plata minimă {luni} luni la rând"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      utilizare_min: 0.9
+      luni_plata_minima: 2
+      scor: 0.9
+
+  - id: angajator_in_dificultate
+    familie: risc_credit
+    nivel: client
+    descriere: Angajatorul e în insolvență/dizolvare sau plătește tot mai puține salarii.
+    inputs: [employers.status, employers.trend_plati_salarii_3l]
+    regula: "status ∈ {insolventa, dizolvare, inactiv_fiscal} → 1.0; trend ≤ −0.2 → 0.6"
+    dovada: status
+    motiv: "Angajatorul {angajator} e în {status}"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      statusuri_grave: [insolventa, dizolvare, inactiv_fiscal]
+      prag_trend: -0.2
+      scor_trend: 0.6
+
+  - id: restructurare_anterioara
+    familie: risc_credit
+    nivel: credit
+    descriere: Creditul a mai fost restructurat.
+    inputs: [loans.restructurat_anterior, loans.restructurari]
+    regula: "restructurat_anterior → 0.5"
+    dovada: data
+    motiv: "Credit restructurat anterior ({data})"
+    actiune_sugerata: monitorizare
+    parametri:
+      scor: 0.5
+
+  - id: poprire_activa
+    familie: risc_credit
+    nivel: client
+    descriere: Popriri pe cont în ultimele luni.
+    inputs: [transactions]
+    regula: "tranzacții de tip poprire în ultimele 3 luni → 0.7"
+    dovada: suma
+    motiv: "Poprire activă: {suma} RON către {beneficiar}"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      luni: 3
+      scor: 0.7
+
+  - id: ltv_depasit
+    familie: risc_credit
+    nivel: credit
+    descriere: Soldul depășește valoarea garanției.
+    inputs: [loans.sold_ramas, loans.garantie]
+    regula: "sold / valoare_evaluare > 1.0 → 0.8; evaluare mai veche de 3 ani → +0.2"
+    dovada: LTV, data evaluării
+    motiv: "LTV {ltv} (evaluare din {data_evaluare})"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      prag_ltv: 1.0
+      scor: 0.8
+      bonus_evaluare_veche: 0.2
+      ani_evaluare_veche: 3
+
+  # ------------------------------------------------------------------ BLOCAJ_PROCES
+  - id: ci_expirata
+    familie: blocaj_proces
+    nivel: client
+    descriere: Actul de identitate a expirat sau expiră curând.
+    inputs: [clients.ci_expira_la]
+    regula: "ci_expira_la < azi → 1.0; < azi+30 zile → 0.5"
+    dovada: data expirării
+    motiv: "CI expirată la {data}"
+    actiune_sugerata: task_actualizare_date
+    parametri:
+      zile_avertizare: 30
+      scor_avertizare: 0.5
+
+  - id: kyc_vechi
+    familie: blocaj_proces
+    nivel: client
+    descriere: Datele KYC nu au mai fost actualizate de peste 24 de luni.
+    inputs: [clients.kyc_actualizat_la]
+    regula: "kyc_actualizat_la mai vechi de 24 luni → 1.0"
+    dovada: data ultimei actualizări
+    motiv: "KYC neactualizat din {data} ({luni} luni)"
+    actiune_sugerata: task_actualizare_kyc
+    parametri:
+      luni_max: 24
+
+  - id: consimtamant_lipsa
+    familie: blocaj_proces
+    nivel: client
+    descriere: Lipsește acordul pentru interogarea ANAF sau Biroul de Credit.
+    inputs: [clients.consimtamant_anaf, clients.consimtamant_biroul_credit]
+    regula: "lipsește acordul ANAF sau Biroul de Credit → 1.0"
+    dovada: ce acord lipsește
+    motiv: "Lipsește consimțământul {lipsa}"
+    actiune_sugerata: genereaza_cerere_consimtamant
+
+  - id: asigurare_expirata
+    familie: blocaj_proces
+    nivel: credit
+    descriere: Polița de asigurare a garanției expiră.
+    inputs: [loans.garantie.asigurare_expira_la]
+    regula: "asigurare_expira_la < azi+30 → 1.0"
+    dovada: data expirării poliței
+    motiv: "Asigurarea garanției expiră la {data}"
+    actiune_sugerata: task_reinnoire_polita
+    parametri:
+      zile: 30
+
+  - id: flag_blocant
+    familie: blocaj_proces
+    nivel: client
+    descriere: PEP / fraudă internă / decedat — escaladare, fără ofertă.
+    inputs: [clients.flag_pep, clients.flag_frauda_interna, clients.flag_decedat]
+    regula: "orice flag activ → 1.0"
+    dovada: flag-ul
+    motiv: "Flag blocant: {flag}"
+    actiune_sugerata: escaladare

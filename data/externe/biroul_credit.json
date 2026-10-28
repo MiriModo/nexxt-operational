@@ -1,0 +1,615 @@
+[
+  {
+    "client_id": "C0001",
+    "fara_istoric": false,
+    "scor": 620,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "Libra Internet Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2020-03-23",
+        "data_inchidere": "2023-06-27",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0002",
+    "fara_istoric": false,
+    "scor": 714,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0003",
+    "fara_istoric": false,
+    "scor": 697,
+    "interogari_ultimele_6l": 2,
+    "credite": []
+  },
+  {
+    "client_id": "C0004",
+    "fara_istoric": false,
+    "scor": 709,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "BCR",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "activ",
+        "data_acordare": "2026-07-23",
+        "data_inchidere": null,
+        "sold": 28500.0,
+        "rata_lunara": 639.52,
+        "max_zile_intarziere_24l": 0
+      },
+      {
+        "institutie": "UniCredit Bank",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2021-08-23",
+        "data_inchidere": "2025-05-13",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0005",
+    "fara_istoric": false,
+    "scor": 668,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "Provident Financial IFN",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "activ",
+        "data_acordare": "2021-11-30",
+        "data_inchidere": null,
+        "sold": 33500.0,
+        "rata_lunara": 1238.62,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0006",
+    "fara_istoric": false,
+    "scor": 768,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "UniCredit Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2022-06-29",
+        "data_inchidere": "2025-03-19",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0007",
+    "fara_istoric": false,
+    "scor": 779,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0008",
+    "fara_istoric": false,
+    "scor": 731,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0009",
+    "fara_istoric": false,
+    "scor": 660,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "CEC Bank",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "activ",
+        "data_acordare": "2026-07-02",
+        "data_inchidere": null,
+        "sold": 63200.0,
+        "rata_lunara": 1296.12,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0010",
+    "fara_istoric": false,
+    "scor": 786,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "Provident Financial IFN",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "activ",
+        "data_acordare": "2024-09-09",
+        "data_inchidere": null,
+        "sold": 33000.0,
+        "rata_lunara": 1198.23,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0011",
+    "fara_istoric": false,
+    "scor": 783,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "BCR",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "activ",
+        "data_acordare": "2022-11-08",
+        "data_inchidere": null,
+        "sold": 32700.0,
+        "rata_lunara": 1334.08,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0012",
+    "fara_istoric": false,
+    "scor": 648,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0013",
+    "fara_istoric": false,
+    "scor": 681,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0014",
+    "fara_istoric": false,
+    "scor": 657,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "BRD",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2020-12-22",
+        "data_inchidere": "2025-09-21",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0015",
+    "fara_istoric": false,
+    "scor": 819,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0016",
+    "fara_istoric": false,
+    "scor": 635,
+    "interogari_ultimele_6l": 2,
+    "credite": []
+  },
+  {
+    "client_id": "C0017",
+    "fara_istoric": false,
+    "scor": 788,
+    "interogari_ultimele_6l": 2,
+    "credite": [
+      {
+        "institutie": "CEC Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2020-07-17",
+        "data_inchidere": "2025-01-27",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0018",
+    "fara_istoric": false,
+    "scor": 728,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0019",
+    "fara_istoric": false,
+    "scor": 743,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "BRD",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2018-06-28",
+        "data_inchidere": "2021-07-16",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0020",
+    "fara_istoric": false,
+    "scor": 801,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "CEC Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2018-11-15",
+        "data_inchidere": "2023-02-08",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0021",
+    "fara_istoric": false,
+    "scor": 792,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0022",
+    "fara_istoric": false,
+    "scor": 630,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0023",
+    "fara_istoric": false,
+    "scor": 659,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0024",
+    "fara_istoric": false,
+    "scor": 641,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0025",
+    "fara_istoric": false,
+    "scor": 629,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0026",
+    "fara_istoric": false,
+    "scor": 646,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "BRD",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2021-04-21",
+        "data_inchidere": "2023-07-13",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0027",
+    "fara_istoric": false,
+    "scor": 732,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "UniCredit Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2021-01-22",
+        "data_inchidere": "2023-03-26",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0028",
+    "fara_istoric": false,
+    "scor": 618,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0029",
+    "fara_istoric": false,
+    "scor": 622,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0030",
+    "fara_istoric": false,
+    "scor": 642,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "BRD",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2019-02-28",
+        "data_inchidere": "2023-05-26",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0031",
+    "fara_istoric": false,
+    "scor": 653,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0032",
+    "fara_istoric": false,
+    "scor": 722,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "Banca Transilvania",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2017-12-26",
+        "data_inchidere": "2021-10-04",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0033",
+    "fara_istoric": false,
+    "scor": 755,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0034",
+    "fara_istoric": false,
+    "scor": 723,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0035",
+    "fara_istoric": false,
+    "scor": 695,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0036",
+    "fara_istoric": false,
+    "scor": 634,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0037",
+    "fara_istoric": false,
+    "scor": 686,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0038",
+    "fara_istoric": false,
+    "scor": 681,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0039",
+    "fara_istoric": false,
+    "scor": 743,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0040",
+    "fara_istoric": false,
+    "scor": 653,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "ING Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2018-06-12",
+        "data_inchidere": "2021-01-02",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0041",
+    "fara_istoric": false,
+    "scor": 778,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  },
+  {
+    "client_id": "C0042",
+    "fara_istoric": false,
+    "scor": 694,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "CEC Bank",
+        "tip": "card_credit",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2022-10-08",
+        "data_inchidere": "2025-05-07",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0043",
+    "fara_istoric": false,
+    "scor": 628,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "Libra Internet Bank",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2017-04-24",
+        "data_inchidere": "2021-05-03",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0044",
+    "fara_istoric": false,
+    "scor": 622,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0045",
+    "fara_istoric": true,
+    "scor": null,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0046",
+    "fara_istoric": false,
+    "scor": 480,
+    "interogari_ultimele_6l": 0,
+    "credite": [
+      {
+        "institutie": "Provident Financial IFN",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2024-04-28",
+        "data_inchidere": "2026-05-01",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 95
+      }
+    ]
+  },
+  {
+    "client_id": "C0047",
+    "fara_istoric": false,
+    "scor": 664,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "ING Bank",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2018-03-29",
+        "data_inchidere": "2022-02-26",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0048",
+    "fara_istoric": false,
+    "scor": 752,
+    "interogari_ultimele_6l": 0,
+    "credite": []
+  },
+  {
+    "client_id": "C0049",
+    "fara_istoric": false,
+    "scor": 717,
+    "interogari_ultimele_6l": 1,
+    "credite": [
+      {
+        "institutie": "Banca Transilvania",
+        "tip": "nevoi_personale",
+        "rol": "debitor",
+        "stare": "inchis",
+        "data_acordare": "2019-01-30",
+        "data_inchidere": "2021-11-13",
+        "sold": 0,
+        "rata_lunara": 0,
+        "max_zile_intarziere_24l": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0050",
+    "fara_istoric": false,
+    "scor": 628,
+    "interogari_ultimele_6l": 1,
+    "credite": []
+  }
+]

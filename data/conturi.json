@@ -1,0 +1,4602 @@
+[
+  {
+    "client_id": "C0001",
+    "iban": "RO88RZBR8754082130859176",
+    "moneda": "RON",
+    "sold_curent": 23746.74,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 20413.03,
+        "sold_minim": 17772.84,
+        "intrari": 8444.18,
+        "iesiri": 5272.99
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 23463.81,
+        "sold_minim": 20900.95,
+        "intrari": 8418.75,
+        "iesiri": 5488.39
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 23188.55,
+        "sold_minim": 20274.57,
+        "intrari": 8387.51,
+        "iesiri": 5867.65
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 22995.19,
+        "sold_minim": 20420.32,
+        "intrari": 8233.07,
+        "iesiri": 5138.9
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 23953.79,
+        "sold_minim": 22312.81,
+        "intrari": 8277.45,
+        "iesiri": 5262.49
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 22862.39,
+        "sold_minim": 21594.62,
+        "intrari": 8256.48,
+        "iesiri": 3824.32
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 23068.61,
+        "sold_minim": 21361.42,
+        "intrari": 8516.11,
+        "iesiri": 4990.33
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 22882.13,
+        "sold_minim": 21149.02,
+        "intrari": 8260.41,
+        "iesiri": 4187.57
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 21902.52,
+        "sold_minim": 20758.87,
+        "intrari": 8500.36,
+        "iesiri": 5298.22
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 22977.52,
+        "sold_minim": 20626.81,
+        "intrari": 8276.53,
+        "iesiri": 5958.52
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 22398.41,
+        "sold_minim": 19794.52,
+        "intrari": 8545.39,
+        "iesiri": 4328.91
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 22203.52,
+        "sold_minim": 19571.58,
+        "intrari": 8530.07,
+        "iesiri": 5443.63
+      }
+    ]
+  },
+  {
+    "client_id": "C0002",
+    "iban": "RO80RZBR9922944548550307",
+    "moneda": "RON",
+    "sold_curent": 21754.78,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 14401.14,
+        "sold_minim": 11729.2,
+        "intrari": 7506.55,
+        "iesiri": 3604.43
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 18100.78,
+        "sold_minim": 15585.02,
+        "intrari": 7333.09,
+        "iesiri": 3835.94
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 19468.85,
+        "sold_minim": 18146.4,
+        "intrari": 7310.31,
+        "iesiri": 4709.7
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 20263.07,
+        "sold_minim": 18096.69,
+        "intrari": 7307.72,
+        "iesiri": 4958.26
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 20195.18,
+        "sold_minim": 17984.97,
+        "intrari": 7419.09,
+        "iesiri": 4837.91
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 20359.99,
+        "sold_minim": 18243.81,
+        "intrari": 7566.67,
+        "iesiri": 3543.7
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 19938.63,
+        "sold_minim": 17319.31,
+        "intrari": 7266.65,
+        "iesiri": 3952.61
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 19505.8,
+        "sold_minim": 17160.5,
+        "intrari": 7538.63,
+        "iesiri": 4746.69
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 21475.26,
+        "sold_minim": 19684.39,
+        "intrari": 7233.9,
+        "iesiri": 6086.93
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 21896.78,
+        "sold_minim": 20949.88,
+        "intrari": 7467.69,
+        "iesiri": 3974.65
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 19804.19,
+        "sold_minim": 16969.28,
+        "intrari": 7292.21,
+        "iesiri": 4471.46
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 19809.18,
+        "sold_minim": 17154.58,
+        "intrari": 7436.16,
+        "iesiri": 3544.96
+      }
+    ]
+  },
+  {
+    "client_id": "C0003",
+    "iban": "RO88RZBR9741119437400964",
+    "moneda": "RON",
+    "sold_curent": 19338.38,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 18840.33,
+        "sold_minim": 16856.85,
+        "intrari": 7893.27,
+        "iesiri": 6543.83
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 20556.85,
+        "sold_minim": 18355.18,
+        "intrari": 7882.95,
+        "iesiri": 5799.36
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 22669.37,
+        "sold_minim": 20458.02,
+        "intrari": 7969.53,
+        "iesiri": 5703.11
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 21825.94,
+        "sold_minim": 18870.8,
+        "intrari": 7803.46,
+        "iesiri": 5204.88
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 21110.87,
+        "sold_minim": 18817.05,
+        "intrari": 7871.81,
+        "iesiri": 5473.63
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 20907.69,
+        "sold_minim": 18358.01,
+        "intrari": 8092.99,
+        "iesiri": 5737.07
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 20397.6,
+        "sold_minim": 18245.84,
+        "intrari": 8082.27,
+        "iesiri": 6297.92
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 21620.4,
+        "sold_minim": 20391.72,
+        "intrari": 7861.94,
+        "iesiri": 4490.31
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 22785.2,
+        "sold_minim": 20796.89,
+        "intrari": 8029.5,
+        "iesiri": 5770.71
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 23591.18,
+        "sold_minim": 22453.88,
+        "intrari": 7832.9,
+        "iesiri": 5545.51
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 22952.95,
+        "sold_minim": 21477.65,
+        "intrari": 8006.72,
+        "iesiri": 4326.38
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 20840.65,
+        "sold_minim": 18209.89,
+        "intrari": 7967.44,
+        "iesiri": 5642.45
+      }
+    ]
+  },
+  {
+    "client_id": "C0004",
+    "iban": "RO75RZBR3191372389785255",
+    "moneda": "RON",
+    "sold_curent": 133.27,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 6677.17,
+        "sold_minim": 4305.79,
+        "intrari": 3984.12,
+        "iesiri": 6233.48
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 4435.45,
+        "sold_minim": 1925.67,
+        "intrari": 4729.61,
+        "iesiri": 6963.69
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 3423.97,
+        "sold_minim": 2009.96,
+        "intrari": 6753.37,
+        "iesiri": 6542.25
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 1765.03,
+        "sold_minim": 0.0,
+        "intrari": 2665.14,
+        "iesiri": 6194.13
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 142.64,
+        "sold_minim": 0.0,
+        "intrari": 3915.33,
+        "iesiri": 5730.74
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 339.08,
+        "sold_minim": 0.0,
+        "intrari": 3021.65,
+        "iesiri": 6383.78
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 451.36,
+        "sold_minim": 0.0,
+        "intrari": 6392.1,
+        "iesiri": 6276.2
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 421.32,
+        "sold_minim": 0.0,
+        "intrari": 5459.47,
+        "iesiri": 5635.45
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 249.56,
+        "sold_minim": 0.0,
+        "intrari": 4578.89,
+        "iesiri": 6229.18
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 130.81,
+        "sold_minim": 0.0,
+        "intrari": 3344.12,
+        "iesiri": 6397.53
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 239.98,
+        "sold_minim": 0.0,
+        "intrari": 5301.85,
+        "iesiri": 6152.24
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 258.69,
+        "sold_minim": 0.0,
+        "intrari": 5314.34,
+        "iesiri": 7487.97
+      }
+    ]
+  },
+  {
+    "client_id": "C0005",
+    "iban": "RO26RZBR1033126608253423",
+    "moneda": "RON",
+    "sold_curent": 34671.3,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 34798.48,
+        "sold_minim": 29839.39,
+        "intrari": 13566.35,
+        "iesiri": 6080.3
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 36812.73,
+        "sold_minim": 33769.61,
+        "intrari": 13655.54,
+        "iesiri": 6571.72
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 35366.14,
+        "sold_minim": 33722.99,
+        "intrari": 14179.42,
+        "iesiri": 6804.82
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 38487.63,
+        "sold_minim": 34066.49,
+        "intrari": 13587.83,
+        "iesiri": 7909.24
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 41444.34,
+        "sold_minim": 39594.9,
+        "intrari": 13967.37,
+        "iesiri": 8660.15
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 39209.81,
+        "sold_minim": 35240.32,
+        "intrari": 14194.65,
+        "iesiri": 8087.73
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 39164.57,
+        "sold_minim": 34967.05,
+        "intrari": 14067.48,
+        "iesiri": 9454.06
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 37556.04,
+        "sold_minim": 31854.05,
+        "intrari": 14206.89,
+        "iesiri": 8933.77
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 36516.92,
+        "sold_minim": 32058.02,
+        "intrari": 13666.17,
+        "iesiri": 7913.93
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 38137.34,
+        "sold_minim": 35327.02,
+        "intrari": 13667.52,
+        "iesiri": 7773.07
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 38828.17,
+        "sold_minim": 35412.55,
+        "intrari": 14085.6,
+        "iesiri": 7345.41
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 37723.01,
+        "sold_minim": 33169.94,
+        "intrari": 13751.29,
+        "iesiri": 7506.83
+      }
+    ]
+  },
+  {
+    "client_id": "C0006",
+    "iban": "RO68RZBR9323692352262609",
+    "moneda": "RON",
+    "sold_curent": 24664.86,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 19322.08,
+        "sold_minim": 17477.06,
+        "intrari": 6100.53,
+        "iesiri": 4017.47
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 24109.18,
+        "sold_minim": 19930.11,
+        "intrari": 9658.65,
+        "iesiri": 2167.52
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 28082.95,
+        "sold_minim": 27080.01,
+        "intrari": 14117.86,
+        "iesiri": 3873.64
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 28958.22,
+        "sold_minim": 27599.27,
+        "intrari": 11088.49,
+        "iesiri": 3559.47
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 28168.76,
+        "sold_minim": 26005.09,
+        "intrari": 10763.4,
+        "iesiri": 3635.81
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 27513.94,
+        "sold_minim": 25706.74,
+        "intrari": 6690.97,
+        "iesiri": 5127.59
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 26998.8,
+        "sold_minim": 25107.9,
+        "intrari": 10342.42,
+        "iesiri": 2970.31
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 26901.93,
+        "sold_minim": 25086.34,
+        "intrari": 8636.45,
+        "iesiri": 3078.13
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 27482.2,
+        "sold_minim": 26415.27,
+        "intrari": 10085.13,
+        "iesiri": 2236.11
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 26480.45,
+        "sold_minim": 25398.78,
+        "intrari": 12817.73,
+        "iesiri": 3498.21
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 25999.17,
+        "sold_minim": 25153.03,
+        "intrari": 10571.59,
+        "iesiri": 3734.46
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 25282.39,
+        "sold_minim": 23934.38,
+        "intrari": 12320.59,
+        "iesiri": 3652.37
+      }
+    ]
+  },
+  {
+    "client_id": "C0007",
+    "iban": "RO11RZBR5806082448071153",
+    "moneda": "RON",
+    "sold_curent": 11749.04,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 9032.63,
+        "sold_minim": 7896.95,
+        "intrari": 4451.08,
+        "iesiri": 3632.89
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 9453.31,
+        "sold_minim": 8556.14,
+        "intrari": 4451.08,
+        "iesiri": 4427.9
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 10190.32,
+        "sold_minim": 8864.85,
+        "intrari": 4451.08,
+        "iesiri": 3000.24
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 11053.0,
+        "sold_minim": 10080.43,
+        "intrari": 4451.08,
+        "iesiri": 4176.57
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 11857.87,
+        "sold_minim": 10567.08,
+        "intrari": 4451.08,
+        "iesiri": 3115.84
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 12467.35,
+        "sold_minim": 11495.73,
+        "intrari": 4451.08,
+        "iesiri": 4567.37
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 12594.93,
+        "sold_minim": 11593.28,
+        "intrari": 4451.08,
+        "iesiri": 4079.62
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 13038.33,
+        "sold_minim": 12210.94,
+        "intrari": 4451.08,
+        "iesiri": 2848.59
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 12866.6,
+        "sold_minim": 11375.24,
+        "intrari": 4451.08,
+        "iesiri": 5309.86
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 12872.11,
+        "sold_minim": 11720.96,
+        "intrari": 4451.08,
+        "iesiri": 3581.27
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 12380.91,
+        "sold_minim": 10868.11,
+        "intrari": 4451.08,
+        "iesiri": 2933.46
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 11601.92,
+        "sold_minim": 10623.43,
+        "intrari": 4451.08,
+        "iesiri": 4156.84
+      }
+    ]
+  },
+  {
+    "client_id": "C0008",
+    "iban": "RO48RZBR2733492869486966",
+    "moneda": "RON",
+    "sold_curent": 17573.41,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 15771.52,
+        "sold_minim": 14100.7,
+        "intrari": 7066.27,
+        "iesiri": 6207.72
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 15911.72,
+        "sold_minim": 14280.74,
+        "intrari": 6131.36,
+        "iesiri": 6709.51
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 14507.41,
+        "sold_minim": 11979.91,
+        "intrari": 4830.89,
+        "iesiri": 7061.35
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 13624.16,
+        "sold_minim": 12179.65,
+        "intrari": 6526.59,
+        "iesiri": 6062.64
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 13883.23,
+        "sold_minim": 12715.22,
+        "intrari": 5758.74,
+        "iesiri": 5704.54
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 14272.19,
+        "sold_minim": 12542.72,
+        "intrari": 7561.79,
+        "iesiri": 6838.07
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 14565.26,
+        "sold_minim": 13453.15,
+        "intrari": 5078.99,
+        "iesiri": 5216.58
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 14561.43,
+        "sold_minim": 13267.93,
+        "intrari": 6272.57,
+        "iesiri": 6142.64
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 15346.79,
+        "sold_minim": 13512.5,
+        "intrari": 7010.24,
+        "iesiri": 5569.45
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 17450.72,
+        "sold_minim": 15041.13,
+        "intrari": 7897.34,
+        "iesiri": 5130.27
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 17895.83,
+        "sold_minim": 15676.16,
+        "intrari": 7211.08,
+        "iesiri": 6406.22
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 17265.41,
+        "sold_minim": 15730.53,
+        "intrari": 6750.35,
+        "iesiri": 6134.34
+      }
+    ]
+  },
+  {
+    "client_id": "C0009",
+    "iban": "RO14RZBR8172740145929740",
+    "moneda": "RON",
+    "sold_curent": 7927.99,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 10813.43,
+        "sold_minim": 9193.7,
+        "intrari": 6705.62,
+        "iesiri": 5776.94
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 11824.88,
+        "sold_minim": 10109.09,
+        "intrari": 6937.62,
+        "iesiri": 5843.39
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 11157.89,
+        "sold_minim": 8929.58,
+        "intrari": 2642.81,
+        "iesiri": 5071.02
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 8682.24,
+        "sold_minim": 6254.1,
+        "intrari": 3309.92,
+        "iesiri": 5833.01
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 8205.73,
+        "sold_minim": 6545.47,
+        "intrari": 5946.22,
+        "iesiri": 4376.15
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 9940.0,
+        "sold_minim": 8003.06,
+        "intrari": 6837.02,
+        "iesiri": 4938.55
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 12434.38,
+        "sold_minim": 10113.73,
+        "intrari": 6967.85,
+        "iesiri": 3877.56
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 14146.68,
+        "sold_minim": 13142.71,
+        "intrari": 4518.42,
+        "iesiri": 4184.11
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 14301.07,
+        "sold_minim": 13445.11,
+        "intrari": 4190.4,
+        "iesiri": 4215.94
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 13973.85,
+        "sold_minim": 12782.6,
+        "intrari": 6838.65,
+        "iesiri": 4383.98
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 11950.97,
+        "sold_minim": 8939.49,
+        "intrari": 3098.45,
+        "iesiri": 6515.3
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 9085.27,
+        "sold_minim": 6858.31,
+        "intrari": 3033.85,
+        "iesiri": 5348.41
+      }
+    ]
+  },
+  {
+    "client_id": "C0010",
+    "iban": "RO44RZBR8117495094862051",
+    "moneda": "RON",
+    "sold_curent": 24675.37,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 16132.93,
+        "sold_minim": 9649.21,
+        "intrari": 14822.75,
+        "iesiri": 3092.18
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 24185.59,
+        "sold_minim": 21153.86,
+        "intrari": 14287.34,
+        "iesiri": 4221.8
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 27332.02,
+        "sold_minim": 25556.41,
+        "intrari": 6000.89,
+        "iesiri": 4082.77
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 27763.44,
+        "sold_minim": 26529.07,
+        "intrari": 10681.21,
+        "iesiri": 3533.64
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 28579.3,
+        "sold_minim": 26129.6,
+        "intrari": 9061.56,
+        "iesiri": 5531.02
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 28653.32,
+        "sold_minim": 26003.14,
+        "intrari": 9347.51,
+        "iesiri": 6903.55
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 27596.92,
+        "sold_minim": 26272.19,
+        "intrari": 10894.2,
+        "iesiri": 5558.28
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 28390.6,
+        "sold_minim": 26730.42,
+        "intrari": 8700.99,
+        "iesiri": 5397.83
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 27960.2,
+        "sold_minim": 26062.21,
+        "intrari": 11059.42,
+        "iesiri": 4434.85
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 28472.66,
+        "sold_minim": 26147.54,
+        "intrari": 10857.54,
+        "iesiri": 4008.2
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 28704.48,
+        "sold_minim": 26432.95,
+        "intrari": 7296.69,
+        "iesiri": 4899.34
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 26044.09,
+        "sold_minim": 23832.47,
+        "intrari": 7753.79,
+        "iesiri": 4214.48
+      }
+    ]
+  },
+  {
+    "client_id": "C0011",
+    "iban": "RO88RZBR9497805726650409",
+    "moneda": "RON",
+    "sold_curent": 32226.12,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 10527.33,
+        "sold_minim": 8027.75,
+        "intrari": 2598.09,
+        "iesiri": 5426.6
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 8586.3,
+        "sold_minim": 7026.24,
+        "intrari": 4112.83,
+        "iesiri": 5166.38
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 21121.89,
+        "sold_minim": 7259.98,
+        "intrari": 39246.05,
+        "iesiri": 3997.72
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 34662.28,
+        "sold_minim": 33578.28,
+        "intrari": 3985.94,
+        "iesiri": 3029.91
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 33509.05,
+        "sold_minim": 30657.38,
+        "intrari": 2839.63,
+        "iesiri": 6102.12
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 33296.16,
+        "sold_minim": 30787.77,
+        "intrari": 26667.07,
+        "iesiri": 5450.17
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 34049.39,
+        "sold_minim": 32293.0,
+        "intrari": 4126.13,
+        "iesiri": 5456.37
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 32538.22,
+        "sold_minim": 30828.78,
+        "intrari": 2624.83,
+        "iesiri": 4316.93
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 32515.12,
+        "sold_minim": 30552.38,
+        "intrari": 31466.08,
+        "iesiri": 5698.95
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 32867.34,
+        "sold_minim": 31316.11,
+        "intrari": 4461.02,
+        "iesiri": 5402.49
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 31555.44,
+        "sold_minim": 29699.19,
+        "intrari": 3393.13,
+        "iesiri": 5075.46
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 31470.2,
+        "sold_minim": 29832.81,
+        "intrari": 31329.91,
+        "iesiri": 4407.34
+      }
+    ]
+  },
+  {
+    "client_id": "C0012",
+    "iban": "RO17RZBR9318771284652859",
+    "moneda": "RON",
+    "sold_curent": 9449.75,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 16204.55,
+        "sold_minim": 12975.41,
+        "intrari": 8940.06,
+        "iesiri": 4136.29
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 20196.77,
+        "sold_minim": 17444.42,
+        "intrari": 8990.75,
+        "iesiri": 5810.08
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 21602.67,
+        "sold_minim": 20746.65,
+        "intrari": 9030.88,
+        "iesiri": 3357.87
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 20369.99,
+        "sold_minim": 18268.15,
+        "intrari": 9321.59,
+        "iesiri": 5268.03
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 19175.6,
+        "sold_minim": 17933.99,
+        "intrari": 9018.73,
+        "iesiri": 5477.27
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 19414.21,
+        "sold_minim": 18078.45,
+        "intrari": 8916.01,
+        "iesiri": 4754.97
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 19206.05,
+        "sold_minim": 17544.3,
+        "intrari": 9026.08,
+        "iesiri": 5344.1
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 18450.74,
+        "sold_minim": 17450.61,
+        "intrari": 9080.4,
+        "iesiri": 4188.72
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 20271.41,
+        "sold_minim": 17356.95,
+        "intrari": 8996.24,
+        "iesiri": 4657.0
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 20635.55,
+        "sold_minim": 18015.9,
+        "intrari": 9166.31,
+        "iesiri": 5003.65
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 16736.71,
+        "sold_minim": 13544.82,
+        "intrari": 0.0,
+        "iesiri": 4559.84
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 11953.27,
+        "sold_minim": 8448.34,
+        "intrari": 0.0,
+        "iesiri": 5007.04
+      }
+    ]
+  },
+  {
+    "client_id": "C0013",
+    "iban": "RO71RZBR1381360223384573",
+    "moneda": "RON",
+    "sold_curent": 25722.02,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 10576.28,
+        "sold_minim": 7438.53,
+        "intrari": 10535.03,
+        "iesiri": 7099.2
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 14574.9,
+        "sold_minim": 11084.65,
+        "intrari": 10609.14,
+        "iesiri": 6047.73
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 19342.05,
+        "sold_minim": 15666.85,
+        "intrari": 10916.67,
+        "iesiri": 5943.78
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 24494.49,
+        "sold_minim": 20802.99,
+        "intrari": 10459.53,
+        "iesiri": 5127.55
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 26692.06,
+        "sold_minim": 24791.07,
+        "intrari": 10739.94,
+        "iesiri": 7162.93
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 27199.22,
+        "sold_minim": 25053.23,
+        "intrari": 10839.83,
+        "iesiri": 5852.12
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 25949.3,
+        "sold_minim": 22376.27,
+        "intrari": 10885.75,
+        "iesiri": 6737.76
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 25856.38,
+        "sold_minim": 22451.52,
+        "intrari": 10626.61,
+        "iesiri": 6361.49
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 27962.11,
+        "sold_minim": 26546.8,
+        "intrari": 10739.62,
+        "iesiri": 6942.45
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 27995.05,
+        "sold_minim": 26559.36,
+        "intrari": 10588.39,
+        "iesiri": 6879.67
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 27245.32,
+        "sold_minim": 25143.72,
+        "intrari": 4841.5,
+        "iesiri": 6460.49
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 26078.92,
+        "sold_minim": 24610.96,
+        "intrari": 4841.5,
+        "iesiri": 5555.3
+      }
+    ]
+  },
+  {
+    "client_id": "C0014",
+    "iban": "RO89RZBR7139125731876050",
+    "moneda": "RON",
+    "sold_curent": 16691.91,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 17152.57,
+        "sold_minim": 12805.25,
+        "intrari": 12084.59,
+        "iesiri": 5649.92
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 24021.9,
+        "sold_minim": 19417.28,
+        "intrari": 12067.11,
+        "iesiri": 4763.13
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 28690.99,
+        "sold_minim": 26497.73,
+        "intrari": 11782.84,
+        "iesiri": 5880.76
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 26813.4,
+        "sold_minim": 23194.75,
+        "intrari": 11837.44,
+        "iesiri": 3619.83
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 25908.02,
+        "sold_minim": 23020.76,
+        "intrari": 12119.1,
+        "iesiri": 4489.78
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 27941.83,
+        "sold_minim": 26799.89,
+        "intrari": 11701.54,
+        "iesiri": 5487.17
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 27100.59,
+        "sold_minim": 25060.77,
+        "intrari": 12094.03,
+        "iesiri": 5770.35
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 26230.79,
+        "sold_minim": 25178.03,
+        "intrari": 11618.3,
+        "iesiri": 5184.09
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 27931.18,
+        "sold_minim": 25295.45,
+        "intrari": 12142.0,
+        "iesiri": 4756.43
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 28178.8,
+        "sold_minim": 25785.15,
+        "intrari": 11760.86,
+        "iesiri": 4784.21
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 23891.67,
+        "sold_minim": 19901.21,
+        "intrari": 0.0,
+        "iesiri": 5700.65
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 18866.63,
+        "sold_minim": 15822.03,
+        "intrari": 0.0,
+        "iesiri": 4349.43
+      }
+    ]
+  },
+  {
+    "client_id": "C0015",
+    "iban": "RO11RZBR1050313531000353",
+    "moneda": "RON",
+    "sold_curent": 20960.49,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 30970.07,
+        "sold_minim": 24810.31,
+        "intrari": 17327.41,
+        "iesiri": 8346.48
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 36634.23,
+        "sold_minim": 33828.73,
+        "intrari": 17070.5,
+        "iesiri": 8159.04
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 38009.77,
+        "sold_minim": 35979.9,
+        "intrari": 17615.16,
+        "iesiri": 9140.15
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 36709.86,
+        "sold_minim": 33371.67,
+        "intrari": 17206.86,
+        "iesiri": 9182.23
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 36070.66,
+        "sold_minim": 33431.19,
+        "intrari": 17152.92,
+        "iesiri": 8884.63
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 38904.9,
+        "sold_minim": 35255.93,
+        "intrari": 17370.86,
+        "iesiri": 8386.36
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 38325.54,
+        "sold_minim": 33944.73,
+        "intrari": 17491.62,
+        "iesiri": 9148.77
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 37862.83,
+        "sold_minim": 33960.12,
+        "intrari": 17183.31,
+        "iesiri": 9071.82
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 39879.0,
+        "sold_minim": 37985.02,
+        "intrari": 16909.27,
+        "iesiri": 9109.03
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 39551.06,
+        "sold_minim": 37630.37,
+        "intrari": 17680.15,
+        "iesiri": 8324.64
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 34815.69,
+        "sold_minim": 28544.23,
+        "intrari": 0.0,
+        "iesiri": 8959.22
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 25648.28,
+        "sold_minim": 19085.37,
+        "intrari": 0.0,
+        "iesiri": 9375.59
+      }
+    ]
+  },
+  {
+    "client_id": "C0016",
+    "iban": "RO85RZBR9109634547219292",
+    "moneda": "RON",
+    "sold_curent": 168.14,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 5063.66,
+        "sold_minim": 2487.38,
+        "intrari": 6941.21,
+        "iesiri": 8638.4
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 2210.89,
+        "sold_minim": 0.0,
+        "intrari": 5950.72,
+        "iesiri": 9959.07
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 219.25,
+        "sold_minim": 0.0,
+        "intrari": 7923.49,
+        "iesiri": 9134.2
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 301.9,
+        "sold_minim": 0.0,
+        "intrari": 6661.66,
+        "iesiri": 8861.85
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 286.91,
+        "sold_minim": 0.0,
+        "intrari": 8742.03,
+        "iesiri": 9155.02
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 267.06,
+        "sold_minim": 0.0,
+        "intrari": 6378.65,
+        "iesiri": 9650.22
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 364.77,
+        "sold_minim": 0.0,
+        "intrari": 5786.68,
+        "iesiri": 8091.76
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 284.28,
+        "sold_minim": 0.0,
+        "intrari": 8137.37,
+        "iesiri": 10520.94
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 234.77,
+        "sold_minim": 0.0,
+        "intrari": 4979.12,
+        "iesiri": 10041.18
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 308.51,
+        "sold_minim": 0.0,
+        "intrari": 5153.97,
+        "iesiri": 10987.15
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 271.75,
+        "sold_minim": 0.0,
+        "intrari": 4754.72,
+        "iesiri": 8798.0
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 196.42,
+        "sold_minim": 0.0,
+        "intrari": 7875.83,
+        "iesiri": 8501.21
+      }
+    ]
+  },
+  {
+    "client_id": "C0017",
+    "iban": "RO54RZBR3151323458168613",
+    "moneda": "RON",
+    "sold_curent": 18121.46,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 13862.7,
+        "sold_minim": 11813.33,
+        "intrari": 7390.61,
+        "iesiri": 5486.43
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 16394.93,
+        "sold_minim": 13913.03,
+        "intrari": 7669.09,
+        "iesiri": 4508.82
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 19592.65,
+        "sold_minim": 17120.68,
+        "intrari": 7507.11,
+        "iesiri": 4271.93
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 20315.64,
+        "sold_minim": 18511.65,
+        "intrari": 7522.69,
+        "iesiri": 4546.89
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 20509.53,
+        "sold_minim": 18600.42,
+        "intrari": 7406.14,
+        "iesiri": 4103.05
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 19876.36,
+        "sold_minim": 17253.23,
+        "intrari": 7371.02,
+        "iesiri": 4507.31
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 19847.63,
+        "sold_minim": 17299.48,
+        "intrari": 7661.91,
+        "iesiri": 4276.02
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 20376.15,
+        "sold_minim": 18265.96,
+        "intrari": 7674.11,
+        "iesiri": 4728.75
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 20317.55,
+        "sold_minim": 18166.27,
+        "intrari": 7438.9,
+        "iesiri": 5227.22
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 21963.4,
+        "sold_minim": 20116.85,
+        "intrari": 7612.74,
+        "iesiri": 6532.73
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 21550.68,
+        "sold_minim": 19772.92,
+        "intrari": 7658.49,
+        "iesiri": 4125.17
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 19359.71,
+        "sold_minim": 17187.29,
+        "intrari": 7644.66,
+        "iesiri": 4670.84
+      }
+    ]
+  },
+  {
+    "client_id": "C0018",
+    "iban": "RO99RZBR9571998487993949",
+    "moneda": "RON",
+    "sold_curent": 32210.83,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 24625.0,
+        "sold_minim": 20006.96,
+        "intrari": 12735.58,
+        "iesiri": 5832.5
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 31030.15,
+        "sold_minim": 26814.83,
+        "intrari": 12215.8,
+        "iesiri": 6308.58
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 34295.71,
+        "sold_minim": 32742.77,
+        "intrari": 12298.71,
+        "iesiri": 6204.98
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 32491.64,
+        "sold_minim": 29326.91,
+        "intrari": 12538.99,
+        "iesiri": 5243.53
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 31033.71,
+        "sold_minim": 29374.66,
+        "intrari": 12738.57,
+        "iesiri": 5004.77
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 32833.56,
+        "sold_minim": 30482.12,
+        "intrari": 12542.06,
+        "iesiri": 6048.37
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 32577.56,
+        "sold_minim": 30059.85,
+        "intrari": 12338.86,
+        "iesiri": 5599.78
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 32045.67,
+        "sold_minim": 30126.6,
+        "intrari": 12196.77,
+        "iesiri": 5266.0
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 31801.64,
+        "sold_minim": 29559.07,
+        "intrari": 12558.39,
+        "iesiri": 5663.39
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 33619.48,
+        "sold_minim": 29429.29,
+        "intrari": 12167.76,
+        "iesiri": 6312.28
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 34198.89,
+        "sold_minim": 30900.15,
+        "intrari": 12338.57,
+        "iesiri": 4752.06
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 32030.7,
+        "sold_minim": 30640.23,
+        "intrari": 12647.53,
+        "iesiri": 6051.69
+      }
+    ]
+  },
+  {
+    "client_id": "C0019",
+    "iban": "RO20RZBR5836969769685732",
+    "moneda": "RON",
+    "sold_curent": 112.55,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 9184.75,
+        "sold_minim": 5851.24,
+        "intrari": 3252.93,
+        "iesiri": 7085.68
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 5090.31,
+        "sold_minim": 1428.48,
+        "intrari": 3062.68,
+        "iesiri": 7418.81
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 2047.78,
+        "sold_minim": 0.0,
+        "intrari": 5479.1,
+        "iesiri": 7208.03
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 607.45,
+        "sold_minim": 0.0,
+        "intrari": 5873.83,
+        "iesiri": 7025.56
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 40.96,
+        "sold_minim": 0.0,
+        "intrari": 3251.1,
+        "iesiri": 5892.71
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 160.17,
+        "sold_minim": 0.0,
+        "intrari": 2929.99,
+        "iesiri": 6958.86
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 242.99,
+        "sold_minim": 0.0,
+        "intrari": 4967.95,
+        "iesiri": 7485.2
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 247.43,
+        "sold_minim": 0.0,
+        "intrari": 5969.2,
+        "iesiri": 6596.61
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 247.58,
+        "sold_minim": 0.0,
+        "intrari": 5942.48,
+        "iesiri": 6339.11
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 208.36,
+        "sold_minim": 0.0,
+        "intrari": 2967.68,
+        "iesiri": 6067.66
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 143.66,
+        "sold_minim": 0.0,
+        "intrari": 3198.73,
+        "iesiri": 8017.69
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 99.72,
+        "sold_minim": 0.0,
+        "intrari": 6692.15,
+        "iesiri": 6666.48
+      }
+    ]
+  },
+  {
+    "client_id": "C0020",
+    "iban": "RO77RZBR8760471132249398",
+    "moneda": "RON",
+    "sold_curent": 31526.29,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 20685.22,
+        "sold_minim": 17233.56,
+        "intrari": 9338.41,
+        "iesiri": 4058.5
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 25804.64,
+        "sold_minim": 22236.77,
+        "intrari": 10400.94,
+        "iesiri": 5442.0
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 29126.32,
+        "sold_minim": 27639.98,
+        "intrari": 10696.59,
+        "iesiri": 3220.64
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 30287.87,
+        "sold_minim": 29380.26,
+        "intrari": 15536.4,
+        "iesiri": 2941.39
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 29060.73,
+        "sold_minim": 26594.84,
+        "intrari": 9149.95,
+        "iesiri": 4597.05
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 29203.22,
+        "sold_minim": 26813.59,
+        "intrari": 12378.56,
+        "iesiri": 3503.31
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 30862.13,
+        "sold_minim": 30122.93,
+        "intrari": 14713.23,
+        "iesiri": 3545.72
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 31136.15,
+        "sold_minim": 30237.95,
+        "intrari": 8603.1,
+        "iesiri": 2970.63
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 32392.33,
+        "sold_minim": 30794.39,
+        "intrari": 16453.42,
+        "iesiri": 3229.22
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 33231.75,
+        "sold_minim": 32191.09,
+        "intrari": 6296.96,
+        "iesiri": 4639.95
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 30495.47,
+        "sold_minim": 27074.94,
+        "intrari": 9924.36,
+        "iesiri": 3984.62
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 29699.08,
+        "sold_minim": 26997.9,
+        "intrari": 12286.24,
+        "iesiri": 4369.83
+      }
+    ]
+  },
+  {
+    "client_id": "C0021",
+    "iban": "RO87RZBR5622573497336339",
+    "moneda": "RON",
+    "sold_curent": 21917.48,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 7209.35,
+        "sold_minim": 4543.38,
+        "intrari": 8377.63,
+        "iesiri": 5076.15
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 10866.36,
+        "sold_minim": 7958.29,
+        "intrari": 8521.54,
+        "iesiri": 4509.01
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 14378.48,
+        "sold_minim": 11780.84,
+        "intrari": 8470.65,
+        "iesiri": 5458.93
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 17071.51,
+        "sold_minim": 14661.69,
+        "intrari": 8487.59,
+        "iesiri": 6113.25
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 19594.39,
+        "sold_minim": 17065.56,
+        "intrari": 8637.02,
+        "iesiri": 5965.61
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 20608.83,
+        "sold_minim": 19406.44,
+        "intrari": 8750.01,
+        "iesiri": 4405.67
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 21645.55,
+        "sold_minim": 19076.17,
+        "intrari": 8772.96,
+        "iesiri": 6057.0
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 22699.94,
+        "sold_minim": 21387.43,
+        "intrari": 8466.12,
+        "iesiri": 5044.61
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 20854.67,
+        "sold_minim": 17891.65,
+        "intrari": 8752.91,
+        "iesiri": 7106.69
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 19510.02,
+        "sold_minim": 18196.12,
+        "intrari": 5978.42,
+        "iesiri": 5584.36
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 20079.8,
+        "sold_minim": 18660.47,
+        "intrari": 5978.42,
+        "iesiri": 5232.91
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 21185.02,
+        "sold_minim": 19549.86,
+        "intrari": 5978.42,
+        "iesiri": 4513.5
+      }
+    ]
+  },
+  {
+    "client_id": "C0022",
+    "iban": "RO66RZBR9347551264425976",
+    "moneda": "RON",
+    "sold_curent": 31460.69,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 29111.89,
+        "sold_minim": 23711.18,
+        "intrari": 14142.14,
+        "iesiri": 5567.86
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 35459.56,
+        "sold_minim": 32252.81,
+        "intrari": 14115.95,
+        "iesiri": 5731.08
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 37596.57,
+        "sold_minim": 36233.87,
+        "intrari": 14376.35,
+        "iesiri": 6431.14
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 35228.0,
+        "sold_minim": 31723.08,
+        "intrari": 14083.2,
+        "iesiri": 5299.4
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 34790.36,
+        "sold_minim": 31380.01,
+        "intrari": 13986.39,
+        "iesiri": 7014.77
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 35569.2,
+        "sold_minim": 33330.83,
+        "intrari": 14411.71,
+        "iesiri": 5049.07
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 36127.46,
+        "sold_minim": 33235.37,
+        "intrari": 14372.42,
+        "iesiri": 5526.36
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 37257.24,
+        "sold_minim": 35591.7,
+        "intrari": 14161.62,
+        "iesiri": 5042.53
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 35143.75,
+        "sold_minim": 32506.11,
+        "intrari": 14257.95,
+        "iesiri": 5905.94
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 34859.01,
+        "sold_minim": 32499.23,
+        "intrari": 8283.78,
+        "iesiri": 5940.35
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 37058.08,
+        "sold_minim": 34784.91,
+        "intrari": 8283.78,
+        "iesiri": 6229.08
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 34773.06,
+        "sold_minim": 30042.31,
+        "intrari": 8283.78,
+        "iesiri": 7091.89
+      }
+    ]
+  },
+  {
+    "client_id": "C0023",
+    "iban": "RO59RZBR9276323386219436",
+    "moneda": "RON",
+    "sold_curent": 33890.8,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 31215.14,
+        "sold_minim": 29880.29,
+        "intrari": 13704.35,
+        "iesiri": 5668.96
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 32507.19,
+        "sold_minim": 29844.25,
+        "intrari": 13888.15,
+        "iesiri": 5849.19
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 35605.19,
+        "sold_minim": 32892.0,
+        "intrari": 13225.68,
+        "iesiri": 5541.48
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 35491.37,
+        "sold_minim": 32398.18,
+        "intrari": 13492.83,
+        "iesiri": 6872.33
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 35119.38,
+        "sold_minim": 32537.55,
+        "intrari": 13795.21,
+        "iesiri": 6175.44
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 33634.16,
+        "sold_minim": 29510.83,
+        "intrari": 13469.24,
+        "iesiri": 6456.8
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 34005.46,
+        "sold_minim": 29451.01,
+        "intrari": 13873.05,
+        "iesiri": 6755.93
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 36281.11,
+        "sold_minim": 34082.55,
+        "intrari": 13694.61,
+        "iesiri": 6354.7
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 35990.75,
+        "sold_minim": 33994.39,
+        "intrari": 13294.19,
+        "iesiri": 6795.49
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 33769.98,
+        "sold_minim": 29578.45,
+        "intrari": 9712.8,
+        "iesiri": 6667.49
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 33226.45,
+        "sold_minim": 29895.19,
+        "intrari": 9712.8,
+        "iesiri": 5083.81
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 34715.87,
+        "sold_minim": 32763.97,
+        "intrari": 9712.8,
+        "iesiri": 5634.17
+      }
+    ]
+  },
+  {
+    "client_id": "C0024",
+    "iban": "RO55RZBR8700420908146974",
+    "moneda": "RON",
+    "sold_curent": 35583.87,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 28702.2,
+        "sold_minim": 23837.45,
+        "intrari": 14351.54,
+        "iesiri": 7703.42
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 34873.06,
+        "sold_minim": 30403.26,
+        "intrari": 13808.58,
+        "iesiri": 8114.98
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 34835.22,
+        "sold_minim": 30552.47,
+        "intrari": 14027.67,
+        "iesiri": 6990.53
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 32093.19,
+        "sold_minim": 30643.26,
+        "intrari": 14110.46,
+        "iesiri": 6536.58
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 31672.71,
+        "sold_minim": 29874.16,
+        "intrari": 14135.02,
+        "iesiri": 6177.27
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 34686.98,
+        "sold_minim": 29783.6,
+        "intrari": 13784.8,
+        "iesiri": 6630.08
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 35556.72,
+        "sold_minim": 31528.76,
+        "intrari": 13836.83,
+        "iesiri": 6601.73
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 35543.41,
+        "sold_minim": 31656.87,
+        "intrari": 14321.52,
+        "iesiri": 5961.18
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 37494.1,
+        "sold_minim": 35307.65,
+        "intrari": 13756.47,
+        "iesiri": 7214.24
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 37373.82,
+        "sold_minim": 35387.26,
+        "intrari": 9076.36,
+        "iesiri": 6816.17
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 35641.97,
+        "sold_minim": 31804.24,
+        "intrari": 9076.36,
+        "iesiri": 7412.77
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 34435.33,
+        "sold_minim": 31930.94,
+        "intrari": 9076.36,
+        "iesiri": 6779.28
+      }
+    ]
+  },
+  {
+    "client_id": "C0025",
+    "iban": "RO81RZBR2806971220383739",
+    "moneda": "RON",
+    "sold_curent": 30412.47,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 17080.12,
+        "sold_minim": 13757.19,
+        "intrari": 10630.48,
+        "iesiri": 6641.01
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 23265.61,
+        "sold_minim": 17570.96,
+        "intrari": 15901.01,
+        "iesiri": 7519.51
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 29596.09,
+        "sold_minim": 26033.0,
+        "intrari": 11396.27,
+        "iesiri": 7116.81
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 33457.51,
+        "sold_minim": 30111.38,
+        "intrari": 11565.56,
+        "iesiri": 8122.18
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 33209.93,
+        "sold_minim": 29728.37,
+        "intrari": 12349.46,
+        "iesiri": 7561.45
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 33635.17,
+        "sold_minim": 29920.62,
+        "intrari": 12399.26,
+        "iesiri": 6600.18
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 35373.84,
+        "sold_minim": 33290.09,
+        "intrari": 12180.62,
+        "iesiri": 7139.56
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 35278.75,
+        "sold_minim": 33111.39,
+        "intrari": 17149.05,
+        "iesiri": 8033.08
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 35820.15,
+        "sold_minim": 34455.97,
+        "intrari": 16319.15,
+        "iesiri": 6724.17
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 36225.31,
+        "sold_minim": 34264.68,
+        "intrari": 10334.77,
+        "iesiri": 7680.65
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 34378.17,
+        "sold_minim": 30602.23,
+        "intrari": 12043.66,
+        "iesiri": 7521.47
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 31259.5,
+        "sold_minim": 29139.94,
+        "intrari": 4668.6,
+        "iesiri": 6362.65
+      }
+    ]
+  },
+  {
+    "client_id": "C0026",
+    "iban": "RO89RZBR4705541867794356",
+    "moneda": "RON",
+    "sold_curent": 17021.14,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 6215.08,
+        "sold_minim": 4164.73,
+        "intrari": 5886.38,
+        "iesiri": 2976.14
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 10424.12,
+        "sold_minim": 7084.9,
+        "intrari": 8434.36,
+        "iesiri": 2926.52
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 14470.86,
+        "sold_minim": 12601.04,
+        "intrari": 5470.63,
+        "iesiri": 2885.0
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 18129.59,
+        "sold_minim": 15142.67,
+        "intrari": 7836.87,
+        "iesiri": 3105.03
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 20531.32,
+        "sold_minim": 20010.18,
+        "intrari": 8116.58,
+        "iesiri": 2426.64
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 19570.23,
+        "sold_minim": 18022.45,
+        "intrari": 5237.06,
+        "iesiri": 2754.46
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 17878.81,
+        "sold_minim": 16404.18,
+        "intrari": 7778.72,
+        "iesiri": 3900.48
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 18775.09,
+        "sold_minim": 16794.99,
+        "intrari": 5128.05,
+        "iesiri": 1946.43
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 20600.95,
+        "sold_minim": 19710.35,
+        "intrari": 7190.71,
+        "iesiri": 3277.74
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 19618.85,
+        "sold_minim": 17623.48,
+        "intrari": 5435.03,
+        "iesiri": 3891.04
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 18128.7,
+        "sold_minim": 17326.93,
+        "intrari": 8947.72,
+        "iesiri": 2643.93
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 17438.43,
+        "sold_minim": 16298.8,
+        "intrari": 8939.87,
+        "iesiri": 3611.72
+      }
+    ]
+  },
+  {
+    "client_id": "C0027",
+    "iban": "RO92RZBR7112295362890178",
+    "moneda": "RON",
+    "sold_curent": 316.02,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 2364.84,
+        "sold_minim": 231.25,
+        "intrari": 3437.15,
+        "iesiri": 5503.09
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 804.43,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 5257.58
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 295.86,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 5369.08
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 327.46,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 6075.46
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 220.84,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 4539.62
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 111.32,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 5583.84
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 229.84,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 4744.43
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 208.45,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 4749.01
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 88.84,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 6445.98
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 215.3,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 6066.13
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 229.32,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 4646.91
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 221.67,
+        "sold_minim": 0.0,
+        "intrari": 3437.15,
+        "iesiri": 6118.99
+      }
+    ]
+  },
+  {
+    "client_id": "C0028",
+    "iban": "RO77RZBR1424581312263301",
+    "moneda": "RON",
+    "sold_curent": 25092.13,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 17872.73,
+        "sold_minim": 15096.62,
+        "intrari": 9162.55,
+        "iesiri": 6017.21
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 21334.84,
+        "sold_minim": 18402.03,
+        "intrari": 8995.74,
+        "iesiri": 5216.85
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 23880.92,
+        "sold_minim": 22248.51,
+        "intrari": 9089.44,
+        "iesiri": 4878.87
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 23263.59,
+        "sold_minim": 20907.36,
+        "intrari": 8917.89,
+        "iesiri": 5411.3
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 24312.67,
+        "sold_minim": 21121.08,
+        "intrari": 8988.8,
+        "iesiri": 4342.69
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 25431.96,
+        "sold_minim": 22903.83,
+        "intrari": 9207.51,
+        "iesiri": 6621.81
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 23775.99,
+        "sold_minim": 22351.58,
+        "intrari": 8938.71,
+        "iesiri": 4861.01
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 23759.13,
+        "sold_minim": 22255.69,
+        "intrari": 9143.95,
+        "iesiri": 5340.48
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 23010.55,
+        "sold_minim": 20782.94,
+        "intrari": 9065.16,
+        "iesiri": 5218.52
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 23273.78,
+        "sold_minim": 20647.14,
+        "intrari": 8791.76,
+        "iesiri": 5897.49
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 24952.72,
+        "sold_minim": 23593.16,
+        "intrari": 9085.44,
+        "iesiri": 5638.77
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 25138.33,
+        "sold_minim": 23779.06,
+        "intrari": 8889.45,
+        "iesiri": 6565.34
+      }
+    ]
+  },
+  {
+    "client_id": "C0029",
+    "iban": "RO68RZBR4224265917532069",
+    "moneda": "RON",
+    "sold_curent": 34732.28,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 12376.97,
+        "sold_minim": 8718.87,
+        "intrari": 11916.01,
+        "iesiri": 7666.37
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 16885.13,
+        "sold_minim": 13095.32,
+        "intrari": 11799.04,
+        "iesiri": 7032.36
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 21963.04,
+        "sold_minim": 17906.09,
+        "intrari": 12201.06,
+        "iesiri": 6811.91
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 26703.04,
+        "sold_minim": 23092.79,
+        "intrari": 11914.97,
+        "iesiri": 7824.12
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 31593.83,
+        "sold_minim": 27453.31,
+        "intrari": 12166.52,
+        "iesiri": 6475.8
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 33364.98,
+        "sold_minim": 31068.54,
+        "intrari": 12290.98,
+        "iesiri": 6111.21
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 33978.34,
+        "sold_minim": 30900.44,
+        "intrari": 11777.05,
+        "iesiri": 6951.7
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 33958.8,
+        "sold_minim": 30813.68,
+        "intrari": 11828.15,
+        "iesiri": 7190.11
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 33162.59,
+        "sold_minim": 30791.06,
+        "intrari": 11775.03,
+        "iesiri": 7303.22
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 32397.82,
+        "sold_minim": 29345.44,
+        "intrari": 11819.14,
+        "iesiri": 6883.61
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 30126.6,
+        "sold_minim": 28301.67,
+        "intrari": 11892.1,
+        "iesiri": 6146.89
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 32131.66,
+        "sold_minim": 28212.53,
+        "intrari": 11793.82,
+        "iesiri": 6592.59
+      }
+    ]
+  },
+  {
+    "client_id": "C0030",
+    "iban": "RO79RZBR2060968076466567",
+    "moneda": "RON",
+    "sold_curent": 10579.55,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 7557.47,
+        "sold_minim": 5795.24,
+        "intrari": 4041.22,
+        "iesiri": 5404.06
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 7514.92,
+        "sold_minim": 6323.35,
+        "intrari": 4041.22,
+        "iesiri": 2763.47
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 8527.33,
+        "sold_minim": 7494.97,
+        "intrari": 4041.22,
+        "iesiri": 3294.16
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 8793.4,
+        "sold_minim": 7834.71,
+        "intrari": 4041.22,
+        "iesiri": 4256.14
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 8649.81,
+        "sold_minim": 7790.98,
+        "intrari": 4041.22,
+        "iesiri": 4113.48
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 9220.76,
+        "sold_minim": 8048.27,
+        "intrari": 4041.22,
+        "iesiri": 2827.05
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 10168.46,
+        "sold_minim": 9155.85,
+        "intrari": 4041.22,
+        "iesiri": 3360.0
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 10543.28,
+        "sold_minim": 9714.51,
+        "intrari": 4041.22,
+        "iesiri": 3972.8
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 10317.56,
+        "sold_minim": 9145.41,
+        "intrari": 4041.22,
+        "iesiri": 4561.08
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 10623.8,
+        "sold_minim": 9475.85,
+        "intrari": 4041.22,
+        "iesiri": 2908.87
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 10753.19,
+        "sold_minim": 9333.44,
+        "intrari": 4041.22,
+        "iesiri": 4914.8
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 10447.97,
+        "sold_minim": 9560.78,
+        "intrari": 4041.22,
+        "iesiri": 3778.07
+      }
+    ]
+  },
+  {
+    "client_id": "C0031",
+    "iban": "RO95RZBR8942340783988259",
+    "moneda": "RON",
+    "sold_curent": 22416.34,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 17747.98,
+        "sold_minim": 14804.19,
+        "intrari": 8377.51,
+        "iesiri": 4149.88
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 20213.39,
+        "sold_minim": 18931.37,
+        "intrari": 9035.89,
+        "iesiri": 4652.15
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 19313.85,
+        "sold_minim": 16961.11,
+        "intrari": 7962.14,
+        "iesiri": 5508.05
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 18246.86,
+        "sold_minim": 16974.6,
+        "intrari": 5808.85,
+        "iesiri": 5440.58
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 18965.13,
+        "sold_minim": 17397.18,
+        "intrari": 6237.33,
+        "iesiri": 5169.06
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 20650.65,
+        "sold_minim": 18739.06,
+        "intrari": 6103.79,
+        "iesiri": 3801.01
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 21166.61,
+        "sold_minim": 19586.18,
+        "intrari": 8775.13,
+        "iesiri": 4725.04
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 20238.0,
+        "sold_minim": 19149.49,
+        "intrari": 6999.03,
+        "iesiri": 3976.56
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 20782.1,
+        "sold_minim": 18733.55,
+        "intrari": 7730.85,
+        "iesiri": 6056.26
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 20040.29,
+        "sold_minim": 17350.46,
+        "intrari": 7650.02,
+        "iesiri": 5553.63
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 19819.52,
+        "sold_minim": 17228.74,
+        "intrari": 8878.88,
+        "iesiri": 6162.22
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 21797.09,
+        "sold_minim": 20515.42,
+        "intrari": 6529.8,
+        "iesiri": 3312.14
+      }
+    ]
+  },
+  {
+    "client_id": "C0032",
+    "iban": "RO40RZBR5985732988590127",
+    "moneda": "RON",
+    "sold_curent": 29553.16,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 22104.09,
+        "sold_minim": 19588.84,
+        "intrari": 6454.95,
+        "iesiri": 2374.08
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 25087.35,
+        "sold_minim": 23724.93,
+        "intrari": 12075.52,
+        "iesiri": 2097.96
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 26733.3,
+        "sold_minim": 25520.73,
+        "intrari": 14670.15,
+        "iesiri": 2547.24
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 26572.31,
+        "sold_minim": 25207.4,
+        "intrari": 12740.03,
+        "iesiri": 2504.03
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 27231.77,
+        "sold_minim": 25081.69,
+        "intrari": 12891.06,
+        "iesiri": 3132.62
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 29278.45,
+        "sold_minim": 28148.23,
+        "intrari": 13100.99,
+        "iesiri": 3035.43
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 29389.07,
+        "sold_minim": 28419.48,
+        "intrari": 5433.39,
+        "iesiri": 2785.4
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 28293.01,
+        "sold_minim": 27054.48,
+        "intrari": 10358.27,
+        "iesiri": 2774.97
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 27253.06,
+        "sold_minim": 26461.3,
+        "intrari": 6675.87,
+        "iesiri": 2176.81
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 26140.2,
+        "sold_minim": 24746.27,
+        "intrari": 10482.17,
+        "iesiri": 3187.35
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 26926.01,
+        "sold_minim": 24923.22,
+        "intrari": 5387.15,
+        "iesiri": 2302.62
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 29010.71,
+        "sold_minim": 27767.09,
+        "intrari": 14809.85,
+        "iesiri": 3505.89
+      }
+    ]
+  },
+  {
+    "client_id": "C0033",
+    "iban": "RO47RZBR8042234849288655",
+    "moneda": "RON",
+    "sold_curent": 15294.86,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 10975.75,
+        "sold_minim": 9640.09,
+        "intrari": 4749.1,
+        "iesiri": 3462.95
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 12230.75,
+        "sold_minim": 11247.69,
+        "intrari": 6254.34,
+        "iesiri": 1855.69
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 12974.31,
+        "sold_minim": 12192.39,
+        "intrari": 3514.71,
+        "iesiri": 3251.43
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 13935.44,
+        "sold_minim": 12320.56,
+        "intrari": 5585.93,
+        "iesiri": 3926.95
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 14960.23,
+        "sold_minim": 14080.77,
+        "intrari": 5932.79,
+        "iesiri": 3420.83
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 15463.37,
+        "sold_minim": 14549.81,
+        "intrari": 4919.22,
+        "iesiri": 3028.57
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 15215.28,
+        "sold_minim": 13913.58,
+        "intrari": 5141.3,
+        "iesiri": 3728.8
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 13894.98,
+        "sold_minim": 12532.42,
+        "intrari": 6034.11,
+        "iesiri": 2990.94
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 13464.59,
+        "sold_minim": 12625.88,
+        "intrari": 3191.61,
+        "iesiri": 2523.65
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 14155.48,
+        "sold_minim": 13288.24,
+        "intrari": 5056.86,
+        "iesiri": 2551.65
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 13596.59,
+        "sold_minim": 11965.73,
+        "intrari": 6611.88,
+        "iesiri": 3575.24
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 13987.82,
+        "sold_minim": 12136.24,
+        "intrari": 6401.25,
+        "iesiri": 2722.7
+      }
+    ]
+  },
+  {
+    "client_id": "C0034",
+    "iban": "RO36RZBR1680868427682100",
+    "moneda": "RON",
+    "sold_curent": 36668.66,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 35452.13,
+        "sold_minim": 31633.66,
+        "intrari": 13275.72,
+        "iesiri": 5248.92
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 36463.81,
+        "sold_minim": 33891.8,
+        "intrari": 13705.97,
+        "iesiri": 4075.01
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 35497.48,
+        "sold_minim": 34013.74,
+        "intrari": 13099.53,
+        "iesiri": 3465.31
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 38138.47,
+        "sold_minim": 35209.34,
+        "intrari": 13459.87,
+        "iesiri": 5394.09
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 37827.45,
+        "sold_minim": 34950.45,
+        "intrari": 13353.56,
+        "iesiri": 3578.35
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 36458.68,
+        "sold_minim": 34852.23,
+        "intrari": 13481.23,
+        "iesiri": 4069.43
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 37165.5,
+        "sold_minim": 36267.61,
+        "intrari": 13389.86,
+        "iesiri": 4060.71
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 38596.98,
+        "sold_minim": 36210.15,
+        "intrari": 13209.49,
+        "iesiri": 4348.0
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 38558.14,
+        "sold_minim": 36003.34,
+        "intrari": 13560.05,
+        "iesiri": 4993.68
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 35140.97,
+        "sold_minim": 32452.67,
+        "intrari": 13260.27,
+        "iesiri": 4135.98
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 34839.44,
+        "sold_minim": 32392.36,
+        "intrari": 13558.92,
+        "iesiri": 4437.57
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 36533.84,
+        "sold_minim": 35812.66,
+        "intrari": 13107.44,
+        "iesiri": 2931.8
+      }
+    ]
+  },
+  {
+    "client_id": "C0035",
+    "iban": "RO82RZBR3302766644732546",
+    "moneda": "RON",
+    "sold_curent": 346.98,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 4880.95,
+        "sold_minim": 3186.66,
+        "intrari": 4470.0,
+        "iesiri": 5613.27
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 3731.14,
+        "sold_minim": 2027.68,
+        "intrari": 4470.0,
+        "iesiri": 5626.36
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 2399.86,
+        "sold_minim": 451.52,
+        "intrari": 4470.0,
+        "iesiri": 5976.2
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 963.17,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 6179.51
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 275.79,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 4477.58
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 304.37,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 4811.92
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 361.23,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 4881.99
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 298.51,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 7413.12
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 138.59,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 6507.12
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 131.4,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 7459.7
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 223.92,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 6465.57
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 298.95,
+        "sold_minim": 0.0,
+        "intrari": 4470.0,
+        "iesiri": 5047.62
+      }
+    ]
+  },
+  {
+    "client_id": "C0036",
+    "iban": "RO32RZBR9974675698802153",
+    "moneda": "RON",
+    "sold_curent": 33934.14,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 20125.95,
+        "sold_minim": 19079.17,
+        "intrari": 2616.95,
+        "iesiri": 3364.65
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 19578.91,
+        "sold_minim": 18662.41,
+        "intrari": 3370.2,
+        "iesiri": 3716.57
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 26426.47,
+        "sold_minim": 18905.94,
+        "intrari": 37734.75,
+        "iesiri": 2498.93
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 32187.15,
+        "sold_minim": 30114.69,
+        "intrari": 1541.99,
+        "iesiri": 4062.09
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 30853.25,
+        "sold_minim": 30132.72,
+        "intrari": 3085.65,
+        "iesiri": 3233.36
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 30308.2,
+        "sold_minim": 29236.02,
+        "intrari": 30810.93,
+        "iesiri": 3004.97
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 28448.27,
+        "sold_minim": 26226.74,
+        "intrari": 1386.45,
+        "iesiri": 4163.93
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 27146.08,
+        "sold_minim": 26502.57,
+        "intrari": 2957.92,
+        "iesiri": 2784.82
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 28890.51,
+        "sold_minim": 26780.31,
+        "intrari": 30167.43,
+        "iesiri": 2261.58
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 30386.93,
+        "sold_minim": 29657.2,
+        "intrari": 2518.44,
+        "iesiri": 2841.36
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 30459.72,
+        "sold_minim": 29539.41,
+        "intrari": 3898.83,
+        "iesiri": 3430.32
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 32314.06,
+        "sold_minim": 30057.85,
+        "intrari": 26576.54,
+        "iesiri": 3180.65
+      }
+    ]
+  },
+  {
+    "client_id": "C0037",
+    "iban": "RO84RZBR5269326210176446",
+    "moneda": "RON",
+    "sold_curent": 279.94,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 2252.44,
+        "sold_minim": 0.0,
+        "intrari": 4116.57,
+        "iesiri": 8169.97
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 181.59,
+        "sold_minim": 0.0,
+        "intrari": 3393.09,
+        "iesiri": 7652.68
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 158.74,
+        "sold_minim": 0.0,
+        "intrari": 3782.05,
+        "iesiri": 8023.2
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 255.36,
+        "sold_minim": 0.0,
+        "intrari": 4275.46,
+        "iesiri": 6813.73
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 236.99,
+        "sold_minim": 0.0,
+        "intrari": 6554.49,
+        "iesiri": 9399.45
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 125.15,
+        "sold_minim": 0.0,
+        "intrari": 5497.92,
+        "iesiri": 8201.66
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 183.24,
+        "sold_minim": 0.0,
+        "intrari": 6818.64,
+        "iesiri": 8067.66
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 262.05,
+        "sold_minim": 0.0,
+        "intrari": 3034.57,
+        "iesiri": 9023.0
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 184.18,
+        "sold_minim": 0.0,
+        "intrari": 4975.56,
+        "iesiri": 8060.88
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 246.7,
+        "sold_minim": 0.0,
+        "intrari": 5714.44,
+        "iesiri": 8484.81
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 356.43,
+        "sold_minim": 0.0,
+        "intrari": 5879.9,
+        "iesiri": 7729.84
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 301.57,
+        "sold_minim": 0.0,
+        "intrari": 4758.36,
+        "iesiri": 7212.38
+      }
+    ]
+  },
+  {
+    "client_id": "C0038",
+    "iban": "RO41RZBR2359378751764227",
+    "moneda": "RON",
+    "sold_curent": 26318.12,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 22883.58,
+        "sold_minim": 17228.77,
+        "intrari": 13476.16,
+        "iesiri": 3610.91
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 28797.29,
+        "sold_minim": 26801.72,
+        "intrari": 12473.87,
+        "iesiri": 5072.45
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 27470.11,
+        "sold_minim": 24217.09,
+        "intrari": 10738.87,
+        "iesiri": 4723.8
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 26772.21,
+        "sold_minim": 24070.89,
+        "intrari": 11155.36,
+        "iesiri": 5454.81
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 27385.15,
+        "sold_minim": 25431.03,
+        "intrari": 10797.8,
+        "iesiri": 4783.5
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 26565.0,
+        "sold_minim": 25464.11,
+        "intrari": 10165.32,
+        "iesiri": 4618.12
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 26489.92,
+        "sold_minim": 25416.72,
+        "intrari": 7957.74,
+        "iesiri": 4104.31
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 28066.24,
+        "sold_minim": 25067.65,
+        "intrari": 11388.74,
+        "iesiri": 5849.66
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 28682.38,
+        "sold_minim": 26562.52,
+        "intrari": 7743.49,
+        "iesiri": 4536.79
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 27786.73,
+        "sold_minim": 26249.87,
+        "intrari": 6733.73,
+        "iesiri": 6100.02
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 26676.33,
+        "sold_minim": 24546.21,
+        "intrari": 6388.85,
+        "iesiri": 3514.4
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 25783.6,
+        "sold_minim": 24523.99,
+        "intrari": 11198.05,
+        "iesiri": 3625.47
+      }
+    ]
+  },
+  {
+    "client_id": "C0039",
+    "iban": "RO67RZBR7168006592465726",
+    "moneda": "RON",
+    "sold_curent": 375.7,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 2124.22,
+        "sold_minim": 152.42,
+        "intrari": 2590.49,
+        "iesiri": 4667.2
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 737.68,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 3801.71
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 256.54,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 5290.19
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 223.43,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 4433.86
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 265.7,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 4122.22
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 131.7,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 5239.51
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 184.77,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 3417.96
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 346.2,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 3106.71
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 366.82,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 3551.83
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 245.32,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 3180.06
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 134.44,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 5098.79
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 254.73,
+        "sold_minim": 0.0,
+        "intrari": 2590.49,
+        "iesiri": 5022.25
+      }
+    ]
+  },
+  {
+    "client_id": "C0040",
+    "iban": "RO17RZBR9292861750804530",
+    "moneda": "RON",
+    "sold_curent": 9415.99,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 9728.04,
+        "sold_minim": 8212.41,
+        "intrari": 6302.91,
+        "iesiri": 6667.27
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 10020.48,
+        "sold_minim": 8623.45,
+        "intrari": 5561.27,
+        "iesiri": 4612.04
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 10014.7,
+        "sold_minim": 8587.23,
+        "intrari": 3774.62,
+        "iesiri": 4735.4
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 10571.52,
+        "sold_minim": 8605.08,
+        "intrari": 6720.56,
+        "iesiri": 4646.14
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 12910.28,
+        "sold_minim": 10733.52,
+        "intrari": 6979.13,
+        "iesiri": 4376.04
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 13213.96,
+        "sold_minim": 11236.27,
+        "intrari": 2903.37,
+        "iesiri": 4899.1
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 12191.74,
+        "sold_minim": 11103.02,
+        "intrari": 5273.17,
+        "iesiri": 5321.87
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 11153.58,
+        "sold_minim": 9140.94,
+        "intrari": 2966.54,
+        "iesiri": 4994.16
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 10086.56,
+        "sold_minim": 8677.56,
+        "intrari": 6672.53,
+        "iesiri": 6778.95
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 10239.21,
+        "sold_minim": 9045.52,
+        "intrari": 5350.86,
+        "iesiri": 4939.14
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 9532.09,
+        "sold_minim": 7230.81,
+        "intrari": 5115.55,
+        "iesiri": 6941.51
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 9017.55,
+        "sold_minim": 7677.55,
+        "intrari": 5504.7,
+        "iesiri": 4707.82
+      }
+    ]
+  },
+  {
+    "client_id": "C0041",
+    "iban": "RO26RZBR9070233605495170",
+    "moneda": "RON",
+    "sold_curent": 29960.33,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 16343.38,
+        "sold_minim": 12994.94,
+        "intrari": 10348.71,
+        "iesiri": 6086.37
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 21481.15,
+        "sold_minim": 17657.53,
+        "intrari": 10098.3,
+        "iesiri": 4085.1
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 27471.69,
+        "sold_minim": 23684.78,
+        "intrari": 9982.74,
+        "iesiri": 4014.85
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 30480.89,
+        "sold_minim": 29250.35,
+        "intrari": 10310.68,
+        "iesiri": 6026.46
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 27839.91,
+        "sold_minim": 24199.14,
+        "intrari": 10264.71,
+        "iesiri": 4872.72
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 27610.8,
+        "sold_minim": 24130.61,
+        "intrari": 10089.58,
+        "iesiri": 5215.34
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 27580.16,
+        "sold_minim": 24388.32,
+        "intrari": 10125.45,
+        "iesiri": 3620.39
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 27170.31,
+        "sold_minim": 23878.19,
+        "intrari": 10286.85,
+        "iesiri": 6171.03
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 29703.9,
+        "sold_minim": 28332.98,
+        "intrari": 10216.86,
+        "iesiri": 4476.2
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 28393.79,
+        "sold_minim": 25842.23,
+        "intrari": 10081.5,
+        "iesiri": 3828.77
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 27864.3,
+        "sold_minim": 25711.39,
+        "intrari": 10165.55,
+        "iesiri": 4482.98
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 29540.47,
+        "sold_minim": 27997.07,
+        "intrari": 10316.38,
+        "iesiri": 5617.7
+      }
+    ]
+  },
+  {
+    "client_id": "C0042",
+    "iban": "RO86RZBR8012733629839708",
+    "moneda": "RON",
+    "sold_curent": 29629.69,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 25167.54,
+        "sold_minim": 19932.18,
+        "intrari": 12459.54,
+        "iesiri": 3314.71
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 31773.15,
+        "sold_minim": 28758.99,
+        "intrari": 10045.92,
+        "iesiri": 4904.8
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 31845.57,
+        "sold_minim": 28965.28,
+        "intrari": 12317.71,
+        "iesiri": 4597.59
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 30424.13,
+        "sold_minim": 29195.5,
+        "intrari": 10522.41,
+        "iesiri": 3446.52
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 32401.85,
+        "sold_minim": 30350.66,
+        "intrari": 11418.16,
+        "iesiri": 3063.95
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 33037.24,
+        "sold_minim": 31337.21,
+        "intrari": 9156.07,
+        "iesiri": 4485.14
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 32165.82,
+        "sold_minim": 31526.7,
+        "intrari": 8349.76,
+        "iesiri": 2853.5
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 30466.73,
+        "sold_minim": 28126.78,
+        "intrari": 12150.64,
+        "iesiri": 3546.38
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 30590.02,
+        "sold_minim": 28129.03,
+        "intrari": 10657.4,
+        "iesiri": 3535.15
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 30533.13,
+        "sold_minim": 27680.26,
+        "intrari": 8800.84,
+        "iesiri": 5210.06
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 30265.94,
+        "sold_minim": 27891.48,
+        "intrari": 16154.12,
+        "iesiri": 4153.94
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 30719.66,
+        "sold_minim": 28977.71,
+        "intrari": 14917.62,
+        "iesiri": 3259.93
+      }
+    ]
+  },
+  {
+    "client_id": "C0043",
+    "iban": "RO38RZBR1937549267652270",
+    "moneda": "RON",
+    "sold_curent": 94.71,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 23146.85,
+        "sold_minim": 19106.23,
+        "intrari": 12057.2,
+        "iesiri": 6626.6
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 29111.94,
+        "sold_minim": 24775.27,
+        "intrari": 11933.99,
+        "iesiri": 5434.42
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 33628.79,
+        "sold_minim": 31202.76,
+        "intrari": 12027.03,
+        "iesiri": 5794.84
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 33062.1,
+        "sold_minim": 29998.29,
+        "intrari": 12071.43,
+        "iesiri": 6150.22
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 31939.84,
+        "sold_minim": 30188.43,
+        "intrari": 12029.83,
+        "iesiri": 5199.56
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 32807.96,
+        "sold_minim": 31675.73,
+        "intrari": 12100.22,
+        "iesiri": 4878.09
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 31175.69,
+        "sold_minim": 28210.97,
+        "intrari": 12240.83,
+        "iesiri": 5879.19
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 32517.72,
+        "sold_minim": 28240.62,
+        "intrari": 11992.74,
+        "iesiri": 5730.92
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 33948.83,
+        "sold_minim": 31036.1,
+        "intrari": 12253.13,
+        "iesiri": 6064.68
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 34010.66,
+        "sold_minim": 31321.34,
+        "intrari": 11776.85,
+        "iesiri": 4638.46
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 17908.02,
+        "sold_minim": 0.0,
+        "intrari": 11908.56,
+        "iesiri": 6261.37
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 69.24,
+        "sold_minim": 0.0,
+        "intrari": 12028.55,
+        "iesiri": 6241.09
+      }
+    ]
+  },
+  {
+    "client_id": "C0044",
+    "iban": "RO13RZBR8173690480374824",
+    "moneda": "RON",
+    "sold_curent": 19.21,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 12193.68,
+        "sold_minim": 11122.4,
+        "intrari": 3430.78,
+        "iesiri": 3980.96
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 10504.62,
+        "sold_minim": 8317.66,
+        "intrari": 1037.02,
+        "iesiri": 3864.96
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 16475.48,
+        "sold_minim": 8127.11,
+        "intrari": 32719.03,
+        "iesiri": 4817.71
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 22280.35,
+        "sold_minim": 19602.15,
+        "intrari": 2331.43,
+        "iesiri": 5491.32
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 19217.15,
+        "sold_minim": 16676.65,
+        "intrari": 2319.73,
+        "iesiri": 5286.24
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 20874.32,
+        "sold_minim": 17005.41,
+        "intrari": 18365.71,
+        "iesiri": 3642.47
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 22424.61,
+        "sold_minim": 19867.73,
+        "intrari": 1653.53,
+        "iesiri": 4833.78
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 19740.15,
+        "sold_minim": 17660.34,
+        "intrari": 2738.71,
+        "iesiri": 4927.38
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 22026.14,
+        "sold_minim": 17853.17,
+        "intrari": 24565.48,
+        "iesiri": 3963.26
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 24674.49,
+        "sold_minim": 23185.49,
+        "intrari": 2321.32,
+        "iesiri": 3785.24
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 11992.41,
+        "sold_minim": 0.0,
+        "intrari": 3297.93,
+        "iesiri": 4589.73
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 30.75,
+        "sold_minim": 0.0,
+        "intrari": 22870.19,
+        "iesiri": 6078.92
+      }
+    ]
+  },
+  {
+    "client_id": "C0045",
+    "iban": "RO91RZBR1450956372630027",
+    "moneda": "RON",
+    "sold_curent": 3740.74,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 1863.28,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 4317.99
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 252.71,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 4721.74
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 229.55,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 5025.53
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 177.92,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 5219.06
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 177.96,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 5983.15
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 161.37,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 6604.99
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 108.77,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 4862.23
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 193.47,
+        "sold_minim": 0.0,
+        "intrari": 0.0,
+        "iesiri": 4781.11
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 714.36,
+        "sold_minim": 0.0,
+        "intrari": 5953.23,
+        "iesiri": 5145.41
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 1368.54,
+        "sold_minim": 29.16,
+        "intrari": 5946.1,
+        "iesiri": 5445.55
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 2251.7,
+        "sold_minim": 695.71,
+        "intrari": 5881.3,
+        "iesiri": 4615.53
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 3312.66,
+        "sold_minim": 1880.53,
+        "intrari": 5876.41,
+        "iesiri": 5020.26
+      }
+    ]
+  },
+  {
+    "client_id": "C0046",
+    "iban": "RO52RZBR7583447872972592",
+    "moneda": "RON",
+    "sold_curent": 4195.68,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 7911.9,
+        "sold_minim": 5966.44,
+        "intrari": 3544.41,
+        "iesiri": 5310.96
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 7603.39,
+        "sold_minim": 6266.76,
+        "intrari": 4958.89,
+        "iesiri": 3809.37
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 7971.99,
+        "sold_minim": 6832.66,
+        "intrari": 4253.51,
+        "iesiri": 4665.83
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 7794.81,
+        "sold_minim": 6823.38,
+        "intrari": 4770.21,
+        "iesiri": 4712.24
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 7002.65,
+        "sold_minim": 4991.28,
+        "intrari": 4308.8,
+        "iesiri": 5951.1
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 5577.81,
+        "sold_minim": 4024.6,
+        "intrari": 3540.26,
+        "iesiri": 4747.63
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 5435.85,
+        "sold_minim": 4213.87,
+        "intrari": 4724.72,
+        "iesiri": 3801.28
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 5732.28,
+        "sold_minim": 4595.04,
+        "intrari": 4529.16,
+        "iesiri": 4859.74
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 5074.82,
+        "sold_minim": 3467.2,
+        "intrari": 4592.99,
+        "iesiri": 5577.32
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 4767.1,
+        "sold_minim": 3735.52,
+        "intrari": 4604.59,
+        "iesiri": 4235.7
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 4718.92,
+        "sold_minim": 3593.21,
+        "intrari": 4000.16,
+        "iesiri": 4465.42
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 4340.98,
+        "sold_minim": 3362.68,
+        "intrari": 3874.38,
+        "iesiri": 4164.99
+      }
+    ]
+  },
+  {
+    "client_id": "C0047",
+    "iban": "RO62RZBR3924435812620089",
+    "moneda": "RON",
+    "sold_curent": 19029.13,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 16250.25,
+        "sold_minim": 13653.82,
+        "intrari": 6651.42,
+        "iesiri": 2430.94
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 18248.97,
+        "sold_minim": 17542.56,
+        "intrari": 6630.01,
+        "iesiri": 2974.47
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 18181.36,
+        "sold_minim": 17606.33,
+        "intrari": 6616.72,
+        "iesiri": 2655.61
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 17140.47,
+        "sold_minim": 15403.73,
+        "intrari": 6668.65,
+        "iesiri": 3259.78
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 16987.45,
+        "sold_minim": 15513.89,
+        "intrari": 6739.58,
+        "iesiri": 2708.98
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 18808.9,
+        "sold_minim": 17294.17,
+        "intrari": 6706.54,
+        "iesiri": 3125.2
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 18790.99,
+        "sold_minim": 17329.71,
+        "intrari": 6719.85,
+        "iesiri": 2768.38
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 17115.03,
+        "sold_minim": 15849.96,
+        "intrari": 6758.77,
+        "iesiri": 2483.62
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 18132.82,
+        "sold_minim": 15702.65,
+        "intrari": 6792.44,
+        "iesiri": 3220.16
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 19634.46,
+        "sold_minim": 18869.5,
+        "intrari": 6631.43,
+        "iesiri": 2402.27
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 18510.21,
+        "sold_minim": 17220.1,
+        "intrari": 6663.2,
+        "iesiri": 2251.83
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 18349.8,
+        "sold_minim": 16960.05,
+        "intrari": 6664.26,
+        "iesiri": 3552.08
+      }
+    ]
+  },
+  {
+    "client_id": "C0048",
+    "iban": "RO22RZBR1440757557800368",
+    "moneda": "RON",
+    "sold_curent": 11146.75,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 7336.97,
+        "sold_minim": 5868.43,
+        "intrari": 3984.38,
+        "iesiri": 1745.5
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 9278.24,
+        "sold_minim": 7988.27,
+        "intrari": 3984.38,
+        "iesiri": 2340.73
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 10490.57,
+        "sold_minim": 9822.59,
+        "intrari": 3984.38,
+        "iesiri": 1387.35
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 10858.59,
+        "sold_minim": 10030.25,
+        "intrari": 3984.38,
+        "iesiri": 4029.34
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 11046.73,
+        "sold_minim": 10287.56,
+        "intrari": 3984.38,
+        "iesiri": 2742.79
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 11595.42,
+        "sold_minim": 10595.7,
+        "intrari": 3984.38,
+        "iesiri": 3308.24
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 11923.91,
+        "sold_minim": 11469.71,
+        "intrari": 3984.38,
+        "iesiri": 2223.09
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 11916.89,
+        "sold_minim": 11390.12,
+        "intrari": 3984.38,
+        "iesiri": 2621.06
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 11540.55,
+        "sold_minim": 10681.62,
+        "intrari": 3984.38,
+        "iesiri": 2400.14
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 10820.71,
+        "sold_minim": 9546.53,
+        "intrari": 3984.38,
+        "iesiri": 4666.25
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 10115.24,
+        "sold_minim": 8808.02,
+        "intrari": 3984.38,
+        "iesiri": 4713.45
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 10448.73,
+        "sold_minim": 9412.68,
+        "intrari": 3984.38,
+        "iesiri": 1690.16
+      }
+    ]
+  },
+  {
+    "client_id": "C0049",
+    "iban": "RO44RZBR5517185357001666",
+    "moneda": "RON",
+    "sold_curent": 279.3,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 815.65,
+        "sold_minim": 0.0,
+        "intrari": 2063.04,
+        "iesiri": 5659.18
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 244.47,
+        "sold_minim": 0.0,
+        "intrari": 1912.0,
+        "iesiri": 4318.92
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 272.34,
+        "sold_minim": 0.0,
+        "intrari": 1669.27,
+        "iesiri": 4791.96
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 339.82,
+        "sold_minim": 0.0,
+        "intrari": 2245.53,
+        "iesiri": 4444.68
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 357.47,
+        "sold_minim": 0.0,
+        "intrari": 1578.21,
+        "iesiri": 5030.89
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 381.41,
+        "sold_minim": 0.0,
+        "intrari": 2286.91,
+        "iesiri": 4653.21
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 289.29,
+        "sold_minim": 0.0,
+        "intrari": 1602.69,
+        "iesiri": 4394.43
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 159.35,
+        "sold_minim": 0.0,
+        "intrari": 2366.36,
+        "iesiri": 3505.73
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 193.75,
+        "sold_minim": 0.0,
+        "intrari": 1025.51,
+        "iesiri": 4041.0
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 321.23,
+        "sold_minim": 0.0,
+        "intrari": 2320.56,
+        "iesiri": 3775.58
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 366.83,
+        "sold_minim": 0.0,
+        "intrari": 1781.92,
+        "iesiri": 4978.63
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 319.87,
+        "sold_minim": 0.0,
+        "intrari": 1216.58,
+        "iesiri": 4135.05
+      }
+    ]
+  },
+  {
+    "client_id": "C0050",
+    "iban": "RO55RZBR6724529888041007",
+    "moneda": "RON",
+    "sold_curent": 29927.17,
+    "istoric_lunar": [
+      {
+        "luna": "2025-11",
+        "sold_mediu": 22761.94,
+        "sold_minim": 17457.19,
+        "intrari": 13547.11,
+        "iesiri": 4896.04
+      },
+      {
+        "luna": "2025-12",
+        "sold_mediu": 26672.95,
+        "sold_minim": 25489.01,
+        "intrari": 8275.67,
+        "iesiri": 3847.06
+      },
+      {
+        "luna": "2026-01",
+        "sold_mediu": 28109.16,
+        "sold_minim": 25586.92,
+        "intrari": 7059.0,
+        "iesiri": 3357.52
+      },
+      {
+        "luna": "2026-02",
+        "sold_mediu": 27735.09,
+        "sold_minim": 24841.25,
+        "intrari": 9125.3,
+        "iesiri": 3345.17
+      },
+      {
+        "luna": "2026-03",
+        "sold_mediu": 26294.69,
+        "sold_minim": 24643.41,
+        "intrari": 11490.37,
+        "iesiri": 4334.38
+      },
+      {
+        "luna": "2026-04",
+        "sold_mediu": 26069.86,
+        "sold_minim": 24251.82,
+        "intrari": 9543.24,
+        "iesiri": 4044.0
+      },
+      {
+        "luna": "2026-05",
+        "sold_mediu": 26684.48,
+        "sold_minim": 24195.67,
+        "intrari": 7572.47,
+        "iesiri": 4324.75
+      },
+      {
+        "luna": "2026-06",
+        "sold_mediu": 28625.63,
+        "sold_minim": 27728.65,
+        "intrari": 6425.51,
+        "iesiri": 2898.45
+      },
+      {
+        "luna": "2026-07",
+        "sold_mediu": 29108.36,
+        "sold_minim": 27915.92,
+        "intrari": 13771.54,
+        "iesiri": 5135.02
+      },
+      {
+        "luna": "2026-08",
+        "sold_mediu": 29063.43,
+        "sold_minim": 28203.34,
+        "intrari": 13147.85,
+        "iesiri": 3248.6
+      },
+      {
+        "luna": "2026-09",
+        "sold_mediu": 28052.14,
+        "sold_minim": 26579.6,
+        "intrari": 13624.89,
+        "iesiri": 3358.06
+      },
+      {
+        "luna": "2026-10",
+        "sold_mediu": 28589.19,
+        "sold_minim": 26347.18,
+        "intrari": 8904.94,
+        "iesiri": 4520.19
+      }
+    ]
+  }
+]

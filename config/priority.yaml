@@ -1,0 +1,76 @@
+# Ponderi, benzi, SLA și reguli de rutare. Valori implicite — de validat cu mentorul.
+# Orice schimbare aici modifică output-ul fără modificări de cod.
+
+ponderi_plecare:
+  expirare_dobanda_fixa: 0.35
+  gap_piata_bani: 0.25
+  cerere_adeverinta_sold: 0.15      # semnal activ
+  rata_alt_creditor: 0.10
+  salariu_mutat: 0.05
+  eligibilitate_externa: 0.05
+  vechime_credit: 0.03
+  sold_ramas: 0.02
+
+bonus_plecare:                       # se adaugă peste suma ponderată, plafonat la 1.0
+  simulare_in_app: 0.05
+
+valoare:
+  venit_viitor: 0.6        # marja × sold × ani_ramasi, normalizat la max portofoliu
+  produse_atasate: 0.4     # nr produse / 4, plafonat la 1
+  produse_max: 4
+
+actiune:
+  oferta_in_grila: 1.0     # există buget de retenție pentru nivel_relatie și gap acoperibil
+  partial: 0.5
+  imposibil: 0.0
+
+# Cât e oferta băncii din grilă peste dobânda pieței (pp). Diferența trebuie acoperită din bugetul de retenție.
+# necesar ≤ buget → oferta_in_grila; necesar ≤ buget × multiplicator_partial → partial; altfel imposibil.
+grila_retentie:
+  spread_peste_piata_pp:
+    ipotecar: 0.2
+    imobiliar: 0.2
+    refinantare: 0.3
+    nevoi_personale: 0.3
+    card_credit: 0.5
+  multiplicator_partial: 2.0
+
+risc_credit:
+  agregare: max            # scorul familiei = max(semnale), nu sumă
+  blocheaza_retentia_daca: 0.7
+
+buget_retentie_pp: { standard: 0.2, gold: 0.4, platinum: 0.6 }
+
+benzi:
+  P1: { prioritate_min: 0.6, sau_risc_credit_min: 0.7, sau_semnal_activ: true, sla_zile: 1 }
+  P2: { prioritate_min: 0.3, sla_zile: 5 }
+  P3: { prioritate_min: 0.0, sla_zile: 20 }
+
+# „Semnal activ” pentru P1: semnalul are cel puțin scorul indicat (expirare ≤ 30 zile = 1.0).
+semnale_active:
+  cerere_adeverinta_sold: 1.0
+  expirare_dobanda_fixa: 1.0
+  salariu_mutat: 1.0          # confirmat: salariul vine la altă bancă, ratele se plătesc de acolo
+
+blocaj:
+  activ_de_la: 1.0          # scor minim ca un blocaj să oprească fluxul (0.5 = doar avertizare)
+  ordine: [flag_blocant, ci_expirata, consimtamant_lipsa, kyc_vechi, asigurare_expirata]
+
+# Cererile explicite ale clienților. actiune: null = cererea doar alimentează semnale (nu are acțiune proprie).
+cereri:
+  credit_nou: { actiune: procesare_cerere, prioritate_min: 0.5 }
+  majorare_limita_card: { actiune: procesare_cerere, prioritate_min: 0.5 }
+  restructurare: { actiune: procesare_cerere, prioritate_min: 0.0 }
+  actualizare_date: { actiune: procesare_cerere, prioritate_min: 0.0 }
+  adeverinta_sold: { actiune: null, prioritate_min: 0.0 }
+  refinantare: { actiune: null, prioritate_min: 0.0 }
+  simulare_rambursare_anticipata: { actiune: null, prioritate_min: 0.0 }
+
+rutare:
+  retentie_min: 0.3                 # prioritate_retentie ≥ prag → retentie_refinantare
+  retentie_la_semnal_activ: true    # un semnal activ de plecare (fără risc/blocaj) → retentie_refinantare
+  informare_expirare_min: 0.8       # expirare ≥ prag și actiune imposibilă → informare_client
+  actiune_implicita: monitorizare
+
+deadline:
+  informare_inainte_de_expirare_zile: 30

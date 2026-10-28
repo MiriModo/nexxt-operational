@@ -1,0 +1,98 @@
+[
+  {
+    "request_id": "R0001",
+    "client_id": "C0003",
+    "data": "2026-10-19",
+    "tip": "adeverinta_sold",
+    "detalii": {
+      "produs_vizat": "ipotecar"
+    }
+  },
+  {
+    "request_id": "R0002",
+    "client_id": "C0004",
+    "data": "2026-10-22",
+    "tip": "simulare_rambursare_anticipata",
+    "detalii": {
+      "produs_vizat": "nevoi_personale",
+      "suma": 12000
+    }
+  },
+  {
+    "request_id": "R0003",
+    "client_id": "C0016",
+    "data": "2026-10-08",
+    "tip": "adeverinta_sold",
+    "detalii": {
+      "produs_vizat": "ipotecar"
+    }
+  },
+  {
+    "request_id": "R0004",
+    "client_id": "C0017",
+    "data": "2026-10-23",
+    "tip": "refinantare",
+    "detalii": {
+      "produs_vizat": "nevoi_personale",
+      "suma": 35000
+    }
+  },
+  {
+    "request_id": "R0005",
+    "client_id": "C0020",
+    "data": "2026-10-25",
+    "tip": "restructurare",
+    "detalii": {
+      "produs_vizat": "nevoi_personale"
+    }
+  },
+  {
+    "request_id": "R0006",
+    "client_id": "C0045",
+    "data": "2026-10-26",
+    "tip": "credit_nou",
+    "detalii": {
+      "produs_vizat": "nevoi_personale",
+      "suma": 30000
+    }
+  },
+  {
+    "request_id": "R0007",
+    "client_id": "C0046",
+    "data": "2026-10-24",
+    "tip": "credit_nou",
+    "detalii": {
+      "produs_vizat": "nevoi_personale",
+      "suma": 50000
+    }
+  },
+  {
+    "request_id": "R0008",
+    "client_id": "C0047",
+    "data": "2026-10-27",
+    "tip": "majorare_limita_card",
+    "detalii": {
+      "produs_vizat": "card_credit",
+      "suma": 5000
+    }
+  },
+  {
+    "request_id": "R0009",
+    "client_id": "C0048",
+    "data": "2026-10-25",
+    "tip": "actualizare_date",
+    "detalii": {
+      "produs_vizat": null
+    }
+  },
+  {
+    "request_id": "R0010",
+    "client_id": "C0049",
+    "data": "2026-10-21",
+    "tip": "simulare_rambursare_anticipata",
+    "detalii": {
+      "produs_vizat": "ipotecar",
+      "suma": 20000
+    }
+  }
+]

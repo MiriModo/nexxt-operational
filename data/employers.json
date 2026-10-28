@@ -1,0 +1,121 @@
+[
+  {
+    "angajator_id": "F0001",
+    "nume": "ALFA LOGISTIC SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0002",
+    "nume": "DELTA SOFTWARE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.04
+  },
+  {
+    "angajator_id": "F0003",
+    "nume": "CARPATI ENERGY SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0004",
+    "nume": "NOVA RETAIL SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.08
+  },
+  {
+    "angajator_id": "F0005",
+    "nume": "DUNAREA CONSTRUCT SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.09
+  },
+  {
+    "angajator_id": "F0006",
+    "nume": "ORION MEDICAL SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.03
+  },
+  {
+    "angajator_id": "F0007",
+    "nume": "VEST AUTOMOTIVE SA",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.05
+  },
+  {
+    "angajator_id": "F0008",
+    "nume": "BUCOVINA FOODS SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.04
+  },
+  {
+    "angajator_id": "F0009",
+    "nume": "TRANSILVANIA TEXTILE SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0010",
+    "nume": "LITORAL SERVICES SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.1
+  },
+  {
+    "angajator_id": "F0011",
+    "nume": "EST AGRO SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.07
+  },
+  {
+    "angajator_id": "F0012",
+    "nume": "PRIMA CONSULTING SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.06
+  },
+  {
+    "angajator_id": "F0013",
+    "nume": "SIGMA PHARMA SRL",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.02
+  },
+  {
+    "angajator_id": "F0014",
+    "nume": "OMEGA TELECOM SRL",
+    "client_al_bancii": true,
+    "status": "activ",
+    "trend_plati_salarii_3l": -0.08
+  },
+  {
+    "angajator_id": "F0015",
+    "nume": "ARGES METAL SA",
+    "client_al_bancii": false,
+    "status": "activ",
+    "trend_plati_salarii_3l": 0.05
+  },
+  {
+    "angajator_id": "F0016",
+    "nume": "MUNTENIA DISTRIBUTIE SRL",
+    "client_al_bancii": false,
+    "status": "insolventa",
+    "trend_plati_salarii_3l": -0.35
+  },
+  {
+    "angajator_id": "F0017",
+    "nume": "CRISUL TECH SRL",
+    "client_al_bancii": true,
+    "status": "dizolvare",
+    "trend_plati_salarii_3l": -0.35
+  }
+]

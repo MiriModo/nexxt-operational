@@ -1,0 +1,801 @@
+[
+  {
+    "client_id": "C0001",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "oferta_minima",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "fixă care expiră în 15 zile, gap mare, client gold cu salariul la noi",
+    "comportament": {
+      "prag_castig_plecare_ron": 10500.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0002",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa",
+      "intarziere_noua"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "capcana a: expirare + întârziere → restructurare, nicio ofertă de retenție",
+    "comportament": {
+      "prag_castig_plecare_ron": 6100.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0003",
+    "semnale_plantate": [
+      "cerere_adeverinta_sold",
+      "expirare_dobanda_fixa"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "oferta_minima",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "capcana e: cerere de adeverință pe un credit deja în coadă",
+    "comportament": {
+      "prag_castig_plecare_ron": 13900.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0004",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa",
+      "rata_alt_creditor",
+      "simulare_in_app"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "capcana b: sold mic, an rămas → câștigul plecării nu acoperă costul unei intervenții",
+    "comportament": {
+      "prag_castig_plecare_ron": 10800.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0005",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa",
+      "rata_alt_creditor"
+    ],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "respins_escaladat",
+    "verificare_picata_asteptata": "garantie",
+    "nota_model_final": "platinum, 750k; extrasul CF arată un litigiu notat → escaladat",
+    "comportament": {
+      "prag_castig_plecare_ron": 9500.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0006",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "nevoi personale 40k, gap mic după expirare",
+    "comportament": {
+      "prag_castig_plecare_ron": 7700.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0007",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "oferta_minima",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "pensionar, imobiliar 150k, expiră în 120 zile",
+    "comportament": {
+      "prag_castig_plecare_ron": 26200.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0008",
+    "semnale_plantate": [
+      "expirare_dobanda_fixa"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "oferta_produs",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "salariul vine la altă bancă → pachet salariu la noi + reducere",
+    "comportament": {
+      "prag_castig_plecare_ron": 5700.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0009",
+    "semnale_plantate": [
+      "rata_alt_creditor"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "card + credit nou la alt creditor; nimic de reținut",
+    "comportament": {
+      "prag_castig_plecare_ron": 19900.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0010",
+    "semnale_plantate": [
+      "rata_alt_creditor"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "rată veche la alt creditor",
+    "comportament": {
+      "prag_castig_plecare_ron": 18600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0011",
+    "semnale_plantate": [
+      "rata_alt_creditor"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "rată veche la alt creditor",
+    "comportament": {
+      "prag_castig_plecare_ron": 9300.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0012",
+    "semnale_plantate": [
+      "salariu_mutat",
+      "venit_disparut"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "salariul nu mai vine; ANAF confirmă: nu mai are venit",
+    "comportament": {
+      "prag_castig_plecare_ron": 13000.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0013",
+    "semnale_plantate": [
+      "salariu_mutat"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "oferta_produs",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "salariul vine acum la altă bancă (ANAF: același angajator; ratele le acoperă prin transfer propriu) → risc de plecare, nu de credit. Legături rămase: gold, client din 2017, folosește contul și cardul → fidel → merită pachet salariu la noi + reducere",
+    "comportament": {
+      "prag_castig_plecare_ron": 21600.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0014",
+    "semnale_plantate": [
+      "salariu_mutat",
+      "venit_disparut"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "salariul nu mai vine; ANAF confirmă",
+    "comportament": {
+      "prag_castig_plecare_ron": 8600.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0015",
+    "semnale_plantate": [
+      "salariu_mutat",
+      "venit_disparut"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "salariul nu mai vine; ANAF confirmă",
+    "comportament": {
+      "prag_castig_plecare_ron": 27900.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0016",
+    "semnale_plantate": [
+      "cerere_adeverinta_sold"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "retentie_refinantare",
+    "recomandare_asteptata": "oferta_produs",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "platinum, adeverință de sold, salariul la altă bancă",
+    "comportament": {
+      "prag_castig_plecare_ron": 10600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0017",
+    "semnale_plantate": [
+      "cerere_adeverinta_sold",
+      "ci_expirata"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "task_ci_expirata",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "capcana d: CI expirată → doar task-ul, verificările așteaptă",
+    "comportament": {
+      "prag_castig_plecare_ron": 11400.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0018",
+    "semnale_plantate": [
+      "intarziere_noua"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 8800.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0019",
+    "semnale_plantate": [
+      "intarziere_noua"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 8200.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0020",
+    "semnale_plantate": [
+      "intarziere_noua"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "cere el restructurare",
+    "comportament": {
+      "prag_castig_plecare_ron": 31900.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0021",
+    "semnale_plantate": [
+      "venit_in_scadere"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "venit în scădere; e și codebitor pe ipotecarul clientului 1",
+    "comportament": {
+      "prag_castig_plecare_ron": 9100.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0022",
+    "semnale_plantate": [
+      "venit_in_scadere"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 25100.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0023",
+    "semnale_plantate": [
+      "venit_in_scadere"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 8900.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0024",
+    "semnale_plantate": [
+      "venit_in_scadere"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 11700.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0025",
+    "semnale_plantate": [
+      "card_stres"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 3700.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0026",
+    "semnale_plantate": [
+      "card_stres"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 11800.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0027",
+    "semnale_plantate": [
+      "card_stres"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "pensionar: prelungirea maturității încalcă limita de vârstă → doar pauză de rată",
+    "comportament": {
+      "prag_castig_plecare_ron": 5500.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0028",
+    "semnale_plantate": [
+      "angajator_in_dificultate"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 18500.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0029",
+    "semnale_plantate": [
+      "angajator_in_dificultate"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 18800.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0030",
+    "semnale_plantate": [
+      "ci_expirata"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_ci_expirata",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 11600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0031",
+    "semnale_plantate": [
+      "ci_expirata"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_ci_expirata",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 6700.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0032",
+    "semnale_plantate": [
+      "consimtamant_lipsa"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_consimtamant_lipsa",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 5600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0033",
+    "semnale_plantate": [
+      "consimtamant_lipsa"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_consimtamant_lipsa",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 8300.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0034",
+    "semnale_plantate": [
+      "asigurare_expirata"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_asigurare_expirata",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 9600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0035",
+    "semnale_plantate": [
+      "asigurare_expirata"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_asigurare_expirata",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 17500.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0036",
+    "semnale_plantate": [
+      "flag_blocant"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_flag_blocant",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "PEP",
+    "comportament": {
+      "prag_castig_plecare_ron": 6100.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0037",
+    "semnale_plantate": [
+      "ltv_depasit"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "LTV depășit; reevaluarea confirmă",
+    "comportament": {
+      "prag_castig_plecare_ron": 5200.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0038",
+    "semnale_plantate": [
+      "ltv_depasit"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "LTV depășit; reevaluarea confirmă",
+    "comportament": {
+      "prag_castig_plecare_ron": 18300.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0039",
+    "semnale_plantate": [
+      "kyc_vechi"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_kyc_vechi",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 12700.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0040",
+    "semnale_plantate": [
+      "kyc_vechi"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "task_kyc_vechi",
+    "recomandare_asteptata": "blocat",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 15800.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0041",
+    "semnale_plantate": [
+      "restructurare_anterioara"
+    ],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "restructurare veche, fără risc activ",
+    "comportament": {
+      "prag_castig_plecare_ron": 20900.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0042",
+    "semnale_plantate": [
+      "restructurare_anterioara"
+    ],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "restructurare veche",
+    "comportament": {
+      "prag_castig_plecare_ron": 16900.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0043",
+    "semnale_plantate": [
+      "poprire_activa"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 13400.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0044",
+    "semnale_plantate": [
+      "poprire_activa"
+    ],
+    "banda_asteptata": "P1",
+    "actiune_asteptata": "restructurare_preventiva",
+    "recomandare_asteptata": "restructurare",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "",
+    "comportament": {
+      "prag_castig_plecare_ron": 16200.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0045",
+    "semnale_plantate": [],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "procesare_cerere",
+    "recomandare_asteptata": "oferta_minima",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "credit nou, tânăr fără istoric: eligibil la grila standard",
+    "comportament": {
+      "prag_castig_plecare_ron": 12400.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0046",
+    "semnale_plantate": [],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "procesare_cerere",
+    "recomandare_asteptata": "respins_escaladat",
+    "verificare_picata_asteptata": "biroul_credit",
+    "nota_model_final": "credit nou; BC: întârziere de 95 de zile la un IFN",
+    "comportament": {
+      "prag_castig_plecare_ron": 22700.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0047",
+    "semnale_plantate": [],
+    "banda_asteptata": "P2",
+    "actiune_asteptata": "procesare_cerere",
+    "recomandare_asteptata": "respins_escaladat",
+    "verificare_picata_asteptata": "crc",
+    "nota_model_final": "majorare card; CRC: garant pe un credit cu restanțe",
+    "comportament": {
+      "prag_castig_plecare_ron": 8500.0,
+      "reactioneaza_la_informare": true,
+      "accepta_pachet_salariu": null
+    }
+  },
+  {
+    "client_id": "C0048",
+    "semnale_plantate": [],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "procesare_cerere",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "actualizare date",
+    "comportament": {
+      "prag_castig_plecare_ron": 8600.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": false
+    }
+  },
+  {
+    "client_id": "C0049",
+    "semnale_plantate": [
+      "simulare_in_app"
+    ],
+    "banda_asteptata": "P3",
+    "actiune_asteptata": "monitorizare",
+    "recomandare_asteptata": "nu_interveni",
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "simulare rambursare anticipată pe variabilă (comision 0)",
+    "comportament": {
+      "prag_castig_plecare_ron": 6400.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  },
+  {
+    "client_id": "C0050",
+    "semnale_plantate": [],
+    "banda_asteptata": null,
+    "actiune_asteptata": null,
+    "recomandare_asteptata": null,
+    "verificare_picata_asteptata": null,
+    "nota_model_final": "capcana c: nu apare în coadă",
+    "comportament": {
+      "prag_castig_plecare_ron": 17200.0,
+      "reactioneaza_la_informare": false,
+      "accepta_pachet_salariu": true
+    }
+  }
+]

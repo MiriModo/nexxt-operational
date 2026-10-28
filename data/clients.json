@@ -1,0 +1,987 @@
+[
+  {
+    "client_id": "C0001",
+    "nume": "Diana Pop",
+    "data_nasterii": "1972-11-20",
+    "ci_expira_la": "2027-11-19",
+    "kyc_actualizat_la": "2026-02-07",
+    "nivel_relatie": "gold",
+    "client_din": "2014-07-19",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0015",
+    "produse_atasate": [
+      "cont_salariu",
+      "asigurare_viata",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0002",
+    "nume": "Oana Ciobanu",
+    "data_nasterii": "1970-02-08",
+    "ci_expira_la": "2034-03-25",
+    "kyc_actualizat_la": "2025-04-05",
+    "nivel_relatie": "standard",
+    "client_din": "2023-09-24",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0006",
+    "produse_atasate": [
+      "cont_salariu",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0003",
+    "nume": "George Stan",
+    "data_nasterii": "1998-07-19",
+    "ci_expira_la": "2028-11-21",
+    "kyc_actualizat_la": "2025-06-13",
+    "nivel_relatie": "gold",
+    "client_din": "2021-08-23",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0010",
+    "produse_atasate": [
+      "cont_salariu",
+      "asigurare_viata",
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0004",
+    "nume": "Radu Nistor",
+    "data_nasterii": "1969-05-06",
+    "ci_expira_la": "2031-12-13",
+    "kyc_actualizat_la": "2025-10-22",
+    "nivel_relatie": "standard",
+    "client_din": "2019-12-21",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0010",
+    "produse_atasate": [
+      "depozit"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0005",
+    "nume": "Stefan Moldovan",
+    "data_nasterii": "1985-10-24",
+    "ci_expira_la": "2030-07-04",
+    "kyc_actualizat_la": "2026-08-26",
+    "nivel_relatie": "platinum",
+    "client_din": "2015-07-17",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0012",
+    "produse_atasate": [
+      "cont_salariu",
+      "depozit",
+      "card_debit",
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0006",
+    "nume": "Irina Voicu",
+    "data_nasterii": "1996-07-28",
+    "ci_expira_la": "2033-03-31",
+    "kyc_actualizat_la": "2026-07-10",
+    "nivel_relatie": "standard",
+    "client_din": "2019-01-28",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0007",
+    "nume": "Maria Rusu",
+    "data_nasterii": "1960-04-02",
+    "ci_expira_la": "2030-03-18",
+    "kyc_actualizat_la": "2026-08-22",
+    "nivel_relatie": "standard",
+    "client_din": "2014-10-14",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "cont_curent"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0008",
+    "nume": "Maria Rusu",
+    "data_nasterii": "1970-11-22",
+    "ci_expira_la": "2028-11-14",
+    "kyc_actualizat_la": "2026-01-01",
+    "nivel_relatie": "gold",
+    "client_din": "2015-02-04",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0008",
+    "produse_atasate": [
+      "pensie_privata",
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0009",
+    "nume": "Elena Nistor",
+    "data_nasterii": "1980-01-18",
+    "ci_expira_la": "2027-05-28",
+    "kyc_actualizat_la": "2026-02-17",
+    "nivel_relatie": "standard",
+    "client_din": "2016-11-19",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0008",
+    "produse_atasate": [
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0010",
+    "nume": "George Ionescu",
+    "data_nasterii": "1970-12-19",
+    "ci_expira_la": "2033-06-17",
+    "kyc_actualizat_la": "2026-08-26",
+    "nivel_relatie": "standard",
+    "client_din": "2021-09-02",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "depozit"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0011",
+    "nume": "Radu Rusu",
+    "data_nasterii": "1988-08-20",
+    "ci_expira_la": "2029-07-23",
+    "kyc_actualizat_la": "2025-08-31",
+    "nivel_relatie": "gold",
+    "client_din": "2012-04-04",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "depozit",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "antreprenor"
+  },
+  {
+    "client_id": "C0012",
+    "nume": "Andrei Neagu",
+    "data_nasterii": "1993-08-12",
+    "ci_expira_la": "2028-09-10",
+    "kyc_actualizat_la": "2026-08-29",
+    "nivel_relatie": "standard",
+    "client_din": "2019-10-21",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0009",
+    "produse_atasate": [
+      "cont_salariu",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0013",
+    "nume": "Simona Preda",
+    "data_nasterii": "1987-03-06",
+    "ci_expira_la": "2033-09-26",
+    "kyc_actualizat_la": "2026-05-06",
+    "nivel_relatie": "gold",
+    "client_din": "2017-01-24",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0004",
+    "produse_atasate": [
+      "cont_salariu",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0014",
+    "nume": "Laura Matei",
+    "data_nasterii": "1969-05-12",
+    "ci_expira_la": "2029-12-04",
+    "kyc_actualizat_la": "2026-05-14",
+    "nivel_relatie": "standard",
+    "client_din": "2020-03-20",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0001",
+    "produse_atasate": [
+      "cont_salariu",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0015",
+    "nume": "Camelia Florea",
+    "data_nasterii": "1979-01-22",
+    "ci_expira_la": "2028-10-03",
+    "kyc_actualizat_la": "2025-03-17",
+    "nivel_relatie": "standard",
+    "client_din": "2020-10-15",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0002",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0016",
+    "nume": "Bogdan Voicu",
+    "data_nasterii": "1971-06-23",
+    "ci_expira_la": "2031-03-30",
+    "kyc_actualizat_la": "2026-05-16",
+    "nivel_relatie": "platinum",
+    "client_din": "2012-01-18",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0012",
+    "produse_atasate": [
+      "card_debit",
+      "asigurare_viata",
+      "cont_curent",
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0017",
+    "nume": "Catalin Pop",
+    "data_nasterii": "1983-08-11",
+    "ci_expira_la": "2026-09-18",
+    "kyc_actualizat_la": "2025-11-09",
+    "nivel_relatie": "standard",
+    "client_din": "2012-04-26",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0010",
+    "produse_atasate": [
+      "cont_salariu",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0018",
+    "nume": "Florin Barbu",
+    "data_nasterii": "1980-06-25",
+    "ci_expira_la": "2032-05-18",
+    "kyc_actualizat_la": "2026-04-16",
+    "nivel_relatie": "standard",
+    "client_din": "2022-08-15",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0012",
+    "produse_atasate": [
+      "cont_salariu",
+      "depozit"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0019",
+    "nume": "Alina Pop",
+    "data_nasterii": "1989-08-21",
+    "ci_expira_la": "2028-03-03",
+    "kyc_actualizat_la": "2026-07-09",
+    "nivel_relatie": "standard",
+    "client_din": "2021-11-17",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0003",
+    "produse_atasate": [
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0020",
+    "nume": "Florin Constantin",
+    "data_nasterii": "1974-11-17",
+    "ci_expira_la": "2034-04-29",
+    "kyc_actualizat_la": "2026-01-27",
+    "nivel_relatie": "standard",
+    "client_din": "2019-12-23",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "asigurare_viata",
+      "depozit"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0021",
+    "nume": "Ioana Marin",
+    "data_nasterii": "1977-11-12",
+    "ci_expira_la": "2033-01-26",
+    "kyc_actualizat_la": "2026-06-19",
+    "nivel_relatie": "standard",
+    "client_din": "2012-12-23",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0014",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0022",
+    "nume": "Simona Sandu",
+    "data_nasterii": "1968-08-24",
+    "ci_expira_la": "2031-08-15",
+    "kyc_actualizat_la": "2026-07-21",
+    "nivel_relatie": "gold",
+    "client_din": "2014-09-21",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0010",
+    "produse_atasate": [
+      "cont_salariu",
+      "depozit"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0023",
+    "nume": "Bogdan Marin",
+    "data_nasterii": "1995-11-27",
+    "ci_expira_la": "2028-12-05",
+    "kyc_actualizat_la": "2026-09-28",
+    "nivel_relatie": "standard",
+    "client_din": "2014-09-27",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0010",
+    "produse_atasate": [
+      "cont_salariu",
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0024",
+    "nume": "Ioana Preda",
+    "data_nasterii": "1986-11-25",
+    "ci_expira_la": "2034-10-11",
+    "kyc_actualizat_la": "2026-07-13",
+    "nivel_relatie": "standard",
+    "client_din": "2016-02-27",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0015",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0025",
+    "nume": "Cristian Toma",
+    "data_nasterii": "1991-02-08",
+    "ci_expira_la": "2033-12-06",
+    "kyc_actualizat_la": "2025-05-20",
+    "nivel_relatie": "standard",
+    "client_din": "2023-03-04",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "card_debit",
+      "depozit"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0026",
+    "nume": "Ionut Dobre",
+    "data_nasterii": "1982-07-07",
+    "ci_expira_la": "2031-10-30",
+    "kyc_actualizat_la": "2026-04-30",
+    "nivel_relatie": "standard",
+    "client_din": "2015-03-26",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0008",
+    "produse_atasate": [
+      "asigurare_viata",
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0027",
+    "nume": "Sorin Pop",
+    "data_nasterii": "1962-07-23",
+    "ci_expira_la": "2031-03-03",
+    "kyc_actualizat_la": "2026-03-07",
+    "nivel_relatie": "standard",
+    "client_din": "2016-09-07",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "card_debit"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0028",
+    "nume": "Diana Voicu",
+    "data_nasterii": "1991-02-19",
+    "ci_expira_la": "2030-01-15",
+    "kyc_actualizat_la": "2026-05-26",
+    "nivel_relatie": "standard",
+    "client_din": "2014-07-18",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0016",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0029",
+    "nume": "Oana Toma",
+    "data_nasterii": "1985-02-08",
+    "ci_expira_la": "2035-01-04",
+    "kyc_actualizat_la": "2026-05-27",
+    "nivel_relatie": "gold",
+    "client_din": "2019-02-04",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0017",
+    "produse_atasate": [
+      "cont_salariu",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0030",
+    "nume": "Catalin Moldovan",
+    "data_nasterii": "1962-08-26",
+    "ci_expira_la": "2026-09-18",
+    "kyc_actualizat_la": "2026-08-17",
+    "nivel_relatie": "standard",
+    "client_din": "2017-09-26",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "economii"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0031",
+    "nume": "Marius Ciobanu",
+    "data_nasterii": "1971-03-23",
+    "ci_expira_la": "2026-09-18",
+    "kyc_actualizat_la": "2026-03-15",
+    "nivel_relatie": "standard",
+    "client_din": "2012-05-12",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0001",
+    "produse_atasate": [
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0032",
+    "nume": "Roxana Ionescu",
+    "data_nasterii": "1973-04-03",
+    "ci_expira_la": "2033-11-11",
+    "kyc_actualizat_la": "2026-05-24",
+    "nivel_relatie": "standard",
+    "client_din": "2022-10-18",
+    "consimtamant_anaf": false,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "card_debit"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0033",
+    "nume": "Cristian Nistor",
+    "data_nasterii": "1974-08-24",
+    "ci_expira_la": "2032-03-06",
+    "kyc_actualizat_la": "2025-07-28",
+    "nivel_relatie": "standard",
+    "client_din": "2021-04-23",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": false,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0014",
+    "produse_atasate": [
+      "depozit"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0034",
+    "nume": "Andrei Marin",
+    "data_nasterii": "1991-02-22",
+    "ci_expira_la": "2029-10-27",
+    "kyc_actualizat_la": "2025-08-04",
+    "nivel_relatie": "standard",
+    "client_din": "2020-03-16",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0014",
+    "produse_atasate": [
+      "cont_salariu",
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0035",
+    "nume": "Diana Dinu",
+    "data_nasterii": "1955-08-16",
+    "ci_expira_la": "2035-01-06",
+    "kyc_actualizat_la": "2025-10-12",
+    "nivel_relatie": "standard",
+    "client_din": "2011-10-31",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "cont_curent"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0036",
+    "nume": "Radu Lungu",
+    "data_nasterii": "1989-10-05",
+    "ci_expira_la": "2031-12-01",
+    "kyc_actualizat_la": "2026-09-08",
+    "nivel_relatie": "gold",
+    "client_din": "2019-02-05",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": true,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "economii",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "antreprenor"
+  },
+  {
+    "client_id": "C0037",
+    "nume": "Vlad Dumitru",
+    "data_nasterii": "1994-11-09",
+    "ci_expira_la": "2029-05-31",
+    "kyc_actualizat_la": "2025-03-28",
+    "nivel_relatie": "standard",
+    "client_din": "2014-01-31",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0004",
+    "produse_atasate": [
+      "cont_curent",
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0038",
+    "nume": "Irina Matei",
+    "data_nasterii": "1987-03-16",
+    "ci_expira_la": "2029-06-27",
+    "kyc_actualizat_la": "2025-05-14",
+    "nivel_relatie": "standard",
+    "client_din": "2012-07-03",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "depozit"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0039",
+    "nume": "Bogdan Popescu",
+    "data_nasterii": "1958-07-17",
+    "ci_expira_la": "2028-10-27",
+    "kyc_actualizat_la": "2024-03-22",
+    "nivel_relatie": "standard",
+    "client_din": "2015-05-24",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "cont_curent"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0040",
+    "nume": "Adriana Dobre",
+    "data_nasterii": "1987-06-27",
+    "ci_expira_la": "2032-07-07",
+    "kyc_actualizat_la": "2024-03-22",
+    "nivel_relatie": "standard",
+    "client_din": "2018-09-07",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0009",
+    "produse_atasate": [
+      "economii"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0041",
+    "nume": "Gabriela Tudor",
+    "data_nasterii": "1984-03-20",
+    "ci_expira_la": "2030-07-26",
+    "kyc_actualizat_la": "2026-09-10",
+    "nivel_relatie": "standard",
+    "client_din": "2016-02-06",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0006",
+    "produse_atasate": [
+      "cont_salariu",
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0042",
+    "nume": "Stefan Barbu",
+    "data_nasterii": "1980-12-23",
+    "ci_expira_la": "2029-07-17",
+    "kyc_actualizat_la": "2025-09-07",
+    "nivel_relatie": "standard",
+    "client_din": "2016-02-28",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "pensie_privata"
+    ],
+    "tipologie_declarata": "independent"
+  },
+  {
+    "client_id": "C0043",
+    "nume": "George Stoica",
+    "data_nasterii": "1976-08-13",
+    "ci_expira_la": "2029-11-24",
+    "kyc_actualizat_la": "2026-03-06",
+    "nivel_relatie": "standard",
+    "client_din": "2014-12-01",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0003",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0044",
+    "nume": "Simona Cristea",
+    "data_nasterii": "1990-03-13",
+    "ci_expira_la": "2035-01-09",
+    "kyc_actualizat_la": "2025-12-22",
+    "nivel_relatie": "standard",
+    "client_din": "2022-10-18",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "card_debit",
+      "asigurare_viata"
+    ],
+    "tipologie_declarata": "antreprenor"
+  },
+  {
+    "client_id": "C0045",
+    "nume": "Bogdan Ene",
+    "data_nasterii": "2003-03-27",
+    "ci_expira_la": "2032-11-25",
+    "kyc_actualizat_la": "2026-01-02",
+    "nivel_relatie": "standard",
+    "client_din": "2026-04-28",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0008",
+    "produse_atasate": [
+      "cont_salariu"
+    ],
+    "tipologie_declarata": "tanar_fara_istoric"
+  },
+  {
+    "client_id": "C0046",
+    "nume": "George Neagu",
+    "data_nasterii": "1991-07-01",
+    "ci_expira_la": "2032-06-10",
+    "kyc_actualizat_la": "2026-02-11",
+    "nivel_relatie": "gold",
+    "client_din": "2016-11-20",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "economii",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "diaspora"
+  },
+  {
+    "client_id": "C0047",
+    "nume": "Gabriela Preda",
+    "data_nasterii": "1975-01-11",
+    "ci_expira_la": "2033-02-27",
+    "kyc_actualizat_la": "2026-09-14",
+    "nivel_relatie": "standard",
+    "client_din": "2012-07-15",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": "F0014",
+    "produse_atasate": [
+      "cont_salariu",
+      "cont_curent"
+    ],
+    "tipologie_declarata": "salariat"
+  },
+  {
+    "client_id": "C0048",
+    "nume": "Gabriela Tudor",
+    "data_nasterii": "1961-11-17",
+    "ci_expira_la": "2034-09-22",
+    "kyc_actualizat_la": "2025-08-10",
+    "nivel_relatie": "standard",
+    "client_din": "2014-03-07",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "card_debit"
+    ],
+    "tipologie_declarata": "pensionar"
+  },
+  {
+    "client_id": "C0049",
+    "nume": "Vlad Tudor",
+    "data_nasterii": "1979-04-05",
+    "ci_expira_la": "2027-08-17",
+    "kyc_actualizat_la": "2025-10-31",
+    "nivel_relatie": "gold",
+    "client_din": "2016-07-03",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "asigurare_viata",
+      "economii"
+    ],
+    "tipologie_declarata": "diaspora"
+  },
+  {
+    "client_id": "C0050",
+    "nume": "Radu Rusu",
+    "data_nasterii": "1980-07-28",
+    "ci_expira_la": "2027-05-18",
+    "kyc_actualizat_la": "2026-01-14",
+    "nivel_relatie": "platinum",
+    "client_din": "2014-10-08",
+    "consimtamant_anaf": true,
+    "consimtamant_biroul_credit": true,
+    "flag_pep": false,
+    "flag_frauda_interna": false,
+    "flag_decedat": false,
+    "angajator_id": null,
+    "produse_atasate": [
+      "pensie_privata",
+      "depozit",
+      "card_debit",
+      "economii"
+    ],
+    "tipologie_declarata": "independent"
+  }
+]

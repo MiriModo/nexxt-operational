@@ -1,0 +1,1788 @@
+[
+  {
+    "client_id": "C0001",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2017-11-19",
+        "valabil_pana": "2027-11-19"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0015",
+        "data_emitere": "2026-07-13",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0001",
+        "data_emitere": "2021-11-12",
+        "valabil_pana": "2048-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0001",
+        "data_emitere": "2021-10-28",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0001",
+        "data_emitere": "2025-12-24",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0001",
+        "data_emitere": "2026-02-16",
+        "valabil_pana": "2027-02-16"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0002",
+        "data_emitere": "2022-08-24",
+        "valabil_pana": "2028-12-01"
+      }
+    ]
+  },
+  {
+    "client_id": "C0002",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2024-03-25",
+        "valabil_pana": "2034-03-25"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0006",
+        "data_emitere": "2026-03-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0003",
+        "data_emitere": "2021-11-11",
+        "valabil_pana": "2046-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0003",
+        "data_emitere": "2021-10-27",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0003",
+        "data_emitere": "2026-03-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0003",
+        "data_emitere": "2026-03-05",
+        "valabil_pana": "2027-03-05"
+      }
+    ]
+  },
+  {
+    "client_id": "C0003",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-11-22",
+        "valabil_pana": "2028-11-21"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0010",
+        "data_emitere": "2026-06-03",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0004",
+        "data_emitere": "2021-12-12",
+        "valabil_pana": "2048-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0004",
+        "data_emitere": "2021-11-27",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0004",
+        "data_emitere": "2026-05-20",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0004",
+        "data_emitere": "2026-08-16",
+        "valabil_pana": "2027-08-16"
+      }
+    ]
+  },
+  {
+    "client_id": "C0004",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-12-13",
+        "valabil_pana": "2031-12-13"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0010",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0005",
+        "data_emitere": "2021-12-11",
+        "valabil_pana": "2027-10-28"
+      }
+    ]
+  },
+  {
+    "client_id": "C0005",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2020-07-04",
+        "valabil_pana": "2030-07-04"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0012",
+        "data_emitere": "2026-07-13",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0006",
+        "data_emitere": "2022-01-11",
+        "valabil_pana": "2051-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0006",
+        "data_emitere": "2021-12-27",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0006",
+        "data_emitere": "2026-03-17",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0006",
+        "data_emitere": "2026-04-26",
+        "valabil_pana": "2027-04-26"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0007",
+        "data_emitere": "2022-05-25",
+        "valabil_pana": "2029-06-16"
+      }
+    ]
+  },
+  {
+    "client_id": "C0006",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-04-01",
+        "valabil_pana": "2033-03-31"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0008",
+        "data_emitere": "2022-01-12",
+        "valabil_pana": "2030-10-28"
+      }
+    ]
+  },
+  {
+    "client_id": "C0007",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2020-03-18",
+        "valabil_pana": "2030-03-18"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2019-04-24",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0009",
+        "data_emitere": "2022-02-25",
+        "valabil_pana": "2038-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0009",
+        "data_emitere": "2022-02-10",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0009",
+        "data_emitere": "2026-02-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0009",
+        "data_emitere": "2026-01-20",
+        "valabil_pana": "2027-01-20"
+      }
+    ]
+  },
+  {
+    "client_id": "C0008",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-11-15",
+        "valabil_pana": "2028-11-14"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0008",
+        "data_emitere": "2026-05-03",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0010",
+        "data_emitere": "2022-02-26",
+        "valabil_pana": "2044-10-27"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0010",
+        "data_emitere": "2022-02-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0010",
+        "data_emitere": "2026-02-02",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0010",
+        "data_emitere": "2026-07-20",
+        "valabil_pana": "2027-07-20"
+      }
+    ]
+  },
+  {
+    "client_id": "C0009",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2017-05-28",
+        "valabil_pana": "2027-05-28"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0008",
+        "data_emitere": "2026-08-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0011",
+        "data_emitere": "2022-04-28",
+        "valabil_pana": "2029-06-12"
+      }
+    ]
+  },
+  {
+    "client_id": "C0010",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-06-18",
+        "valabil_pana": "2033-06-17"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0012",
+        "data_emitere": "2023-04-10",
+        "valabil_pana": "2028-11-19"
+      }
+    ]
+  },
+  {
+    "client_id": "C0011",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-07-24",
+        "valabil_pana": "2029-07-23"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0013",
+        "data_emitere": "2023-10-12",
+        "valabil_pana": "2029-04-19"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0014",
+        "data_emitere": "2023-09-11",
+        "valabil_pana": "2030-08-07"
+      }
+    ]
+  },
+  {
+    "client_id": "C0012",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-09-11",
+        "valabil_pana": "2028-09-10"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0009",
+        "data_emitere": "2026-04-06",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0015",
+        "data_emitere": "2021-10-26",
+        "valabil_pana": "2045-09-23"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0015",
+        "data_emitere": "2021-10-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0015",
+        "data_emitere": "2026-05-16",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0015",
+        "data_emitere": "2026-09-07",
+        "valabil_pana": "2027-09-07"
+      }
+    ]
+  },
+  {
+    "client_id": "C0013",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-09-27",
+        "valabil_pana": "2033-09-26"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0004",
+        "data_emitere": "2026-09-21",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0016",
+        "data_emitere": "2025-04-04",
+        "valabil_pana": "2032-10-10"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0017",
+        "data_emitere": "2021-05-23",
+        "valabil_pana": "2038-05-11"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0017",
+        "data_emitere": "2021-05-08",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0017",
+        "data_emitere": "2025-12-01",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0017",
+        "data_emitere": "2025-12-27",
+        "valabil_pana": "2026-12-27"
+      }
+    ]
+  },
+  {
+    "client_id": "C0014",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-12-05",
+        "valabil_pana": "2029-12-04"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0001",
+        "data_emitere": "2026-06-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0018",
+        "data_emitere": "2021-09-11",
+        "valabil_pana": "2028-08-18"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0019",
+        "data_emitere": "2021-11-27",
+        "valabil_pana": "2047-10-19"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0019",
+        "data_emitere": "2021-11-12",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0019",
+        "data_emitere": "2025-10-12",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0019",
+        "data_emitere": "2026-09-01",
+        "valabil_pana": "2027-09-01"
+      }
+    ]
+  },
+  {
+    "client_id": "C0015",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-10-04",
+        "valabil_pana": "2028-10-03"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0002",
+        "data_emitere": "2026-07-06",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0020",
+        "data_emitere": "2023-09-20",
+        "valabil_pana": "2029-08-24"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0021",
+        "data_emitere": "2024-02-12",
+        "valabil_pana": "2045-09-01"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0021",
+        "data_emitere": "2024-01-28",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0021",
+        "data_emitere": "2025-12-29",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0021",
+        "data_emitere": "2026-02-25",
+        "valabil_pana": "2027-02-25"
+      }
+    ]
+  },
+  {
+    "client_id": "C0016",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-03-30",
+        "valabil_pana": "2031-03-30"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0012",
+        "data_emitere": "2026-04-30",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0022",
+        "data_emitere": "2018-10-28",
+        "valabil_pana": "2049-10-28"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0022",
+        "data_emitere": "2018-10-13",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0022",
+        "data_emitere": "2025-10-21",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0022",
+        "data_emitere": "2026-03-28",
+        "valabil_pana": "2027-03-28"
+      }
+    ]
+  },
+  {
+    "client_id": "C0017",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2016-09-18",
+        "valabil_pana": "2026-09-18"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0010",
+        "data_emitere": "2026-05-05",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0023",
+        "data_emitere": "2025-04-26",
+        "valabil_pana": "2030-01-28"
+      }
+    ]
+  },
+  {
+    "client_id": "C0018",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2022-05-19",
+        "valabil_pana": "2032-05-18"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0012",
+        "data_emitere": "2026-10-19",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0024",
+        "data_emitere": "2021-04-07",
+        "valabil_pana": "2050-03-09"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0024",
+        "data_emitere": "2021-03-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0024",
+        "data_emitere": "2026-02-12",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0024",
+        "data_emitere": "2026-01-22",
+        "valabil_pana": "2027-01-22"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0025",
+        "data_emitere": "2022-08-23",
+        "valabil_pana": "2030-03-28"
+      }
+    ]
+  },
+  {
+    "client_id": "C0019",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-03-04",
+        "valabil_pana": "2028-03-03"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0003",
+        "data_emitere": "2026-07-02",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0026",
+        "data_emitere": "2025-02-20",
+        "valabil_pana": "2030-02-02"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0027",
+        "data_emitere": "2022-12-04",
+        "valabil_pana": "2044-05-21"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0027",
+        "data_emitere": "2022-11-19",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0027",
+        "data_emitere": "2026-04-26",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0027",
+        "data_emitere": "2026-08-14",
+        "valabil_pana": "2027-08-14"
+      }
+    ]
+  },
+  {
+    "client_id": "C0020",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2024-04-29",
+        "valabil_pana": "2034-04-29"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0028",
+        "data_emitere": "2025-08-19",
+        "valabil_pana": "2032-09-10"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0029",
+        "data_emitere": "2024-05-29",
+        "valabil_pana": "2029-01-19"
+      }
+    ]
+  },
+  {
+    "client_id": "C0021",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-01-27",
+        "valabil_pana": "2033-01-26"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0014",
+        "data_emitere": "2026-04-10",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0030",
+        "data_emitere": "2024-05-15",
+        "valabil_pana": "2031-03-19"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0031",
+        "data_emitere": "2020-11-24",
+        "valabil_pana": "2048-12-07"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0031",
+        "data_emitere": "2020-11-09",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0031",
+        "data_emitere": "2026-03-30",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0031",
+        "data_emitere": "2026-09-03",
+        "valabil_pana": "2027-09-03"
+      }
+    ]
+  },
+  {
+    "client_id": "C0022",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-08-15",
+        "valabil_pana": "2031-08-15"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0010",
+        "data_emitere": "2026-07-21",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0032",
+        "data_emitere": "2018-12-02",
+        "valabil_pana": "2037-12-05"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0032",
+        "data_emitere": "2018-11-17",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0032",
+        "data_emitere": "2026-09-08",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0032",
+        "data_emitere": "2026-09-21",
+        "valabil_pana": "2027-09-21"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0033",
+        "data_emitere": "2022-10-06",
+        "valabil_pana": "2028-02-25"
+      }
+    ]
+  },
+  {
+    "client_id": "C0023",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-12-06",
+        "valabil_pana": "2028-12-05"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0010",
+        "data_emitere": "2026-08-09",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0034",
+        "data_emitere": "2020-03-13",
+        "valabil_pana": "2044-07-10"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0034",
+        "data_emitere": "2020-02-27",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0034",
+        "data_emitere": "2026-01-08",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0034",
+        "data_emitere": "2026-04-11",
+        "valabil_pana": "2027-04-11"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0035",
+        "data_emitere": "2023-10-12",
+        "valabil_pana": "2030-02-02"
+      }
+    ]
+  },
+  {
+    "client_id": "C0024",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2024-10-11",
+        "valabil_pana": "2034-10-11"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0015",
+        "data_emitere": "2026-07-04",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0036",
+        "data_emitere": "2023-01-21",
+        "valabil_pana": "2029-12-05"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0037",
+        "data_emitere": "2022-07-24",
+        "valabil_pana": "2039-07-30"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0037",
+        "data_emitere": "2022-07-09",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0037",
+        "data_emitere": "2026-06-22",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0037",
+        "data_emitere": "2026-06-15",
+        "valabil_pana": "2027-06-15"
+      }
+    ]
+  },
+  {
+    "client_id": "C0025",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-12-07",
+        "valabil_pana": "2033-12-06"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0038",
+        "data_emitere": "2021-03-08",
+        "valabil_pana": "2029-03-10"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0039",
+        "data_emitere": "2022-02-10",
+        "valabil_pana": "2039-02-21"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0039",
+        "data_emitere": "2022-01-26",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0039",
+        "data_emitere": "2026-06-05",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0039",
+        "data_emitere": "2026-04-09",
+        "valabil_pana": "2027-04-09"
+      }
+    ]
+  },
+  {
+    "client_id": "C0026",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-10-30",
+        "valabil_pana": "2031-10-30"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0008",
+        "data_emitere": "2026-10-02",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0040",
+        "data_emitere": "2023-12-17",
+        "valabil_pana": "2028-09-04"
+      }
+    ]
+  },
+  {
+    "client_id": "C0027",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-03-03",
+        "valabil_pana": "2031-03-03"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2019-07-09",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0041",
+        "data_emitere": "2021-08-19",
+        "valabil_pana": "2029-12-31"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0042",
+        "data_emitere": "2022-11-15",
+        "valabil_pana": "2048-12-14"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0042",
+        "data_emitere": "2022-10-31",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0042",
+        "data_emitere": "2025-12-06",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0042",
+        "data_emitere": "2026-06-27",
+        "valabil_pana": "2027-06-27"
+      }
+    ]
+  },
+  {
+    "client_id": "C0028",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2020-01-16",
+        "valabil_pana": "2030-01-15"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0016",
+        "data_emitere": "2026-09-30",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0043",
+        "data_emitere": "2022-08-18",
+        "valabil_pana": "2050-12-22"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0043",
+        "data_emitere": "2022-08-03",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0043",
+        "data_emitere": "2025-11-04",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0043",
+        "data_emitere": "2026-07-31",
+        "valabil_pana": "2027-07-31"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0044",
+        "data_emitere": "2024-12-12",
+        "valabil_pana": "2030-09-25"
+      }
+    ]
+  },
+  {
+    "client_id": "C0029",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2025-01-04",
+        "valabil_pana": "2035-01-04"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0017",
+        "data_emitere": "2026-10-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0045",
+        "data_emitere": "2024-01-20",
+        "valabil_pana": "2032-08-17"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0046",
+        "data_emitere": "2019-01-04",
+        "valabil_pana": "2048-01-14"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0046",
+        "data_emitere": "2018-12-20",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0046",
+        "data_emitere": "2026-08-16",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0046",
+        "data_emitere": "2026-01-18",
+        "valabil_pana": "2027-01-18"
+      }
+    ]
+  },
+  {
+    "client_id": "C0030",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2016-09-18",
+        "valabil_pana": "2026-09-18"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2020-04-28",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0047",
+        "data_emitere": "2025-04-28",
+        "valabil_pana": "2029-04-18"
+      }
+    ]
+  },
+  {
+    "client_id": "C0031",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2016-09-18",
+        "valabil_pana": "2026-09-18"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0001",
+        "data_emitere": "2026-09-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0048",
+        "data_emitere": "2025-07-23",
+        "valabil_pana": "2029-07-14"
+      }
+    ]
+  },
+  {
+    "client_id": "C0032",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-11-12",
+        "valabil_pana": "2033-11-11"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0049",
+        "data_emitere": "2023-12-09",
+        "valabil_pana": "2030-06-30"
+      }
+    ]
+  },
+  {
+    "client_id": "C0033",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2022-03-07",
+        "valabil_pana": "2032-03-06"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0014",
+        "data_emitere": "2026-09-28",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0050",
+        "data_emitere": "2024-06-22",
+        "valabil_pana": "2031-01-21"
+      }
+    ]
+  },
+  {
+    "client_id": "C0034",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-10-28",
+        "valabil_pana": "2029-10-27"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0014",
+        "data_emitere": "2026-08-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0051",
+        "data_emitere": "2020-08-18",
+        "valabil_pana": "2053-07-15"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0051",
+        "data_emitere": "2020-08-03",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0051",
+        "data_emitere": "2025-10-02",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0051",
+        "data_emitere": "2025-11-10",
+        "valabil_pana": "2026-11-10"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0052",
+        "data_emitere": "2022-09-02",
+        "valabil_pana": "2028-12-27"
+      }
+    ]
+  },
+  {
+    "client_id": "C0035",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2025-01-06",
+        "valabil_pana": "2035-01-06"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2022-08-30",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0053",
+        "data_emitere": "2019-02-08",
+        "valabil_pana": "2052-10-26"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0053",
+        "data_emitere": "2019-01-24",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0053",
+        "data_emitere": "2026-03-06",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0053",
+        "data_emitere": "2025-11-14",
+        "valabil_pana": "2026-11-14"
+      }
+    ]
+  },
+  {
+    "client_id": "C0036",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2021-12-01",
+        "valabil_pana": "2031-12-01"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0054",
+        "data_emitere": "2023-03-05",
+        "valabil_pana": "2028-01-06"
+      }
+    ]
+  },
+  {
+    "client_id": "C0037",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-06-01",
+        "valabil_pana": "2029-05-31"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0004",
+        "data_emitere": "2026-08-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0055",
+        "data_emitere": "2024-01-24",
+        "valabil_pana": "2044-04-12"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0055",
+        "data_emitere": "2022-04-15",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0055",
+        "data_emitere": "2026-07-21",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0055",
+        "data_emitere": "2026-08-06",
+        "valabil_pana": "2027-08-06"
+      }
+    ]
+  },
+  {
+    "client_id": "C0038",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-06-28",
+        "valabil_pana": "2029-06-27"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0056",
+        "data_emitere": "2023-07-24",
+        "valabil_pana": "2041-08-14"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0056",
+        "data_emitere": "2022-04-15",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0056",
+        "data_emitere": "2025-11-30",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0056",
+        "data_emitere": "2026-04-02",
+        "valabil_pana": "2027-04-02"
+      }
+    ]
+  },
+  {
+    "client_id": "C0039",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2018-10-28",
+        "valabil_pana": "2028-10-27"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2019-11-05",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0057",
+        "data_emitere": "2025-07-13",
+        "valabil_pana": "2030-06-15"
+      }
+    ]
+  },
+  {
+    "client_id": "C0040",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2022-07-08",
+        "valabil_pana": "2032-07-07"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0009",
+        "data_emitere": "2026-06-07",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0058",
+        "data_emitere": "2025-01-04",
+        "valabil_pana": "2029-02-17"
+      }
+    ]
+  },
+  {
+    "client_id": "C0041",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2020-07-26",
+        "valabil_pana": "2030-07-26"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0006",
+        "data_emitere": "2026-08-10",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0059",
+        "data_emitere": "2023-04-04",
+        "valabil_pana": "2032-10-10"
+      }
+    ]
+  },
+  {
+    "client_id": "C0042",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-07-18",
+        "valabil_pana": "2029-07-17"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0060",
+        "data_emitere": "2022-12-05",
+        "valabil_pana": "2032-05-01"
+      }
+    ]
+  },
+  {
+    "client_id": "C0043",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2019-11-25",
+        "valabil_pana": "2029-11-24"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0003",
+        "data_emitere": "2026-08-13",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0061",
+        "data_emitere": "2021-10-14",
+        "valabil_pana": "2045-10-22"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0061",
+        "data_emitere": "2021-09-29",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0061",
+        "data_emitere": "2025-10-17",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0061",
+        "data_emitere": "2026-02-14",
+        "valabil_pana": "2027-02-14"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0062",
+        "data_emitere": "2025-02-13",
+        "valabil_pana": "2027-11-03"
+      }
+    ]
+  },
+  {
+    "client_id": "C0044",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2025-01-09",
+        "valabil_pana": "2035-01-09"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0063",
+        "data_emitere": "2023-01-27",
+        "valabil_pana": "2046-01-19"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0063",
+        "data_emitere": "2023-01-12",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0063",
+        "data_emitere": "2026-04-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0063",
+        "data_emitere": "2026-05-04",
+        "valabil_pana": "2027-05-04"
+      }
+    ]
+  },
+  {
+    "client_id": "C0045",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2022-11-26",
+        "valabil_pana": "2032-11-25"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0008",
+        "data_emitere": "2026-04-20",
+        "valabil_pana": null
+      }
+    ]
+  },
+  {
+    "client_id": "C0046",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2022-06-11",
+        "valabil_pana": "2032-06-10"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0064",
+        "data_emitere": "2024-08-25",
+        "valabil_pana": "2049-12-07"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0064",
+        "data_emitere": "2024-08-10",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0064",
+        "data_emitere": "2026-06-20",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0064",
+        "data_emitere": "2026-06-04",
+        "valabil_pana": "2027-06-04"
+      }
+    ]
+  },
+  {
+    "client_id": "C0047",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2023-02-28",
+        "valabil_pana": "2033-02-27"
+      },
+      {
+        "tip": "adeverinta_venit",
+        "referinta": "F0014",
+        "data_emitere": "2026-05-29",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0065",
+        "data_emitere": "2022-06-26",
+        "valabil_pana": "2028-01-04"
+      }
+    ]
+  },
+  {
+    "client_id": "C0048",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2024-09-22",
+        "valabil_pana": "2034-09-22"
+      },
+      {
+        "tip": "decizie_pensie",
+        "referinta": null,
+        "data_emitere": "2023-04-20",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0066",
+        "data_emitere": "2025-03-07",
+        "valabil_pana": "2029-05-06"
+      }
+    ]
+  },
+  {
+    "client_id": "C0049",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2017-08-17",
+        "valabil_pana": "2027-08-17"
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0067",
+        "data_emitere": "2023-08-29",
+        "valabil_pana": "2044-10-27"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0067",
+        "data_emitere": "2023-08-14",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0067",
+        "data_emitere": "2026-06-23",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0067",
+        "data_emitere": "2026-07-04",
+        "valabil_pana": "2027-07-04"
+      }
+    ]
+  },
+  {
+    "client_id": "C0050",
+    "documente": [
+      {
+        "tip": "carte_identitate",
+        "referinta": null,
+        "data_emitere": "2017-05-18",
+        "valabil_pana": "2027-05-18"
+      },
+      {
+        "tip": "declaratie_unica",
+        "referinta": "2025",
+        "data_emitere": "2026-05-25",
+        "valabil_pana": null
+      },
+      {
+        "tip": "contract_credit",
+        "referinta": "L0068",
+        "data_emitere": "2020-08-12",
+        "valabil_pana": "2045-03-13"
+      },
+      {
+        "tip": "raport_evaluare",
+        "referinta": "L0068",
+        "data_emitere": "2020-07-28",
+        "valabil_pana": null
+      },
+      {
+        "tip": "extras_cf",
+        "referinta": "L0068",
+        "data_emitere": "2026-07-11",
+        "valabil_pana": null
+      },
+      {
+        "tip": "polita_asigurare_imobil",
+        "referinta": "L0068",
+        "data_emitere": "2026-05-03",
+        "valabil_pana": "2027-05-03"
+      }
+    ]
+  }
+]

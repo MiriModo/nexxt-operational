@@ -1,0 +1,356 @@
+[
+  {
+    "client_id": "C0001",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0002",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0003",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0004",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "BCR",
+        "rol": "debitor",
+        "tip": "nevoi_personale",
+        "sold": 28500.0,
+        "restante": 0,
+        "zile_restanta": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0005",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "Provident Financial IFN",
+        "rol": "debitor",
+        "tip": "nevoi_personale",
+        "sold": 33500.0,
+        "restante": 0,
+        "zile_restanta": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0006",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0007",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0008",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0009",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "CEC Bank",
+        "rol": "debitor",
+        "tip": "nevoi_personale",
+        "sold": 63200.0,
+        "restante": 0,
+        "zile_restanta": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0010",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "Provident Financial IFN",
+        "rol": "debitor",
+        "tip": "nevoi_personale",
+        "sold": 33000.0,
+        "restante": 0,
+        "zile_restanta": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0011",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "BCR",
+        "rol": "debitor",
+        "tip": "nevoi_personale",
+        "sold": 32700.0,
+        "restante": 0,
+        "zile_restanta": 0
+      }
+    ]
+  },
+  {
+    "client_id": "C0012",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0013",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0014",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0015",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0016",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0017",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0018",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0019",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0020",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0021",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0022",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0023",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0024",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0025",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0026",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0027",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0028",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0029",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0030",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0031",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0032",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0033",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0034",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0035",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0036",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0037",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0038",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0039",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0040",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0041",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0042",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0043",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0044",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0045",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0046",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0047",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": [
+      {
+        "institutie": "BCR",
+        "rol": "garant",
+        "tip": "ipotecar",
+        "sold": 185000,
+        "restante": 4200,
+        "zile_restanta": 62
+      }
+    ]
+  },
+  {
+    "client_id": "C0048",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0049",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  },
+  {
+    "client_id": "C0050",
+    "luna_raportare": "2026-09",
+    "prag_raportare_ron": 20000,
+    "expuneri": []
+  }
+]

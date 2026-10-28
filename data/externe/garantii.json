@@ -1,0 +1,758 @@
+[
+  {
+    "loan_id": "L0001",
+    "client_id": "C0001",
+    "reevaluare": {
+      "valoare": 687000.0,
+      "data": "2026-09-28",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "227957",
+      "uat": "Bucuresti S1",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-39276577",
+      "expira_la": "2027-02-16",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0003",
+    "client_id": "C0002",
+    "reevaluare": {
+      "valoare": 435000.0,
+      "data": "2026-09-01",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "193259",
+      "uat": "Constanta",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-87805990",
+      "expira_la": "2027-03-05",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0004",
+    "client_id": "C0003",
+    "reevaluare": {
+      "valoare": 792000.0,
+      "data": "2026-09-24",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "278743",
+      "uat": "Brasov",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-48848619",
+      "expira_la": "2027-08-16",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0006",
+    "client_id": "C0005",
+    "reevaluare": {
+      "valoare": 1451000.0,
+      "data": "2026-09-20",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "123988",
+      "uat": "Bucuresti S3",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [
+        {
+          "tip": "actiune_partaj",
+          "dosar": "4134/3/2026",
+          "notat_la": "2026-09-24"
+        }
+      ],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Groupama Asigurari",
+      "polita": "PAD-84716165",
+      "expira_la": "2027-04-26",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0009",
+    "client_id": "C0007",
+    "reevaluare": {
+      "valoare": 296000.0,
+      "data": "2026-10-17",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "379828",
+      "uat": "Brasov",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-40342261",
+      "expira_la": "2027-01-20",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0010",
+    "client_id": "C0008",
+    "reevaluare": {
+      "valoare": 398000.0,
+      "data": "2026-09-30",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "331011",
+      "uat": "Bucuresti S3",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Allianz-Tiriac",
+      "polita": "PAD-55164755",
+      "expira_la": "2027-07-20",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0015",
+    "client_id": "C0012",
+    "reevaluare": {
+      "valoare": 413000.0,
+      "data": "2026-10-09",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "276249",
+      "uat": "Bucuresti S3",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Asirom",
+      "polita": "PAD-10288891",
+      "expira_la": "2027-09-07",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0017",
+    "client_id": "C0013",
+    "reevaluare": {
+      "valoare": 471000.0,
+      "data": "2026-09-28",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "306747",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Allianz-Tiriac",
+      "polita": "PAD-16987650",
+      "expira_la": "2026-12-27",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0019",
+    "client_id": "C0014",
+    "reevaluare": {
+      "valoare": 346000.0,
+      "data": "2026-08-30",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "233462",
+      "uat": "Cluj-Napoca",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-92837786",
+      "expira_la": "2027-09-01",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0021",
+    "client_id": "C0015",
+    "reevaluare": {
+      "valoare": 499000.0,
+      "data": "2026-09-20",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "177274",
+      "uat": "Constanta",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-34224541",
+      "expira_la": "2027-02-25",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0022",
+    "client_id": "C0016",
+    "reevaluare": {
+      "valoare": 1235000.0,
+      "data": "2026-10-10",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "282775",
+      "uat": "Iasi",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Groupama Asigurari",
+      "polita": "PAD-66435073",
+      "expira_la": "2027-03-28",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0024",
+    "client_id": "C0018",
+    "reevaluare": {
+      "valoare": 685000.0,
+      "data": "2026-10-01",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "116826",
+      "uat": "Timisoara",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-66126201",
+      "expira_la": "2027-01-22",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0027",
+    "client_id": "C0019",
+    "reevaluare": {
+      "valoare": 662000.0,
+      "data": "2026-09-30",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "382260",
+      "uat": "Constanta",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Asirom",
+      "polita": "PAD-14437270",
+      "expira_la": "2027-08-14",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0031",
+    "client_id": "C0021",
+    "reevaluare": {
+      "valoare": 337000.0,
+      "data": "2026-09-30",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "321578",
+      "uat": "Cluj-Napoca",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-66862857",
+      "expira_la": "2027-09-03",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0032",
+    "client_id": "C0022",
+    "reevaluare": {
+      "valoare": 629000.0,
+      "data": "2026-09-25",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "111129",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Asirom",
+      "polita": "PAD-76554946",
+      "expira_la": "2027-09-21",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0034",
+    "client_id": "C0023",
+    "reevaluare": {
+      "valoare": 507000.0,
+      "data": "2026-09-16",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "316504",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-89837495",
+      "expira_la": "2027-04-11",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0037",
+    "client_id": "C0024",
+    "reevaluare": {
+      "valoare": 348000.0,
+      "data": "2026-09-17",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "135239",
+      "uat": "Bucuresti S3",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-81603101",
+      "expira_la": "2027-06-15",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0039",
+    "client_id": "C0025",
+    "reevaluare": {
+      "valoare": 585000.0,
+      "data": "2026-10-02",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "120932",
+      "uat": "Iasi",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Groupama Asigurari",
+      "polita": "PAD-32867636",
+      "expira_la": "2027-04-09",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0042",
+    "client_id": "C0027",
+    "reevaluare": {
+      "valoare": 469000.0,
+      "data": "2026-10-17",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "123081",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Groupama Asigurari",
+      "polita": "PAD-18993278",
+      "expira_la": "2027-06-27",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0043",
+    "client_id": "C0028",
+    "reevaluare": {
+      "valoare": 547000.0,
+      "data": "2026-09-11",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "188933",
+      "uat": "Iasi",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Allianz-Tiriac",
+      "polita": "PAD-11414701",
+      "expira_la": "2027-07-31",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0046",
+    "client_id": "C0029",
+    "reevaluare": {
+      "valoare": 549000.0,
+      "data": "2026-09-11",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "387786",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-25720878",
+      "expira_la": "2027-01-18",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0051",
+    "client_id": "C0034",
+    "reevaluare": {
+      "valoare": 342000.0,
+      "data": "2026-10-01",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "225543",
+      "uat": "Iasi",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Allianz-Tiriac",
+      "polita": "PAD-89052888",
+      "expira_la": "2026-11-10",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0053",
+    "client_id": "C0035",
+    "reevaluare": {
+      "valoare": 745000.0,
+      "data": "2026-09-17",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "231475",
+      "uat": "Cluj-Napoca",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-60685151",
+      "expira_la": "2026-11-14",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0055",
+    "client_id": "C0037",
+    "reevaluare": {
+      "valoare": 320000.0,
+      "data": "2026-09-30",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "113868",
+      "uat": "Ploiesti",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Allianz-Tiriac",
+      "polita": "PAD-61051512",
+      "expira_la": "2027-08-06",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0056",
+    "client_id": "C0038",
+    "reevaluare": {
+      "valoare": 207000.0,
+      "data": "2026-10-20",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "180888",
+      "uat": "Cluj-Napoca",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Groupama Asigurari",
+      "polita": "PAD-21874983",
+      "expira_la": "2027-04-02",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0061",
+    "client_id": "C0043",
+    "reevaluare": {
+      "valoare": 803000.0,
+      "data": "2026-09-14",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "377897",
+      "uat": "Bucuresti S1",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-58242324",
+      "expira_la": "2027-02-14",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0063",
+    "client_id": "C0044",
+    "reevaluare": {
+      "valoare": 420000.0,
+      "data": "2026-10-01",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "109992",
+      "uat": "Bucuresti S3",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Omniasig",
+      "polita": "PAD-65891331",
+      "expira_la": "2027-05-04",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0064",
+    "client_id": "C0046",
+    "reevaluare": {
+      "valoare": 456000.0,
+      "data": "2026-09-05",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "320251",
+      "uat": "Cluj-Napoca",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Asirom",
+      "polita": "PAD-91957919",
+      "expira_la": "2027-06-04",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0067",
+    "client_id": "C0049",
+    "reevaluare": {
+      "valoare": 397000.0,
+      "data": "2026-10-16",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "385241",
+      "uat": "Iasi",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Asirom",
+      "polita": "PAD-72098081",
+      "expira_la": "2027-07-04",
+      "cesionata_bancii": true
+    }
+  },
+  {
+    "loan_id": "L0068",
+    "client_id": "C0050",
+    "reevaluare": {
+      "valoare": 391000.0,
+      "data": "2026-09-29",
+      "metoda": "indexare_statistica"
+    },
+    "cf": {
+      "numar": "198176",
+      "uat": "Timisoara",
+      "ipoteca_rang_1_banca": true,
+      "alte_sarcini": [],
+      "litigii": [],
+      "interdictii": [
+        "interdictie_instrainare_grevare_in_favoarea_bancii"
+      ]
+    },
+    "asigurare": {
+      "asigurator": "Generali Romania",
+      "polita": "PAD-46185248",
+      "expira_la": "2027-05-03",
+      "cesionata_bancii": true
+    }
+  }
+]

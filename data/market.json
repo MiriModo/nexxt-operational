@@ -1,0 +1,80 @@
+{
+  "data": "2026-10-28",
+  "ircc": 5.55,
+  "dobanda_fixa_piata_ipotecar": 4.9,
+  "dobanda_piata_nevoi_personale": 8.9,
+  "dobanda_piata_card": 22.0,
+  "dobanzi_piata": {
+    "ipotecar": {
+      "fixa_1_an": 4.7,
+      "fixa_3_ani": 4.9,
+      "fixa_5_ani": 5.1,
+      "marja_variabila": 2.0
+    },
+    "imobiliar": {
+      "fixa_1_an": 5.0,
+      "fixa_3_ani": 5.2,
+      "fixa_5_ani": 5.4,
+      "marja_variabila": 2.3
+    },
+    "refinantare": {
+      "fixa_1_an": 7.9,
+      "fixa_3_ani": 8.2,
+      "fixa_5_ani": 8.5,
+      "marja_variabila": 3.5
+    },
+    "nevoi_personale": {
+      "fixa_toata_durata": 8.9
+    },
+    "card_credit": {
+      "fixa_toata_durata": 22.0
+    }
+  },
+  "costuri_mutare": {
+    "ipotecar": {
+      "evaluare_imobil": 650,
+      "notar_fix": 900,
+      "notar_pct_sold": 0.15,
+      "ocpi": 450,
+      "asigurari_noi": 350,
+      "comision_analiza_banca_noua": 0,
+      "comision_acordare_pct": 0.0
+    },
+    "imobiliar": {
+      "evaluare_imobil": 650,
+      "notar_fix": 900,
+      "notar_pct_sold": 0.15,
+      "ocpi": 450,
+      "asigurari_noi": 350,
+      "comision_analiza_banca_noua": 0,
+      "comision_acordare_pct": 0.0
+    },
+    "refinantare": {
+      "evaluare_imobil": 0,
+      "notar_fix": 0,
+      "notar_pct_sold": 0.0,
+      "ocpi": 0,
+      "asigurari_noi": 0,
+      "comision_analiza_banca_noua": 250,
+      "comision_acordare_pct": 0.5
+    },
+    "nevoi_personale": {
+      "evaluare_imobil": 0,
+      "notar_fix": 0,
+      "notar_pct_sold": 0.0,
+      "ocpi": 0,
+      "asigurari_noi": 0,
+      "comision_analiza_banca_noua": 250,
+      "comision_acordare_pct": 0.5
+    },
+    "card_credit": {
+      "evaluare_imobil": 0,
+      "notar_fix": 0,
+      "notar_pct_sold": 0.0,
+      "ocpi": 0,
+      "asigurari_noi": 0,
+      "comision_analiza_banca_noua": 250,
+      "comision_acordare_pct": 0.0
+    }
+  }
+}
