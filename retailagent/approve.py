@@ -28,11 +28,19 @@ class ApprovalError(ValueError):
     """Decizie invalidă: lipsește motivul, intervenția nu există sau nu e fezabilă."""
 
 
+REZULTATE = ("ramas", "plecat")
+
+
 def decide(rec: dict, offer: dict, decizie: str, interventie: str | None, motiv: str | None, cfg: Config,
-           now: datetime, data_dir: Path | str = DATA_DIR) -> dict:
+           now: datetime, data_dir: Path | str = DATA_DIR, consilier: str | None = None) -> dict:
     """Validează decizia consilierului și construiește înregistrarea de aprobare (pur, fără I/O de scriere)."""
     if decizie not in DECIZII:
         raise ApprovalError(f"decizia trebuie să fie una din {DECIZII}, nu {decizie!r}")
+    ids = {c.id for c in cfg.echipa.consilieri}
+    if consilier is None:
+        consilier = cfg.echipa.pentru(rec["client_id"])
+    elif consilier not in ids:
+        raise ApprovalError(f"consilierul {consilier!r} nu e în echipa.yaml: " + ", ".join(sorted(ids)))
     motiv = (motiv or "").strip()
     if decizie in ("modifica", "respinge") and not motiv:
         raise ApprovalError(f"decizia '{decizie}' e un override: cere obligatoriu --motiv")
@@ -53,10 +61,33 @@ def decide(rec: dict, offer: dict, decizie: str, interventie: str | None, motiv:
     elif decizie == "respinge":
         finala, oferta, grafic = None, None, None
     return {"timestamp": now.isoformat(timespec="seconds"), "case_id": rec["case_id"], "client_id": rec["client_id"],
-            "loan_id": rec["loan_id"], "decizie": decizie, "override": decizie != "aproba",
+            "loan_id": rec["loan_id"], "consilier": consilier, "decizie": decizie, "override": decizie != "aproba",
             "recomandare_agent": rec["recomandare"], "interventie_agent": rec["interventie"],
             "interventie_finala": finala, "motiv": motiv or None, "oferta": oferta, "grafic": grafic,
-            "documente_lipsa": rec["documente_lipsa"]}
+            "documente_lipsa": rec["documente_lipsa"], "rezultat": None, "rezultat_la": None,
+            "versiune": rec.get("versiune")}
+
+
+def inregistreaza_rezultat(case_id: str, rezultat: str, now: datetime, out_dir: Path | str = OUT_DIR) -> dict:
+    """Rezultatul la 90 de zile (a rămas / a plecat) pe ultima decizie a cazului: închide bucla de feedback și
+    devine eticheta reală pentru reantrenarea modelului de churn (`churn.train --din-approvals`)."""
+    if rezultat not in REZULTATE:
+        raise ApprovalError(f"rezultatul trebuie să fie unul din {REZULTATE}, nu {rezultat!r}")
+    out = Path(out_dir)
+    path = out / "approvals.json"
+    rows = read_json(path) if path.exists() else []
+    idx = next((i for i in range(len(rows) - 1, -1, -1) if rows[i]["case_id"] == case_id), None)
+    if idx is None:
+        raise ApprovalError(f"cazul {case_id} nu are nicio decizie înregistrată; întâi aprobă / modifică / respinge")
+    rows[idx]["rezultat"] = rezultat
+    rows[idx]["rezultat_la"] = now.isoformat(timespec="seconds")
+    write_json(path, rows)
+    row = {"timestamp": rows[idx]["rezultat_la"], "case_id": case_id, "client_id": rows[idx]["client_id"], "tip": "rezultat",
+           "cheie": "rezultat_90_zile", "valoare": rezultat, "sursa": "consilier", "consilier": rows[idx].get("consilier"),
+           "interventie_finala": rows[idx].get("interventie_finala")}
+    with open(out / "audit.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return rows[idx]
 
 
 def persist(d: dict, out_dir: Path | str = OUT_DIR) -> None:
@@ -69,7 +100,8 @@ def persist(d: dict, out_dir: Path | str = OUT_DIR) -> None:
     write_json(path, rows)
     row = {"timestamp": d["timestamp"], "case_id": d["case_id"], "client_id": d["client_id"],
            "tip": "override" if d["override"] else "aprobare", "cheie": "interventie", "valoare": d["interventie_finala"],
-           "sursa": "consilier", "decizie": d["decizie"], "motiv": d["motiv"]}
+           "sursa": "consilier", "consilier": d.get("consilier"), "decizie": d["decizie"], "motiv": d["motiv"],
+           "versiune": d.get("versiune")}
     if d.get("propunere_llm"):
         row["propunere_llm"] = d["propunere_llm"]
     with open(out / "audit.jsonl", "a", encoding="utf-8") as f:
@@ -77,7 +109,7 @@ def persist(d: dict, out_dir: Path | str = OUT_DIR) -> None:
 
 
 def print_decision(rec: dict, d: dict) -> None:
-    print(f"═══ {d['case_id']} · {d['client_id']} · {rec['loan_id'] or 'fără credit'} · {TITLU[d['decizie']]} · {d['timestamp']}")
+    print(f"═══ {d['case_id']} · {d['client_id']} · {rec['loan_id'] or 'fără credit'} · {TITLU[d['decizie']]} · {d['timestamp']} · consilier {d.get('consilier')}")
     print(f"  recomandarea agentului: {ETICHETA[rec['recomandare']]}" + (f" · {rec['interventie']}" if rec["interventie"] else ""))
     if d["override"]:
         print(f"  override: {d['decizie']} → {d['interventie_finala'] or '—'} · motiv: {d['motiv']}")
@@ -111,12 +143,23 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--decizie", choices=DECIZII, default="aproba")
     ap.add_argument("--interventie", help="id din meniu (pentru --decizie modifica)")
     ap.add_argument("--motiv", help="obligatoriu pentru modifica / respinge")
+    ap.add_argument("--consilier", help="id din config/echipa.yaml (implicit: cel alocat clientului)")
+    ap.add_argument("--rezultat", choices=REZULTATE, help="doar înregistrează rezultatul la 90 de zile pe ultima decizie a cazului")
     ap.add_argument("--data-dir", default=str(DATA_DIR))
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--config-dir", default=str(CONFIG_DIR))
     a = ap.parse_args(argv)
 
     out = Path(a.out_dir)
+    if a.rezultat:
+        try:
+            r = inregistreaza_rezultat(a.case_id, a.rezultat, datetime.now(), out)
+        except ApprovalError as e:
+            raise SystemExit(f"Rezultat refuzat: {e}") from e
+        print(f"═══ {a.case_id} · rezultat la 90 de zile: {r['rezultat'].upper()} ({r['rezultat_la']}) · decizia: {r['decizie']}"
+              f" → {r['interventie_finala'] or '—'} · consilier {r.get('consilier')}")
+        print(f"→ {out}/approvals.json, {out}/audit.jsonl")
+        return
     if not (out / "recommendations.json").exists() or not (out / "offers.json").exists():
         raise SystemExit(f"Lipsesc {out}/recommendations.json sau offers.json: rulează întâi `python -m retailagent.recommend`.")
     rec = next((r for r in read_json(out / "recommendations.json") if r["case_id"] == a.case_id), None)
@@ -124,7 +167,7 @@ def main(argv: list[str] | None = None) -> None:
     if rec is None or offer is None:
         raise SystemExit(f"Cazul {a.case_id} nu există în recomandări.")
     try:
-        d = decide(rec, offer, a.decizie, a.interventie, a.motiv, load_config(a.config_dir), datetime.now(), a.data_dir)
+        d = decide(rec, offer, a.decizie, a.interventie, a.motiv, load_config(a.config_dir), datetime.now(), a.data_dir, a.consilier)
     except ApprovalError as e:
         raise SystemExit(f"Decizie refuzată: {e}") from e
     persist(d, out)

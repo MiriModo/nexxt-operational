@@ -279,6 +279,33 @@ semnale:
       bonus_evaluare_veche: 0.2
       ani_evaluare_veche: 3
 
+  - id: expunere_valutara
+    familie: risc_credit
+    nivel: client
+    descriere: Ratele creditelor în valută depășesc pragul din venit (DTI valută 20%, BNR).
+    inputs: [loans.moneda, loans.rata_lunara, market.curs_eur, transactions]
+    regula: "rate în valută (în RON la cursul curent) / venit mediu 3 luni > 0.20 → 0.8"
+    dovada: ponderea ratelor în valută din venit
+    motiv: "Ratele în valută sunt {procent}% din venit (prag 20%)"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      prag_din_venit: 0.20
+      luni_venit: 3
+      scor: 0.8
+
+  - id: codebitor_cu_risc
+    familie: risc_credit
+    nivel: client
+    descriere: Clientul e codebitor pe un credit al altcuiva care a intrat în întârziere.
+    inputs: [loans.codebitori, payment_history]
+    regula: "codebitor pe un credit cu zile_intarziere ≥ 1 în ultima lună → 0.7"
+    dovada: creditul, debitorul, întârzierea
+    motiv: "Codebitor pe {credit} ({debitor}) cu {zile} zile întârziere"
+    actiune_sugerata: restructurare_preventiva
+    parametri:
+      zile_min: 1
+      scor: 0.7
+
   # ------------------------------------------------------------------ BLOCAJ_PROCES
   - id: ci_expirata
     familie: blocaj_proces

@@ -1,51 +1,57 @@
 import { useEffect, useState } from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
-import { getContext, getSursa, onSursa, type Context } from "./api/client";
-import Acasa from "./pages/Acasa";
-import Dashboard from "./pages/Dashboard";
-import Coada from "./pages/Coada";
-import CazPage from "./pages/Caz";
-import DeciziePage from "./pages/Decizie";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { getSursa, onSursa } from "./api/client";
+import { Protected, useEu } from "./auth";
+import { Header } from "./components/Header";
+import Case from "./pages/Case";
+import Decision from "./pages/Decision";
+import Desk from "./pages/Desk";
+import Home from "./pages/Home";
+import Overview from "./pages/Overview";
+import Queue from "./pages/Queue";
+import Reports from "./pages/Reports";
+import RulesEngine from "./pages/RulesEngine";
+import SignIn from "./pages/SignIn";
 
 export default function App() {
-  const [ctx, setCtx] = useState<Context | null>(null);
-  const [sursa, setSursa] = useState(getSursa());
-  useEffect(() => {
-    getContext().then(setCtx).catch(() => setCtx(null));
-    return onSursa(setSursa);
-  }, []);
+  const { eu } = useEu();
+  const loc = useLocation();
+  const [source, setSource] = useState(getSursa());
+  useEffect(() => onSursa(setSource), []);
+  const landing = !eu && loc.pathname === "/";
+
   return (
     <>
-      <a href="#continut" className="skip">
-        Sari la conținut
+      <a href="#content" className="skip">
+        Skip to content
       </a>
-      <header className="top">
-        <NavLink to="/" className="brand" aria-label="retailagent, pagina de start">
-          retailagent<span className="dot" aria-hidden="true" />
-        </NavLink>
-        <nav aria-label="Principal">
-          <NavLink to="/" end>
-            Acasă
-          </NavLink>
-          <NavLink to="/cazuri">Coadă</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-        </nav>
-        <span className="ctx">
-          {ctx ? `${ctx.clienti} clienți în portofoliu` : ""}
-          {ctx && sursa === "static" ? ", date statice (API oprit)" : ""}
-          {ctx && sursa === "api" ? ", API live" : ""}
-          {ctx?.model_churn ? `, model ${ctx.model_churn.nume}` : ""}
-        </span>
-      </header>
-      <main id="continut">
+      <Header offline={source === "static"} />
+      <main id="content" className={`container ${landing ? "landing" : ""}`}>
         <Routes>
-          <Route path="/" element={<Acasa />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cazuri" element={<Coada />} />
-          <Route path="/cazuri/:id" element={<CazPage />} />
-          <Route path="/cazuri/:id/decizie" element={<DeciziePage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/desk" element={<Protected role="consilier"><Desk /></Protected>} />
+          <Route path="/overview" element={<Protected role="admin"><Overview /></Protected>} />
+          <Route path="/queue" element={<Protected><Queue /></Protected>} />
+          <Route path="/queue/:id" element={<Protected><Case /></Protected>} />
+          <Route path="/queue/:id/decide" element={<Protected><Decision /></Protected>} />
+          <Route path="/reports" element={<Protected role="admin"><Reports /></Protected>} />
+          <Route path="/rules" element={<Protected role="admin"><RulesEngine /></Protected>} />
+          <Route path="/biroul-meu" element={<Navigate to="/desk" replace />} />
+          <Route path="/acasa" element={<Navigate to="/overview" replace />} />
+          <Route path="/cazuri" element={<Navigate to="/queue" replace />} />
+          <Route path="/cazuri/:id" element={<CaseRedirect />} />
+          <Route path="/rezultate" element={<Navigate to="/reports" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/reports" replace />} />
+          <Route path="/motor" element={<Navigate to="/rules" replace />} />
+          <Route path="/admin" element={<Navigate to="/rules" replace />} />
         </Routes>
       </main>
     </>
   );
+}
+
+function CaseRedirect() {
+  const loc = useLocation();
+  return <Navigate to={loc.pathname.replace(/^\/cazuri/, "/queue").replace(/\/decizie$/, "/decide")} replace />;
 }

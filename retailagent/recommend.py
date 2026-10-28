@@ -129,9 +129,16 @@ def recomanda(case: dict, check: dict, offer: dict, client: dict, loan: dict | N
     cerere_nou = next((c for c in cereri if c["tip"] in CERERI_PRODUS_NOU), None)
     oferta = g = None
     interventie = None
+    incertitudini = incertitudini_caz(case, check, cereri, cfg)
+    motive_caz = {c["tip"] for c in cereri} | {s["id"] for s in case["semnale"]}
+    critice = [i for i in incertitudini if _critica(i["id"], motive_caz, cfg)]
 
     if case["blocaje"]:
         rec, motiv = "blocat", f"task de proces activ: {', '.join(case['blocaje'])}; nicio decizie comercială până la rezolvare"
+        if any(s["id"] == "flag_blocant" for s in case["semnale"]):
+            motiv += "; flag blocant (PEP / fraudă / decedat): nicio comunicare comercială, aprobare specială"
+    elif critice:
+        rec, motiv = "respins_escaladat", "escaladare la om: " + "; ".join(i["text"] for i in critice)
     elif check.get("verificare_picata"):
         picata = next(x for x in check["rezultate"] if x["id"] == check["verificare_picata"])
         rec, motiv = "respins_escaladat", f"verificarea {picata['id']} a picat ({picata['sursa'] or 'intern'}): {picata['dovada']}"
@@ -164,9 +171,13 @@ def recomanda(case: dict, check: dict, offer: dict, client: dict, loan: dict | N
         if loan:
             oferta, g = oferta_din_interventie(loan, ales, today, market, cfg)
 
+    if oferta is not None and incertitudini:
+        # degradare controlată: oferta rămâne, dar condiționată de lămurirea incertitudinilor
+        oferta["conditii_de_confirmat"] = [i["text"] for i in incertitudini]
     lipsa = documente_lipsa(rec, client, loan, docs, today, cfg)
     r = {"case_id": case["case_id"], "client_id": case["client_id"], "loan_id": case["loan_id"], "produs": case["produs"],
          "recomandare": rec, "eticheta": ETICHETA[rec], "interventie": interventie, "motiv": motiv,
+         "incertitudini": incertitudini,
          "oferta": oferta, "grafic": g, "documente_lipsa": lipsa,
          "verificari": {"oprit_la": check.get("oprit_la"), "verificare_picata": check.get("verificare_picata"),
                         "executate": check["interogari_externe"].get("executate", 0),
@@ -179,8 +190,35 @@ def recomanda(case: dict, check: dict, offer: dict, client: dict, loan: dict | N
     return r
 
 
+def incertitudini_caz(case: dict, check: dict, cereri: list[dict], cfg: Config) -> list[dict]:
+    """Situațiile neașteptate ale cazului: din verificări (surse indisponibile / contradictorii, refinanțare externă,
+    fără cont) + reguli pe caz (cerere duplicată, semnale contradictorii). Fiecare are id (checks.yaml) și text."""
+    out = [dict(i) for i in check.get("incertitudini") or []]
+    prag = cfg.priority.risc_credit.blocheaza_retentia_daca
+    for c in cereri:
+        if c.get("duplicate"):
+            out.append({"id": "cerere_duplicata", "text": f"cerere duplicată: {', '.join(c['duplicate'])} repetă {c['request_id']} "
+                                                           f"(se tratează o singură dată)"})
+    plecare_tare = [s["id"] for s in case["semnale"] if s["familie"] == "plecare" and s["scor"] >= 0.8
+                    and s["id"] in cfg.priority.semnale_active]
+    if case["scoruri"]["risc_credit"] >= prag and plecare_tare:
+        out.append({"id": "semnale_contradictorii", "text": f"semnale contradictorii: risc de credit {case['scoruri']['risc_credit']:.2f} "
+                                                             f"și semnal activ de plecare ({', '.join(plecare_tare)}); riscul are prioritate, "
+                                                             "retenția se reia după stabilizare"})
+    return out
+
+
+def _critica(iid: str, motive: set[str], cfg: Config) -> bool:
+    reguli = cfg.checks.incertitudini_critice
+    if iid not in reguli:
+        return False
+    return not reguli[iid] or bool(motive & set(reguli[iid]))
+
+
 def explicatie(r: dict, case: dict, check: dict, offer: dict, client: dict) -> str:
     L = [f"Recomandare: {ETICHETA[r['recomandare']].upper()} — {r['motiv']}."]
+    if r.get("incertitudini"):
+        L.append("Incertitudini (de lămurit cu clientul / sursele): " + "; ".join(i["text"] for i in r["incertitudini"]) + ".")
     top = case["motive_top3"][:2]
     if top:
         L.append("De ce e în coadă: " + "; ".join(top) + f" (banda {case['banda']}).")
@@ -230,17 +268,22 @@ def audit_rows(case: dict, check: dict, offer: dict, r: dict, today: date) -> li
 
 # ---------------------------------------------------------------- pe portofoliu + CLI
 
-def build_recommendations(pf, cfg: Config, res, checks: list[dict], offers: list[dict], mocks: Mocks) -> tuple[list[dict], list[dict]]:
+def build_recommendations(pf, cfg: Config, res, checks: list[dict], offers: list[dict], mocks: Mocks,
+                          versiune: str | None = None) -> tuple[list[dict], list[dict]]:
+    from .versiune import versiune_completa
     by_check = {c["case_id"]: c for c in checks}
     by_offer = {o["case_id"]: o for o in offers}
+    versiune = versiune or versiune_completa(cfg)["scurt"]
     rows, audit = [], []
     for case in res.cases:
         ci = res.inputs[case["case_id"]]
         check, offer = by_check[case["case_id"]], by_offer[case["case_id"]]
         r = recomanda(case, check, offer, ci.client, ci.loan, ci.cereri, mocks.documente.get(case["client_id"], []),
                       pf.today, pf.market, cfg)
+        r["consilier"] = cfg.echipa.pentru(case["client_id"])
+        r["versiune"] = versiune
         rows.append(r)
-        audit += audit_rows(case, check, offer, r, pf.today)
+        audit += [{**a, "versiune": versiune} for a in audit_rows(case, check, offer, r, pf.today)]
     return rows, audit
 
 

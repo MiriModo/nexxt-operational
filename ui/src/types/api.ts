@@ -9,7 +9,8 @@ export type Recomandare =
   | "nu_interveni"
   | "blocat"
   | "respins_escaladat";
-export type StatusVerificare = "ok" | "avertizare" | "fail" | "neexecutat";
+/** `indisponibil` = sursa externă nu a răspuns: fluxul continuă, cazul poartă o incertitudine */
+export type StatusVerificare = "ok" | "avertizare" | "fail" | "neexecutat" | "indisponibil";
 export type Decizie = "aproba" | "modifica" | "respinge";
 
 export interface Semnal {
@@ -57,6 +58,9 @@ export interface LoanInfo {
   expira: string | null;
   scadenta: string;
   rata: number;
+  /** RON | EUR — soldul și rata sunt în RON (la cursul curent); `sold_valuta` e valoarea originală */
+  moneda?: string;
+  sold_valuta?: number | null;
 }
 
 export interface VerificarePlan {
@@ -73,6 +77,27 @@ export interface VerificareRezultat {
   status: StatusVerificare;
   dovada: string;
   sursa: string;
+  incertitudine?: string | null;
+}
+
+/** O situație neașteptată tratată prin degradare controlată (id din checks.yaml → incertitudini_critice). */
+export interface Incertitudine {
+  id: string;
+  text: string;
+}
+
+/** Răspunsul la POST /api/cazuri/{id}/verifica: verificările reluate, grupate pe trepte, în ordinea rulării. */
+export interface Reverificare {
+  case_id: string;
+  motive: { motiv: string; sursa: string }[];
+  plan: VerificarePlan[];
+  omise: VerificarePlan[];
+  trepte: { treapta: string; stare: "executata" | "oprita" | "neexecutata"; rezultate: VerificareRezultat[] }[];
+  oprit_la: string | null;
+  verificare_picata: string | null;
+  incertitudini: Incertitudine[];
+  concluzii: Record<string, unknown>;
+  interogari_externe: { planificate: number; rulare_tot: number; evitate_vs_tot: number; executate: number };
 }
 
 export interface CheckInfo {
@@ -163,6 +188,12 @@ export interface RecInfo {
     rata_noua: number;
     cost_banca: number;
     economie_client: number;
+    conditie?: string;
+    /** incertitudini de lămurit înainte ca oferta să fie comunicată */
+    conditii_de_confirmat?: string[];
+    /** bugetul lunar de retenție pe portofoliu: false = recomandată, dar amânată („peste plafon luna asta") */
+    in_buget?: boolean;
+    amanata_buget?: boolean;
   } | null;
   grafic: {
     primele_luni: RataGrafic[];
@@ -173,15 +204,134 @@ export interface RecInfo {
   } | null;
   documente_lipsa: { tip: string; motiv: string }[];
   explicatie: string;
+  incertitudini?: Incertitudine[];
+  buget?: { rang: number; scor_v_pe_cost: number | null; valoare_retinuta: number; cost: number; in_buget: boolean } | null;
+  /** rezervat pasului 3 (agentul LLM): argumentul și textul ofertei generate; apare doar când există */
+  llm?: { argument: string; text_client: string; model?: string } | null;
+}
+
+/** Spending profile over the last months, by payment category (as in the bank's app). */
+export interface Cheltuieli {
+  luni: number;
+  total_out: number;
+  total_in: number;
+  venit_lunar: number;
+  categorii: { categorie: string; suma: number; procent: number; nr: number }[];
+  loan_payments: number;
+  internal_transfers: number;
 }
 
 export interface Caz {
   case: CaseInfo;
   client: ClientInfo;
+  cheltuieli?: Cheltuieli;
   loan: LoanInfo | null; // null pentru cereri de credit nou (fără credit existent)
   check: CheckInfo;
   offer: OfferInfo;
   rec: RecInfo;
+  /** consilierul alocat (config/echipa.yaml) și versiunea config/model care a produs decizia */
+  consilier?: string | null;
+  versiune?: string | null;
+  /** true pentru rândurile din GET /api/coada (fără liste mari); detaliul vine din GET /api/cazuri/{id} */
+  compact?: boolean;
+}
+
+export interface Consilier {
+  id: string;
+  nume: string;
+}
+
+/** Biroul consilierului (GET /api/eu/birou): coada lui + activitatea lui. */
+export interface Birou {
+  utilizator: { id: string; nume: string; rol: "consilier" | "admin" };
+  coada: {
+    total: number;
+    deschise: number;
+    p1_azi: number;
+    peste_plafon: number;
+    de_confirmat: number;
+    pe_banda: Record<string, number>;
+    distributie: Record<string, number>;
+  };
+  activitate: {
+    decizii: number;
+    decizii_azi: number;
+    override: number;
+    rezultate: { n: number; ramasi: number; plecati: number };
+    ultimele: DecizieServer[];
+  };
+  primele: Caz[];
+}
+
+export interface Versiune {
+  config: { hash: string; fisiere: Record<string, string> };
+  model: { model: string; versiune: string | null; hash: string | null; tip?: string; antrenat_la?: string; n?: number };
+  prompturi: null | Record<string, string>;
+  cod: string | null;
+  scurt: string;
+}
+
+export interface BugetPortofoliu {
+  plafon_lunar_ron: number;
+  ordonare: string;
+  oferte: number;
+  in_buget: number;
+  amanate: number;
+  cost_in_buget: number;
+  cost_total_oferte: number;
+}
+
+export interface ModelInfo {
+  activ: Versiune["model"];
+  antrenat: {
+    versiune?: string;
+    tip?: string;
+    n?: number;
+    n_antrenare?: number;
+    n_test?: number;
+    antrenat_la?: string;
+    metrici?: { auc: number | null; brier: number; ece: number; log_loss: number; bins: { interval: string; n: number; p_medie: number; rata_reala: number }[] };
+    coeficienti?: Record<string, number>;
+    candidati?: Record<string, { test: { auc: number | null; brier: number; ece: number } }>;
+  };
+}
+
+export interface Feedback {
+  decizii: number;
+  override: number;
+  rata_override: number | null;
+  pe_interventie: Record<string, { decizii: number; override: number; rata_override: number | null }>;
+  pe_nivel: Record<string, { decizii: number; override: number; rata_override: number | null }>;
+  pe_produs: Record<string, { decizii: number; override: number; rata_override: number | null }>;
+  pe_consilier: Record<string, { decizii: number; override: number; rata_override: number | null }>;
+  inlocuiri: { agent: string; final: string; n: number }[];
+  cuvinte_cheie: [string, number][];
+  rezultate_90_zile: { n: number; pe_interventie: Record<string, { n: number; ramasi: number; rata_ramanere_reala: number | null; rata_ramanere_prezisa: number | null }> };
+  propuneri: { tip: string; interventie: string | null; text: string }[];
+}
+
+export interface ConfigFisier {
+  nume: string;
+  fisier: string;
+  hash: string | null;
+  exista: boolean;
+}
+
+/** O decizie înregistrată de server (approvals.json). */
+export interface DecizieServer {
+  timestamp: string;
+  case_id: string;
+  client_id: string;
+  consilier: string | null;
+  decizie: Decizie;
+  override: boolean;
+  recomandare_agent: Recomandare;
+  interventie_agent: string | null;
+  interventie_finala: string | null;
+  motiv: string | null;
+  rezultat: "ramas" | "plecat" | null;
+  rezultat_la: string | null;
+  versiune?: string | null;
 }
 
 export interface Strategie {
@@ -235,6 +385,10 @@ export interface Sumar {
   deschise: number;
   p1: number;
   scadente_azi: number;
+  /** briefing-ul zilei: P1 cu termen azi, oferte amânate peste plafon, cazuri cu ceva de confirmat */
+  p1_azi?: number;
+  peste_plafon?: number;
+  de_confirmat?: number;
   blocate: number;
   decise: number;
   pe_banda: Record<string, number>;
@@ -243,9 +397,13 @@ export interface Sumar {
 
 export interface ParametriCoada {
   benzi?: Banda[];
+  recomandari?: Recomandare[];
+  consilier?: string;
   q?: string;
   sort?: "prioritate" | "termen" | "client";
   ascundeDecise?: boolean;
+  /** listele briefing-ului de pe Acasă */
+  doar?: "termen_azi" | "peste_plafon" | "de_confirmat";
   limit?: number;
   offset?: number;
 }
@@ -267,6 +425,7 @@ export interface DecizieInput {
   decizie: Decizie;
   interventie?: string;
   motiv?: string;
+  consilier?: string;
 }
 
 export interface DecizieRecord extends DecizieInput {

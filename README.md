@@ -1,6 +1,9 @@
-# retailagent — colegul virtual al consilierului de credite retail
+# Keeper — find the case, keep the client
 
-Hackathon NEXXT · challenge Raiffeisen „AI for Operational Efficiency". Referința de produs: [`MODEL_FINAL.md`](MODEL_FINAL.md).
+Colegul virtual al consilierului de credite retail. Hackathon NEXXT · challenge Raiffeisen „AI for Operational
+Efficiency". Referința de produs: [`MODEL_FINAL.md`](MODEL_FINAL.md). Pachetul Python se numește în continuare
+`retailagent`; interfața (`ui/`) e **Keeper**, în engleză, cu sistemul vizual din `Keeper_ghid_vizual_v2.pdf`
+(Instrument Sans / Wix Madefor Text / Fragment Mono, tokenii și componentele din ghid; fonturile sunt împachetate în build).
 
 Agentul găsește singur în portofoliu cazurile care trebuie lucrate, face verificările pe care le-ar face omul,
 calculează **cea mai ieftină implicare a băncii care păstrează clientul** și propune o recomandare. **Consilierul
@@ -29,38 +32,99 @@ Cereri clienți ────────────┘            │
                   consilierul aprobă / modifică / respinge cu motiv → ofertă + grafic + documente + audit
 ```
 
-## Setup în 3 comenzi
+## Cum rulezi: trei moduri
+
+**A. Doar Python, fără server (demo.html)** — 3 comenzi, nimic altceva de instalat:
 
 ```bash
 pip install -r requirements.txt
-python -m retailagent.generate            # 10.000 de clienți (50 etalon + 9.950 statistici), ~30 s; --n 50 = doar etalonul
+python -m retailagent.generate            # 10.000 de clienți (60 etalon + 9.940 statistici), ~30 s; --n 60 = doar etalonul
 python -m retailagent.pipeline            # tot fluxul (~45 s), evaluarea și out/demo.html
 ```
 
-`data/` nu e versionat: se regenerează identic din seed. A treia comandă rulează tot fluxul, evaluarea și generează
-`out/demo.html` (primele 200 de cazuri din coadă; metricile pe tot portofoliul).
-Deschide `out/demo.html` în browser: coada, fiecare caz cu semnale / verificări / meniu de intervenții /
-recomandare și butoanele de aprobare.
+`data/` nu e versionat: se regenerează identic din seed. Deschide `out/demo.html` în browser (primele 200 de cazuri
+din coadă; metricile pe tot portofoliul): coada, fiecare caz cu semnale / verificări / meniu de intervenții /
+recomandare și butoanele de aprobare. Modelul antrenat e în `models/` (versionat); `python -m retailagent.churn.train`
+îl reface.
 
-## Interfața React + API
+**B. API + interfața React (dezvoltare)**:
 
 ```bash
-python -m retailagent.api [--port 8000] [--reload]  # API-ul (FastAPI); nu cere `uvicorn` în PATH
-cd ui && npm install && VITE_API_URL=/api npm run dev # http://localhost:5173 (Vite proxy-ază /api → 8000)
+python -m retailagent.api [--port 8000] [--reload]   # API-ul (FastAPI); nu cere `uvicorn` în PATH; rulează fluxul la pornire (~45 s)
+cd ui && npm install && npm run dev                   # http://localhost:5173 (Vite proxy-ază /api → 8000; API_TARGET=http://... schimbă adresa)
 ```
 
-Fără API, `cd ui && npm run dev` folosește snapshot-ul static din `ui/public/data` (scris de `demo` / `pipeline`);
-deciziile rămân în `localStorage` și ecranul arată comanda `approve` echivalentă. Cu API, deciziile intră în
-`out/approvals.json` + `out/audit.jsonl`. Rute: `GET /api/metrici/context`, `GET /api/cazuri`,
-`GET /api/cazuri/{id}`, `GET /api/metrici`, `POST /api/cazuri/{id}/decizie`, `GET /api/decizii`, `POST /api/rescan`;
-documentația OpenAPI la `http://127.0.0.1:8000/docs`. `GET /api/cazuri` întoarce coada **compact** (fără meniu,
-verificări detaliate, grafic — la 10.000 de clienți lista completă ar avea ~60 MB) cu `?limit=`, `?banda=`, `?q=`;
-`GET /api/cazuri/{id}` dă detaliul complet. Coada din interfață folosește `GET /api/coada` (filtre pe bandă,
-căutare, sortare, paginare pe server, `ascunde_decise`) și `GET /api/cazuri/sumar` (contoarele paginii de start pe
-toată coada), deci la 6.000 de cazuri încarcă câte 60 odată. API-ul rulează fluxul la pornire (~45 s pe 10.000). Ecrane: Acasă (ce te așteaptă azi), Coadă (carduri pe
-bandă, filtre, căutare), Caz (semnale, verificări, model de retenție cu p-ul din modelul antrenat și contribuțiile
-lui, recomandare, grafic, documente), Decizie (aprobă / modifică / respinge cu motiv), Dashboard (metrici).
-Variabile de mediu pentru API: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`.
+Fără API, `npm run dev` folosește snapshot-ul static din `ui/public/data` (scris de `demo` / `pipeline`); deciziile
+rămân în `localStorage`, ecranul arată comanda `approve` echivalentă, iar Admin explică de ce nu poate edita. Cu
+API, deciziile intră în `out/approvals.json` + `out/audit.jsonl`.
+
+**C. Docker (API + UI, fără Python/Node local)**:
+
+```bash
+docker compose up --build        # UI http://localhost:8080 · API http://localhost:8000/docs
+RETAILAGENT_N=60 docker compose up --build   # pornire rapidă: doar etalonul
+```
+
+La prima pornire containerul `api` generează `data/` și antrenează modelul dacă lipsesc (volume: `data/`, `out/`,
+`config/`, ca Admin-ul să editeze YAML-urile reale). `make demo | api | ui | test | docker` sunt scurtături pentru
+aceleași comenzi (`Makefile`; pe Windows fără `make` rulează comenzile de mai sus).
+
+### API
+
+Rute: `GET /api/metrici/context` (azi, număr de clienți, modelul activ, **versiunea** config/model/cod, bugetul de
+portofoliu), `GET /api/coada` (filtre pe bandă / recomandare / consilier, căutare, sortare, paginare pe server,
+`ascunde_decise`), `GET /api/cazuri/sumar`, `GET /api/cazuri` (compact, `?limit`, `?banda`, `?q`),
+`GET /api/cazuri/{id}` (detaliu complet), `POST /api/cazuri/{id}/decizie`, `GET /api/cazuri/{id}/decizii` (istoric),
+`POST /api/cazuri/{id}/rezultat` (rămas / plecat la 90 de zile), `POST /api/cazuri/{id}/verifica` (reia doar
+verificările cazului, pe trepte), `GET /api/decizii`, `GET /api/feedback`, `GET /api/echipa`, `GET /api/model`
+(metrici + calibrare), `GET /api/config` · `GET/PUT /api/config/{nume}` (editare YAML cu validare pydantic, 400 cu
+mesajul la eroare) · `GET /api/config/{nume}/diff`, `POST /api/rescan`, `GET /api/metrici`. OpenAPI la
+`http://127.0.0.1:8000/docs`; `cd ui && npm run types` generează `src/types/openapi.d.ts` din el.
+Variabile de mediu: `RETAILAGENT_DATA`, `RETAILAGENT_OUT`, `RETAILAGENT_CONFIG`, `RETAILAGENT_ADMIN_PAROLA`.
+
+### Conturi și roluri
+
+Pagina publică (`/`) e landing-ul Keeper (hero, welcome, how it works, sign in): alegi cine ești (consilierii din
+`config/echipa.yaml` sau **Administrator**) și scrii parola. **Serverul** aplică rolul pe fiecare rută, interfața doar
+reflectă:
+
+| rol | parola | vede |
+|---|---|---|
+| advisor (Ana Pop, Mihai Ionescu, Ioana Dumitru, Radu Stan) | `parola` din `echipa.yaml` (demo: `1234`) | **My desk** (`/desk`: coada lui + activitatea lui) și **My queue** (`/queue`); un caz al altui consilier → 403; decizia poartă numele lui, nu unul ales |
+| Administrator | `RETAILAGENT_ADMIN_PAROLA` (implicit `admin`) | tot: **Overview**, **Queue** (cu filtru pe consilier), **Reports**, **Rules engine** (`/rules`) |
+
+Sesiunea e un token în memoria serverului (`POST /api/login` → `Authorization: Bearer`, 8 ore, `POST /api/logout`);
+`GET /api/utilizatori` dă lista pentru login, fără parole. Fără server (snapshot static) login-ul e de demonstrație
+(orice parolă) și filtrarea pe consilier se face în browser.
+
+### Ecranele interfeței
+
+Interfața e în engleză și e pentru consilier: pe fiecare ecran doar ce îi trebuie ca să decidă (cine, de ce acum, ce
+propune agentul, ce costă / ce aduce, ce are de confirmat), restul într-un acordeon „How the agent got here". Cele 6
+stări sunt badge-urile din ghid: **Keep** (ofertă, ofertă + produs) verde, **Restructure** (watch) amber, **Escalate**
+roșu, **No action** / **Blocked** neutre. Textele produse de backend (motive, dovezi, etichetele intervențiilor,
+explicația) rămân în română — traducerea lor e un pas separat.
+
+* **My desk** (`/desk`, advisor) — „Ana, here's your day." cu cifrele mari (urgent due today, deferred over cap, to
+  confirm, open) cu link direct, activitatea lui (decisions today, changed, still here at 90 days, queue by state),
+  „Start here" (primele 5 după termen), ultimele decizii.
+* **Overview** (`/overview`, administrator) — același briefing pe toată coada, apoi primele 5 după termen.
+* **Queue** (`/queue`) — rânduri albe pe fundalul gri, segmented control pentru benzi (P1 / P2 / P3 ca etichete mono),
+  select pe stare, consilier (doar admin), căutare, „Hide decided", filtre în URL afișate ca chips cu ×, bara de termen
+  (fereastră de 14 zile), paginare (60 odată), schelet la încărcare.
+* **Case** (`/queue/{id}`) — banda sticky cu clientul, starea, rata veche → nouă, termenul și **Decide →**; secțiuni
+  cu etichete mono: [01] Why now, [02] The client, [03] What the agent proposes (dobândă, rată, economie, cost în
+  display; to confirm / to request; textul LLM când există), [04] Checks — un rând pe verificare, pe trepte, cu
+  cercurile verde / amber / roșu din ghid și **Re-check** (rulează doar verificările acelui caz și le arată pas cu
+  pas). În acordeon „How the agent got here": semnalele, B / p / V, meniul ca grafic cost × p_după, explicația, versiunea.
+* **Decision** (`/queue/{id}/decide`) — Approve / Change / Reject cu motiv; consilierul e cel autentificat
+  (administratorul poate alege în numele cui decide), deciziile anterioare și rezultatul la 90 de zile; toast și
+  întoarcere la caz.
+* **Reports** (`/reports`, administrator) — cifrele mari (saved vs. uniform, no-cost cases, queries avoided, hard-rule
+  breaches), costul pe strategie și distribuția ca bare în paleta de chart, bugetul lunar ca bară, **calibrarea
+  modelului** cu diagonala ideală, consilierii față de agent, versiunea.
+* **Rules engine** (`/rules`, administrator) — editor pentru cele 7 YAML-uri cu validare pe server la salvare, diff
+  față de git, „Re-run the flow"; rutele `/api/config*` și `/api/rescan` răspund 403 pentru consilieri.
 
 ## Comenzi
 
@@ -73,10 +137,12 @@ python -m retailagent.pipeline [--skip-evaluate] [--skip-demo]   # tot fluxul �
 python -m retailagent.explain Q0001               # explicația completă a unui caz (coadă → verificări → retenție → recomandare)
 python -m retailagent.approve Q0001                                   # consilierul aprobă
 python -m retailagent.approve Q0001 --decizie modifica --interventie fix_1_an --motiv "..."
-python -m retailagent.approve Q0001 --decizie respinge --motiv "..."
-python -m retailagent.evaluate [--scale 10000]    # metrici Modul 1 + „Model final" [+ scalare] → out/evaluation.json
-python -m retailagent.demo [--max-cazuri 200]     # doar pagina out/demo.html
-python -m pytest                                  # 167 teste
+python -m retailagent.approve Q0001 --decizie respinge --motiv "..." --consilier ana.pop
+python -m retailagent.approve Q0001 --rezultat ramas                 # rezultatul la 90 de zile pe ultima decizie
+python -m retailagent.feedback                    # out/feedback.json: override-uri, rezultate, propuneri de ajustare
+python -m retailagent.evaluate [--scale 10000]    # metrici Modul 1 + „Model final" [+ scalare] → out/evaluation.json (cu versiune)
+python -m retailagent.demo [--max-cazuri 200]     # pagina out/demo.html + snapshot pentru UI
+python -m pytest                                  # 192 teste
 
 # pașii individuali (fiecare scrie fișierul lui în out/ și afișează un rezumat)
 python -m retailagent.scan        # out/signals_detected.json
@@ -90,7 +156,12 @@ python -m retailagent.recommend   # out/recommendations.json + out/audit.jsonl
 Toate comenzile acceptă `--today AAAA-LL-ZZ`, `--data-dir`, `--out-dir`, `--config-dir`. Implicit azi = data din
 `data/market.json` (2026-10-28). Logurile structurate (JSON lines) sunt în `out/run.log`.
 
-## Rezultate pe etalon (cei 50 de clienți cu scenarii scrise de mână, primii din portofoliu; seed 42)
+## Rezultate pe etalon (cei 60 de clienți cu scenarii scrise de mână, primii din portofoliu; seed 42)
+
+Primii 50 sunt scenariile de bază; 51–60 sunt **situațiile neașteptate** (valută, codebitor, semnale
+contradictorii, cerere duplicată, fără cont, ANAF indisponibil, surse contradictorii, decedat, PEP, refinanțare
+externă începută) — vezi [`docs/REGULI.md`](docs/REGULI.md) §5. Cifrele de mai jos sunt pe primii 50 (etalonul
+istoric, neschimbat byte cu byte); cele 10 noi au toate recomandarea și incertitudinile așteptate (`tests/test_situatii.py`).
 
 | metrică | valoare |
 |---|---|
@@ -276,6 +347,14 @@ LTV-ul depășit e confirmat de reevaluare). Situații plantate: C0005 litigiu �
 zile la un IFN, C0047 garant pe un credit cu restanțe, C0013 / C0014 salariu mutat cu / fără legături, C0027
 pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Portofoliul realist la scară".
 
+Fiecare tranzacție poartă și o **categorie de plată**, ca în aplicația băncii (`categorie`: groceries, restaurants,
+appliances_it, shopping, home_diy, transport, health, entertainment, services, travel, utilities_bills, housing,
+loan_payments, cash, legal, internal_transfers, other; la intrări income_salary / income_pension / income_rent /
+income_dividends / internal_transfers / transfers_in). Categoria se deduce din comerciant (`generate.categoria`) și
+nu consumă din RNG-ul principal: sumele, datele și semnalele rămân identice; pentru o parte din plățile „altele" se
+schimbă doar comerciantul (ponderi în `portofoliu.yaml → tranzactii.categorii`). `retailagent/cheltuieli.py` face
+profilul pe ultimele 3 luni (`cheltuieli` în `GET /api/cazuri/{id}`), afișat pe pagina cazului ca „Spending, last 3 months".
+
 ## Cum adaugi ceva nou (configurație, nu cod)
 
 * **Semnal:** intrare în `signals.yaml` + funcție `@signal(id, familie, nivel)` în `retailagent/signals/` +
@@ -285,6 +364,32 @@ pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Port
 * **Intervenție:** intrare în `retention.yaml → interventii` (tip, cost, reducere / ani, efect, condiții).
   Tipurile existente nu cer cod nou. Un buget nou pe nivel: `priority.yaml → buget_retentie_pp`.
 * **Constrângere / prag:** `constraints.yaml`, `retention.yaml` (p_tinta, orizont, sigmoid, legături).
+* **Consilier:** `echipa.yaml`; alocarea e deterministă (hash pe `client_id`).
+* **Incertitudine critică** (ce tip de cerere se escaladează când o sursă lipsește): `checks.yaml → incertitudini_critice`.
+* Din interfață: **Admin** editează oricare YAML cu validare și re-rulează fluxul.
+
+Sursa fiecărei reguli (BNR, OUG 50, KYC/AML, politică internă, model) e în [`docs/REGULI.md`](docs/REGULI.md).
+
+## Situații neașteptate: degradare controlată, nu oprire
+
+Zece scenarii din etalon (51–60) acoperă ce se întâmplă când datele nu sunt cum se așteaptă. Principiul: fluxul
+continuă, cazul poartă o **incertitudine** structurată (`rec.incertitudini`, vizibilă în coadă și în caz), oferta
+devine **condiționată** (`oferta.conditii_de_confirmat`), iar dacă incertitudinea e critică pentru tipul cererii
+(`checks.yaml → incertitudini_critice`) cazul se **escaladează la om**. Status nou de verificare: `indisponibil`
+(sursa nu a răspuns) ≠ `fail`. Creditele în EUR se normalizează în RON (`market.curs_eur`) și primesc DTI 20 %;
+codebitorii cu risc, cererile duplicate (≤ 7 zile) și refinanțările externe începute au semnale / reguli proprii.
+**Bugetul lunar de retenție pe portofoliu** (`retention.yaml → buget_portofoliu`, 2 M RON) ordonează ofertele
+după V_reținut / cost; cele peste plafon rămân recomandate, dar amânate („peste plafon luna asta").
+
+## Bucla de feedback și versionarea
+
+Fiecare decizie a consilierului poartă autorul (`consilier`), iar la 90 de zile se înregistrează rezultatul
+(`ramas` / `plecat`). `python -m retailagent.feedback` (și Dashboard-ul) raportează rata de override pe
+intervenție / nivel / produs / consilier, motivele frecvente, rămânerea reală vs. prezisă pe intervenție și
+**propuneri** de ajustare (ex. „pachet_salariu e înlocuit des cu fix_3_ani → revizuiește efect_scor") — sugestii
+pentru om, nu modificări automate. Fiecare recomandare, rând de audit și evaluare poartă **versiunea**: hash
+SHA-256 al YAML-urilor + versiunea / hash-ul modelului + commit-ul de cod, ca o decizie de ieri să poată fi
+reprodusă după ce se schimbă pragurile. `churn.train --din-approvals` reantrenează pe rezultatele reale.
 
 ## Interpretări ale modelului (de validat cu mentorul)
 
@@ -302,12 +407,17 @@ pensionar care ar avea 86 de ani la o prelungire. Pentru `--n > 50` vezi „Port
 | etalonul recalibrat | C0007, C0008 → nu interveni; C0016 → ofertă minimă; C0049 lăsat ca diferență | reflectă intenția scenariilor după calibrare; C0049 (diaspora, variabil cu gap 3 pp) e de discutat |
 | `gap_piata_bani` (Modul 1) | formula literală, plafonată la 30.000 RON | supraestimează economia, dar nu schimbă clasamentul |
 | semnal activ pentru P1 | adeverință, expirare ≤ 30 zile, salariu mutat confirmat | cerința „expirare < 30 zile ⇒ P1" trebuie garantată |
+| sursă externă indisponibilă | status `indisponibil`, fluxul continuă cu ce se vede, oferta e condiționată; credit nou ⇒ escaladare | o sursă căzută nu trebuie să blocheze retenția, dar nici să dea credit nou fără venit confirmat |
+| semnale contradictorii (risc + plecare) | riscul de credit câștigă; retenția se reia după stabilizare | nu oferi reducere unui client care nu-și plătește rata |
+| buget de portofoliu | plafon lunar, ordonare V_reținut / cost, ofertele peste plafon rămân recomandate, dar amânate | decizia comercială rămâne vizibilă; omul poate aproba explicit peste plafon |
+| credit în valută | normalizare în RON la cursul din `market.json`, DTI 20 % | BNR; cursul e o fotografie, nu o prognoză |
+| consilier | alocare deterministă (hash pe client) | același client ajunge mereu la același om; feedback-ul se poate raporta pe consilier |
 
 ## Structura
 
 ```
 retailagent/
-  generate.py, generate_ext.py   # date sintetice + etalon (50 scenarii explicite; --n > 50 = profil statistic)
+  generate.py, generate_ext.py   # date sintetice + etalon (60 scenarii explicite, 51–60 situații neașteptate; --n > 60 = profil statistic)
   profil.py                      # profilul portofoliului realist (pydantic)
   churn/                         # features (o singură funcție), model (SigmoidChurn / TrainedChurn), labels, train
 models/                          # churn_v1.pkl (joblib) + churn_v1.json (feature-uri, metrici, calibrare, coeficienți)
@@ -317,13 +427,17 @@ models/                          # churn_v1.pkl (joblib) + churn_v1.json (featur
   finance.py                     # anuitate, grafic, dobândă pe scenarii / orizont, OUG 50, DTI, cost mutare
   checks.py, checks_run.py       # plan după produse + motiv; execuție în trepte cu mock-uri; CLI
   retention.py, retention_menu.py# B, legături, V, p; meniu, constrângeri, optimizare; CLI
-  recommend.py, approve.py       # cele 6 stări, ofertă, grafic, documente, audit; aprobarea consilierului
+  recommend.py, approve.py       # cele 6 stări, ofertă, grafic, documente, audit, incertitudini; aprobarea consilierului + rezultat la 90 zile
+  buget.py                       # bugetul lunar de retenție pe portofoliu (ordonare V_reținut / cost, marcaje in_buget / amânată)
+  feedback.py, versiune.py       # raportul agent vs. consilier vs. rezultat; hash config + versiune model + commit
   explain.py, evaluate.py, evaluate_final.py, demo.py, pipeline.py
   api.py                         # FastAPI pe contractul din ui/src/types/api.ts (snapshot comun cu demo.py → build_data)
-ui/                              # interfața React (Vite + TS): Acasă, Coadă, Caz, Decizie, Dashboard; public/data e generat
-config/                          # signals, priority, checks, constraints, retention, portofoliu
+ui/                              # React (Vite + TS + React Query): Acasă, Coadă, Caz, Decizie, Dashboard, Admin; public/data e generat
+config/                          # signals, priority, checks, constraints, retention, portofoliu, echipa
+docs/REGULI.md                   # fiecare regulă cu sursa (BNR / OUG 50 / KYC-AML / politică internă / model) + situațiile neașteptate
 data/                            # portofoliul + externe/ (mock-uri)         out/   # artefactele rulării
-tests/                           # 167 teste (semnale, coadă, date, config, finance, verificări, retenție, recomandare, aprobare, explain, evaluate, pipeline, demo, portofoliu la scară)
+tests/                           # 192 teste (… + situații neașteptate, feedback, API)
+Dockerfile.api, ui/Dockerfile, docker-compose.yml, Makefile
 vault/                           # jurnalul deciziilor și al taskurilor (autobot)
 ```
 

@@ -166,3 +166,42 @@
 - Model final: agent 288.544 RON / 95% reținuți vs uniform 0,6 pp 309.669 RON / 71%; nu interveni 27%; interogări evitate 66%;
   recomandări 98%; verificări picate 3/3; 0 încălcări; flux complet 0,65 s; demo.html verificat în browser.
 - Deschise pentru mentor: calibrarea parametrilor (orizont, sigmoid, efect pachet), C0049, validarea pe date reale.
+
+## Pașii 5–8 din roadmap (2026-10-28)
+- **M6 situații neașteptate**: etalonul crește la 60 de scenarii (51–60: valută, codebitor cu risc, semnale
+  contradictorii, cerere duplicată, fără cont, ANAF indisponibil, surse contradictorii, decedat, PEP, refinanțare
+  externă în curs); status `indisponibil`, `CheckResult.incertitudine`, `rec.incertitudini`, `incertitudini_critice`
+  → escaladare, ofertă condiționată; EUR normalizat în RON (`curs_eur`), semnale `expunere_valutara`, `codebitor_cu_risc`;
+  `buget.py` (plafon 2 M RON / lună, ordonare V_reținut / cost). `tests/test_situatii.py` (12).
+- **M7 feedback + versionare**: `versiune.py` (hash YAML + model + commit) în recs / audit / evaluation / context;
+  `echipa.yaml` + `consilier` pe decizii; `--rezultat ramas|plecat`; `feedback.py` (override pe intervenție / nivel /
+  produs / consilier, rămânere reală vs prezisă, propuneri). `tests/test_feedback.py` (5).
+- **M5 UI**: React Query, Admin (YAML cu validare pe server, diff git, re-rulare), trepte „în timp real" cu
+  Reverifică, filtre recomandare / consilier, istoric + rezultat 90 zile în Decizie, Dashboard cu calibrare / feedback /
+  versiune; `npm run types` (openapi-typescript). Verificat în browser pe fiecare ecran (Playwright). Suita: 192 teste.
+- **M8 ambalare**: `Dockerfile.api` (+ `docker/entrypoint.sh`: generează date / antrenează la prima pornire),
+  `ui/Dockerfile` (Vite → nginx cu proxy /api), `docker-compose.yml`, `Makefile`, `docs/REGULI.md`, README cu cele
+  trei moduri de rulare.
+- Lecții: modelele pydantic pentru body-uri trebuie la nivel de modul (în `create_app` FastAPI le tratează ca query → 422);
+  `vite.config.ts` nu poate folosi `process` fără `@types/node` → `loadEnv`; `.treapta` ca bloc, nu pilulă.
+- Neterminat din roadmap: pasul 3 (agentul LLM pentru ofertă; cere `ANTHROPIC_API_KEY` în mediul utilizatorului) și
+  introducerea de date noi prin API (`POST /api/cereri`, `POST /api/evenimente`).
+
+## Conturi și roluri (2026-10-28, seara)
+- Problema semnalată: orice consilier vedea tot — nu exista identitate; `consilier` era doar etichetă pe caz și câmp pe decizie.
+- Soluție: `POST /api/login` (consilierii din `echipa.yaml` cu `parola` de demo, administratorul din
+  `RETAILAGENT_ADMIN_PAROLA`), sesiuni în memorie (token Bearer, 8 h), dependențe `utilizator_curent` / `doar_admin`;
+  serverul filtrează (`ale_mele`, `al_meu` → 403) pe coadă, sumar, caz, decizii, feedback, verifica, rezultat; decizia
+  poartă consilierul autentificat. `GET /api/eu/birou` = dashboard-ul consilierului.
+- UI: Home public cu „Intră în cont” (lista de nume + parolă), `AuthProvider` + `Protejat`, Biroul meu (consilier),
+  Acasă / Cazuri / Rezultate / Motor de reguli (admin); fără server, login de demo și filtrare în browser.
+- Lecție: în Bash tool, backtick-urile din comenzi (chiar în heredoc) rup parsarea → scripturile mari se pun în fișier.
+
+## Keeper: rebrand + sistemul vizual din ghid (2026-10-28, seara)
+- Interfața devine Keeper („Find the case. Keep the client.”), în engleză, pe tokenii și componentele din
+  `Keeper_ghid_vizual_v2.pdf`: Instrument Sans / Wix Madefor Text / Fragment Mono (împachetate cu @fontsource), header
+  fix transparent → blur, butoane negre cu „→”, cadre gri r28 cu ferestre albe r14, etichete mono `[01] NAME`, badge-uri
+  Keep / Watch / Escalate, cifre mari cu unitate gri. Temă light numai (dark mode scos).
+- Landing: hero pe grilă de puncte, [01] Welcome, [02] How it works (4 ferestre), [03] Sign in. Rute englezești
+  (/desk, /overview, /queue, /queue/:id, /queue/:id/decide, /reports, /rules), cele vechi redirecționează.
+- Textele produse de backend rămân în română (pas separat). Verificat în browser la 1280 și 390 px.

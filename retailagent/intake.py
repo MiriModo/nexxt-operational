@@ -29,12 +29,23 @@ def match_loan(req: dict, loans: list[dict]) -> dict | None:
 
 def run_intake(pf: Portfolio, cfg: Config, out_dir: Path | str | None = None) -> list[dict]:
     known = {c["client_id"] for c in pf.clients}
+    zile_dup = cfg.checks.zile_cerere_duplicata if hasattr(cfg, "checks") else 7
     cases = []
-    for r in sorted(pf.requests, key=lambda r: r["request_id"]):
+    vazute: dict[tuple, dict] = {}            # (client, tip, produs) -> cererea cea mai recentă deja acceptată
+    for r in sorted(pf.requests, key=lambda r: (r["data"], r["request_id"]), reverse=True):
         avertizari = []
         if r["client_id"] not in known:
             if out_dir:
                 log_event(out_dir, "intake", "client_necunoscut", request_id=r["request_id"], client_id=r["client_id"])
+            continue
+        cheie = (r["client_id"], r["tip"], (r.get("detalii") or {}).get("produs_vizat"))
+        prev = vazute.get(cheie)
+        if prev and abs((parse_date(prev["data"]) - parse_date(r["data"])).days) <= zile_dup:
+            # situație: cerere duplicată — rămâne una singură (cea mai recentă), cealaltă e marcată și logată
+            prev.setdefault("duplicate", []).append(r["request_id"])
+            prev["avertizari"].append(f"cerere duplicată {r['request_id']} din {r['data']} (aceeași cerere la ≤ {zile_dup} zile)")
+            if out_dir:
+                log_event(out_dir, "intake", "cerere_duplicata", request_id=r["request_id"], pastrata=prev["request_id"])
             continue
         rule = cfg.priority.cereri.get(r["tip"])
         if rule is None:
@@ -45,16 +56,20 @@ def run_intake(pf: Portfolio, cfg: Config, out_dir: Path | str | None = None) ->
         produs = (r.get("detalii") or {}).get("produs_vizat")
         if loan is None and produs and r["tip"] != "credit_nou":
             avertizari.append(f"clientul nu are un credit {produs} — caz nou fără credit")
-        cases.append({
+        caz = {
             "request_id": r["request_id"], "client_id": r["client_id"],
             "loan_id": loan["loan_id"] if loan else None, "produs": loan["produs"] if loan else produs,
             "tip": r["tip"], "data": r["data"], "detalii": r.get("detalii") or {}, "sursa": "client_request",
             "actiune_cerere": rule.actiune if rule else "procesare_cerere",
             "prioritate_min": rule.prioritate_min if rule else 0.0,
-            "avertizari": avertizari,
-        })
-        if avertizari and out_dir:
-            log_event(out_dir, "intake", "avertizare", request_id=r["request_id"], avertizari=avertizari)
+            "avertizari": avertizari, "duplicate": [],
+        }
+        vazute[cheie] = caz
+        cases.append(caz)
+    cases.sort(key=lambda c: c["request_id"])
+    for c in cases:
+        if c["avertizari"] and out_dir:
+            log_event(out_dir, "intake", "avertizare", request_id=c["request_id"], avertizari=c["avertizari"])
     return cases
 
 

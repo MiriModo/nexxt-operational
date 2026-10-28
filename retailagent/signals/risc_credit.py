@@ -116,3 +116,38 @@ def ltv_depasit(ctx: Context) -> SignalResult:
     return SignalResult(min(1.0, scor), f"LTV {v:.2f} (sold {fmt_ron(loan['sold_ramas'])} / evaluare "
                                         f"{fmt_ron(loan['garantie']['valoare_evaluare'])} din {data_eval.isoformat()})",
                         {"ltv": f"{v:.2f}", "data_evaluare": data_eval.isoformat()})
+
+
+@signal("expunere_valutara", familie="risc_credit", nivel="client")
+def expunere_valutara(ctx: Context) -> SignalResult:
+    """Ratele creditelor în valută (exprimate în RON, vezi scan.normalizeaza_valuta) depășesc pragul din venit."""
+    p, fl = ctx.params, ctx.flows
+    rate_valuta = sum(l["rata_lunara"] or 0 for l in ctx.loans if l.get("moneda", "RON") != "RON")
+    if rate_valuta <= 0:
+        return ZERO
+    luni = fl.months[-p["luni_venit"]:]
+    venit = sum(fl.venit_lunar[m] for m in luni) / len(luni)
+    if venit <= 0:
+        return SignalResult(p["scor"], f"rate în valută {fmt_ron(rate_valuta)} RON/lună, fără venit observat",
+                            {"procent": "n/a", "rate_valuta": fmt_ron(rate_valuta)})
+    pondere = rate_valuta / venit
+    if pondere <= p["prag_din_venit"]:
+        return ZERO
+    monede = sorted({l["moneda"] for l in ctx.loans if l.get("moneda", "RON") != "RON"})
+    return SignalResult(p["scor"], f"ratele în {'/'.join(monede)} ({fmt_ron(rate_valuta)} RON/lună la cursul curent) sunt "
+                                   f"{pondere:.0%} din venit, peste {p['prag_din_venit']:.0%} (DTI valută)",
+                        {"procent": f"{pondere * 100:.0f}", "rate_valuta": fmt_ron(rate_valuta)})
+
+
+@signal("codebitor_cu_risc", familie="risc_credit", nivel="client")
+def codebitor_cu_risc(ctx: Context) -> SignalResult:
+    """Clientul e codebitor pe un credit al altcuiva care are întârziere: răspunde solidar, riscul e și al lui."""
+    p = ctx.params
+    for l in ctx.codebitor_la:
+        hist = ctx.payments.get(l["loan_id"], [])
+        if hist and hist[-1]["zile_intarziere"] >= p["zile_min"]:
+            h = hist[-1]
+            return SignalResult(p["scor"], f"codebitor pe {l['loan_id']} ({l['client_id']}, {l['produs']}): {h['zile_intarziere']} zile "
+                                           f"întârziere în {h['luna']}, restanță {fmt_ron(h['suma_restanta'])} RON",
+                                {"credit": l["loan_id"], "debitor": l["client_id"], "zile": h["zile_intarziere"]})
+    return ZERO

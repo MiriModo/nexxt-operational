@@ -1,39 +1,34 @@
-import type { Banda, StatusVerificare } from "../types/api";
+import type { ReactNode } from "react";
+import type { Banda } from "../types/api";
 
-const BANDA_LABEL: Record<string, string> = {
-  P1: "prioritate 1, acționează azi",
-  P2: "prioritate 2, săptămâna aceasta",
-  P3: "prioritate 3, poate aștepta",
-};
+const BAND_TITLE: Record<string, string> = { P1: "priority 1, act today", P2: "priority 2, this week", P3: "priority 3, can wait" };
 
-export function BandaBadge({ b }: { b: Banda | string }) {
+export function Band({ b }: { b: Banda | string }) {
   return (
-    <span className={`badge ${b}`} title={BANDA_LABEL[b]} aria-label={`Banda ${b}, ${BANDA_LABEL[b] ?? ""}`}>
+    <span className={`tag ${b.toLowerCase()}`} title={BAND_TITLE[b]} aria-label={`Band ${b}, ${BAND_TITLE[b] ?? ""}`}>
       {b}
     </span>
   );
 }
 
-export function StatusTag({ s }: { s: StatusVerificare | string }) {
-  return <span className={`tag ${s}`}>{s}</span>;
-}
-
-export function Kpi({ l, v, s }: { l: string; v: string | number; s?: string }) {
-  return (
-    <div className="panel kpi">
-      <div className="l">{l}</div>
-      <div className="v">{v}</div>
-      {s && <div className="s">{s}</div>}
-    </div>
+/** A big figure with a grey unit and a caption (guide A4). Optional link. */
+export function Figure({ n, unit, label, to, zero }: { n: ReactNode; unit?: string; label: string; to?: string; zero?: boolean }) {
+  const inner = (
+    <>
+      <b>
+        {n}
+        {unit && <small>{unit}</small>}
+      </b>
+      <span>{label}</span>
+    </>
   );
-}
-
-export function Bar({ v, max = 1, label }: { v: number; max?: number; label?: string }) {
-  const w = Math.max(0, Math.min(100, (v / max) * 100));
-  return (
-    <div className="bar" role="img" aria-label={label ?? `${Math.round(w)} %`}>
-      <i style={{ width: `${w}%` }} />
-    </div>
+  const cls = `figure ${to ? "link" : ""} ${zero ? "zero" : ""}`;
+  return to ? (
+    <a href={to} className={cls}>
+      {inner}
+    </a>
+  ) : (
+    <div className={cls}>{inner}</div>
   );
 }
 
@@ -41,12 +36,12 @@ export function Loading({ err }: { err?: string | null }) {
   if (err)
     return (
       <div className="notice fail" role="alert">
-        Datele nu s-au putut încărca ({err}). Verifică dacă serverul rulează și reîncarcă pagina.
+        Couldn't load the data ({err}). Check that the server is running and reload.
       </div>
     );
   return (
     <div className="muted" role="status">
-      Se încarcă…
+      Loading…
     </div>
   );
 }

@@ -13,6 +13,7 @@ import json
 import time
 from pathlib import Path
 
+from .cheltuieli import profil_cheltuieli
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, log_event, read_json, setup_console
 from .evaluate_final import raport_model_final
 from .pipeline import FullRun, run_full
@@ -34,10 +35,13 @@ def _case_payload(full: FullRun, case: dict) -> dict:
     return {
         "case": {k: case[k] for k in ("case_id", "client_id", "loan_id", "produs", "sursa", "request_id", "semnale", "scoruri",
                                       "banda", "deadline", "motive_top3", "actiune_propusa", "blocaje")},
+        "consilier": rec.get("consilier"), "versiune": rec.get("versiune"),
+        "cheltuieli": profil_cheltuieli(full.pf.tx_by_client.get(cl["client_id"], []), full.pf.today),
         "client": {"nume": cl["nume"], "nivel": cl["nivel_relatie"], "tipologie": cl["tipologie_declarata"],
                    "client_din": cl["client_din"], "produse": cl.get("produse_atasate", [])},
         "loan": ({"sold": ci.loan["sold_ramas"], "tip_dobanda": ci.loan["tip_dobanda"], "dobanda": ci.loan["dobanda_curenta"],
-                  "expira": ci.loan.get("dobanda_fixa_expira_la"), "scadenta": ci.loan["data_scadenta"], "rata": ci.loan["rata_lunara"]}
+                  "expira": ci.loan.get("dobanda_fixa_expira_la"), "scadenta": ci.loan["data_scadenta"], "rata": ci.loan["rata_lunara"],
+                  "moneda": ci.loan.get("moneda", "RON"), "sold_valuta": ci.loan.get("sold_valuta")}
                  if ci.loan else None),
         "check": {"motive": check["motive"], "plan": check["plan"], "omise": check["omise"],
                   "rezultate": [{k: x.get(k) for k in ("id", "treapta", "externa", "status", "dovada", "sursa")} for x in check["rezultate"]],
@@ -50,7 +54,8 @@ def _case_payload(full: FullRun, case: dict) -> dict:
                   "model": offer.get("model_churn"), "contributii": _contributii(full, offer),
                   "interventii": [{k: i[k] for k in ("id", "eticheta", "fezabil", "motiv_infezabil", "cost", "B_dupa", "p_dupa", "respecta_tinta", "merita")}
                                   for i in offer["interventii"]]},
-        "rec": {k: rec[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "grafic", "documente_lipsa", "explicatie")},
+        "rec": {**{k: rec[k] for k in ("recomandare", "eticheta", "interventie", "motiv", "oferta", "grafic", "documente_lipsa", "explicatie")},
+                "incertitudini": rec.get("incertitudini", []), "buget": rec.get("buget")},
     }
 
 
@@ -79,20 +84,19 @@ def build_html(full: FullRun, gt: list[dict], max_cazuri: int | None = None, dat
 
 
 UI_DIR = Path("ui")
-UI_COPII = ("queue.json", "checks.json", "offers.json", "recommendations.json", "evaluation.json")
+# copiile vechi ale out/*.json (~120 MB la 10.000 de clienți) nu mai sunt citite de interfață: doar demo.json
+UI_COPII_VECHI = ("queue.json", "checks.json", "offers.json", "recommendations.json", "evaluation.json")
 
 
 def sync_ui(data: dict, out_dir: Path, ui_dir: Path = UI_DIR) -> Path | None:
-    """Scrie snapshot-ul în ui/public/data/demo.json și copiază out/*.json lângă el (sursa statică a interfeței React)."""
+    """Scrie snapshot-ul în ui/public/data/demo.json (sursa statică a interfeței React, când API-ul nu rulează)."""
     if not (ui_dir / "package.json").exists():
         return None
     dest = ui_dir / "public" / "data"
     dest.mkdir(parents=True, exist_ok=True)
     (dest / "demo.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
-    for name in UI_COPII:
-        src = out_dir / name
-        if src.exists():
-            (dest / name).write_bytes(src.read_bytes())
+    for name in UI_COPII_VECHI:
+        (dest / name).unlink(missing_ok=True)
     return dest
 
 
@@ -181,7 +185,7 @@ function visible(){return D.cazuri.filter(c=>{const k=c.case,r=c.rec;
 function rows(){const tb=document.getElementById('rows');tb.innerHTML=visible().map(c=>{const k=c.case;const dec=decided[k.case_id];
  return `<tr class="row ${sel===k.case_id?'sel':''}" data-id="${k.case_id}"><td class="mono">${k.case_id}</td><td>${esc(c.client.nume)}<div class="muted mono">${k.client_id} · ${c.client.nivel}</div></td><td>${esc(k.produs||'—')}</td><td><span class="b ${k.banda}">${k.banda}</span>${k.blocaje.length?' <span class="tag">blocat</span>':''}</td><td class="num">${k.scoruri.prioritate.toFixed(2)}</td><td class="mono">${k.deadline}</td><td>${esc(LBL[c.rec.recomandare])}${dec?` <span class="tag">${esc(dec)}</span>`:''}</td></tr>`}).join('');
  tb.querySelectorAll('tr').forEach(tr=>tr.onclick=()=>{sel=tr.dataset.id;rows();panel();});}
-function st(s){return `<span class="st ${s}">${{ok:'✔',avertizare:'⚠',fail:'✘',neexecutat:'·'}[s]} ${s}</span>`}
+function st(s){return `<span class="st ${s}">${{ok:'✔',avertizare:'⚠',fail:'✘',neexecutat:'·',indisponibil:'◌'}[s]} ${s}</span>`}
 function panel(){const c=D.cazuri.find(x=>x.case.case_id===sel);if(!c)return;const k=c.case,ch=c.check,o=c.offer,r=c.rec,s=k.scoruri;
  const loan=c.loan?`sold ${ron(c.loan.sold)} RON · ${c.loan.tip_dobanda} ${c.loan.dobanda}%${c.loan.expira?' (fixă până la '+c.loan.expira+')':''} · rată ${ron(c.loan.rata)} RON`:'fără credit existent';
  let h=`<h2>${k.case_id} · ${esc(c.client.nume)} <span class="muted">(${k.client_id}, ${c.client.nivel}, ${c.client.tipologie}, client din ${c.client.client_din.slice(0,4)})</span></h2>
@@ -250,7 +254,7 @@ def main(argv: list[str] | None = None) -> None:
     if not a.fara_ui:
         dest = sync_ui(data, Path(a.out_dir), Path(a.ui_dir))
         if dest:
-            print(f"  interfața React: snapshot + copii out/*.json → {dest} (cd ui && npm run dev)")
+            print(f"  interfața React: snapshot → {dest} (cd ui && npm run dev)")
     log_event(a.out_dir, "demo", "done", cazuri=len(full.res.cases), kb=round(out.stat().st_size / 1024), secunde=round(dt, 3))
 
 

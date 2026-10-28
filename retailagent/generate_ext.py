@@ -102,6 +102,18 @@ FINAL: dict[int, tuple[str | None, str | None, dict, str]] = {
     48: (NU,    None, {}, "actualizare date"),
     49: (NU,    None, {}, "simulare rambursare anticipată pe variabilă (comision 0)"),
     50: (None,  None, {}, "capcana c: nu apare în coadă"),
+    # 51–60 · situații neașteptate; incertitudinile așteptate sunt în al 3-lea câmp sub cheia `incertitudini`
+    51: (RESTR, None, {}, "credit în EUR: ratele în valută > 20% din venit (DTI valută) → expunere valutară, restructurare"),
+    52: (RESTR, None, {"codebitor_la": 18}, "codebitor pe creditul cu întârziere al lui C0018 → risc propriu, restructurare"),
+    53: (RESTR, None, {"incertitudini": ["semnale_contradictorii"]}, "expirare pe ipotecar + întârziere pe card: riscul câștigă, cu incertitudine"),
+    54: (MIN,   None, {"incertitudini": ["cerere_duplicata"]}, "două cereri de adeverință la 2 zile → un singur caz, marcat"),
+    55: (MIN,   None, {"fara_cont": True, "incertitudini": ["fara_cont"]}, "fără cont curent la noi: sold_cont = avertizare, fluxul continuă, oferta condiționată"),
+    56: (MIN,   None, {"fara_anaf": True, "incertitudini": ["anaf_indisponibil"]}, "ANAF nu răspunde: venitul observat, oferta condiționată de confirmarea venitului"),
+    57: (NU,    None, {"bc_fantoma": True, "incertitudini": ["surse_contradictorii"]}, "BC arată un credit activ fără rate în tranzacții: DTI prudent, marcat"),
+    58: (BLOC,  None, {}, "client decedat: blocat, nicio comunicare"),
+    59: (BLOC,  None, {}, "PEP cu cerere de credit nou: blocat până la aprobarea specială"),
+    60: (MIN,   None, {"bc_refinantare_externa": True, "incertitudini": ["refinantare_externa_in_curs"]},
+         "BC: credit nou la altă bancă de aceeași sumă în ultimele 30 de zile → refinanțare externă în curs"),
 }
 
 INSTITUTIE = {"BCR RATA CREDIT": "BCR", "BRD GROUPE SOCIETE GENERALE RATA": "BRD",
@@ -180,8 +192,10 @@ class Extension:
                 l["codebitori"].append({"client_id": None, "nume": nume, "rol": "codebitor"})
 
     # ---------------- conturi: sold mediu / minim din fluxuri
-    def make_account(self, c: dict) -> None:
+    def make_account(self, c: dict, plante: dict | None = None) -> None:
         cid, rng = c["client_id"], self.rng
+        if (plante or {}).get("fara_cont"):
+            return                                                  # situație: clientul nu are cont curent la noi
         rate = sum(l["rata_lunara"] for l in self.loans_by_client[cid])
         flows = {m: [0.0, 0.0] for m in self.tx_months}
         for t in self.tx_by_client[cid]:
@@ -241,6 +255,8 @@ class Extension:
     # ---------------- ANAF
     def make_anaf(self, c: dict, plante: dict) -> None:
         cid, rng, typ = c["client_id"], self.rng, c["tipologie_declarata"]
+        if plante.get("fara_anaf"):
+            return                                                  # situație: sursa externă nu răspunde
         months = self.anaf_months
         surse = []
 
@@ -300,6 +316,15 @@ class Extension:
                             "rol": "debitor", "stare": "inchis", "data_acordare": add_years(inchis, -rng.uniform(2, 5)).isoformat(),
                             "data_inchidere": inchis.isoformat(), "sold": 0, "rata_lunara": 0,
                             "max_zile_intarziere_24l": 0})
+        if plante.get("bc_fantoma"):                                # situație: credit activ în BC, fără rate în tranzacțiile noastre
+            credite.append({"institutie": "UniCredit Bank", "tip": "nevoi_personale", "rol": "debitor", "stare": "activ",
+                            "data_acordare": add_years(self.today, -1.2).isoformat(), "data_inchidere": None,
+                            "sold": 18_500.0, "rata_lunara": 910.0, "max_zile_intarziere_24l": 0})
+        if plante.get("bc_refinantare_externa"):                    # situație: credit nou la altă bancă, de aceeași sumă, recent
+            sold = max((l["sold_ramas"] for l in self.loans_by_client[cid]), default=100_000)
+            credite.append({"institutie": "BCR", "tip": "ipotecar", "rol": "debitor", "stare": "activ",
+                            "data_acordare": self.d(-12).isoformat(), "data_inchidere": None, "sold": round(sold, -3),
+                            "rata_lunara": round(sold * 0.0065, 2), "max_zile_intarziere_24l": 0})
         if plante.get("bc") == "negativ":
             credite.append({"institutie": "Provident Financial IFN", "tip": "nevoi_personale", "rol": "debitor",
                             "stare": "inchis", "data_acordare": add_years(self.today, -2.5).isoformat(),
@@ -308,6 +333,8 @@ class Extension:
         scor = 480 if plante.get("bc") == "negativ" else rng.randint(610, 820)
         cereri = {r["tip"] for r in self.g.requests if r["client_id"] == cid}
         interogari = rng.randint(2, 3) if cereri & {"adeverinta_sold", "refinantare"} else rng.randint(0, 1)
+        if plante.get("bc_refinantare_externa"):
+            interogari = 4
         self.bc.append({"client_id": cid, "fara_istoric": typ == "tanar_fara_istoric" and not credite,
                         "scor": None if typ == "tanar_fara_istoric" and not credite else scor,
                         "interogari_ultimele_6l": interogari, "credite": credite})
@@ -370,6 +397,7 @@ class Extension:
         prag = K["prag_baza_ron"] * factor * math.exp(rng.gauss(0.0, K["zgomot_sigma"]))
         gt["recomandare_asteptata"] = rec
         gt["verificare_picata_asteptata"] = picata
+        gt["incertitudini_asteptate"] = list(plante.get("incertitudini", [])) if etalon else []
         gt["nota_model_final"] = nota
         gt["comportament"] = {
             # pleacă doar dacă banii câștigați net (după costul mutării și după oferta noastră) depășesc pragul
@@ -384,7 +412,7 @@ class Extension:
         for idx0, c in enumerate(self.g.clients):
             nr, _ = self.scen(idx0)
             plante = self.plante(idx0, c)
-            self.make_account(c)
+            self.make_account(c, plante)
             self.make_documents(c)
             self.make_anaf(c, plante)
             self.make_bc_crc(c, plante)

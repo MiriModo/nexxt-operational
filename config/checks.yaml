@@ -104,7 +104,7 @@ verificari:
     strat: motiv
     necesita_consimtamant: consimtamant_biroul_credit
     descriere: întârzieri la alte instituții, scor, interogări recente (își caută bancă?)
-    parametri: { max_zile_intarziere_24l: 90, scor_minim: 500 }
+    parametri: { max_zile_intarziere_24l: 90, scor_minim: 500, refinantare_zile: 45 }
   - id: expuneri_crc
     treapta: crc
     externa: true
@@ -180,6 +180,14 @@ motive:
   # CI expirată / consimțământ lipsă / KYC / asigurare / flag → doar task-ul; restul așteaptă
   blocaj:
     doar: [identitate_kyc]
+
+# Situații neașteptate. Cererile identice (client, tip, produs) la ≤ N zile sunt una singură (cea mai recentă).
+zile_cerere_duplicata: 7
+# Incertitudinile (din verificări) care devin critice = escaladare la om, în funcție de motivul cazului.
+# Cheie = id-ul incertitudinii; listă = motivele pentru care e critică ([] = întotdeauna).
+incertitudini_critice:
+  anaf_indisponibil: [credit_nou, majorare_limita_card, refinantare]     # fără venit confirmat nu se dă credit nou
+  surse_contradictorii: [credit_nou, majorare_limita_card]
 
 # Documentele din dosar (data/documente.json) necesare pentru fiecare tip de recomandare.
 #   valabil: documentul trebuie să fie în termen;  max_zile: emis în ultimele N zile;

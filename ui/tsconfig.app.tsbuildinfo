@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/format.ts","./src/main.tsx","./src/vite-env.d.ts","./src/api/client.ts","./src/components/casecard.tsx","./src/components/ui.tsx","./src/pages/acasa.tsx","./src/pages/caz.tsx","./src/pages/coada.tsx","./src/pages/dashboard.tsx","./src/pages/decizie.tsx","./src/types/api.ts"],"version":"5.9.3"}

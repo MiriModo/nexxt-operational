@@ -1,0 +1,21 @@
+# API-ul retailagent (FastAPI). La prima pornire generează data/ (din seed) și antrenează modelul de churn dacă lipsesc,
+# apoi rulează fluxul și servește /api. data/ și out/ sunt volume (vezi docker-compose.yml).
+FROM python:3.12-slim
+
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY retailagent/ retailagent/
+COPY config/ config/
+COPY models/ models/
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8000
+HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=10 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/metrici/context', timeout=4)"
+
+ENTRYPOINT ["/entrypoint.sh"]

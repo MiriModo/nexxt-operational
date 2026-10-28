@@ -95,6 +95,14 @@ tranzactii:                    # zgomotul din extrase, redus față de cele 50 c
   nr_utilitati: 1
   prob_chirie_in: 0.12
   prob_chirie_out: 0.35
+  categorii:                   # cât din plățile „altele” rămân pe comerciantul tras sau devin alte categorii (sumă 1.0)
+    pastreaza: 0.55
+    restaurants: 0.15
+    entertainment: 0.08
+    transport: 0.08
+    services: 0.06
+    cash: 0.05
+    travel: 0.03
 
 angajatori:
   bazin: 120                   # angajatori distincți pentru clienții statistici
