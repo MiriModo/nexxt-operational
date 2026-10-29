@@ -33,7 +33,7 @@ export function AgentProposal({ caseId, action }: { caseId: string; action?: (p:
         <span className="mono">AI offer agent</span>
         {p && (
           <span className={`tag ${p.sursa === "llm" ? "ok" : "warn"}`} title={p.avertisment ?? undefined}>
-            {p.sursa === "llm" ? p.model : "template"}
+            {p.sursa === "llm" ? modelName(p.model) : "template"}
           </span>
         )}
         {!offline && (
@@ -111,6 +111,12 @@ export function AgentProposal({ caseId, action }: { caseId: string; action?: (p:
       )}
     </div>
   );
+}
+
+/** "us.anthropic.claude-haiku-4-5-20251001-v1:0" or "claude-haiku-5-5" → "Claude Haiku 4.5" / "Claude Haiku 5.5". */
+function modelName(id: string | null): string {
+  const m = (id ?? "").match(/claude-(haiku|sonnet|opus|fable|mythos)-(\d+)-(\d+)/i);
+  return m ? `Claude ${m[1][0].toUpperCase()}${m[1].slice(1).toLowerCase()} ${m[2]}.${m[3]}` : id ?? "model";
 }
 
 function labelOf(p: PropunereLLM, id: string | null): string {
