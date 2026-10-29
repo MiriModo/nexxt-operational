@@ -285,3 +285,16 @@ def test_mesajul_compara_cu_rata_de_azi_si_numeste_saltul(monkeypatch):
         assert azi in s["mesaj_client"] and dupa in s["mesaj_client"] and luna in s["mesaj_client"]
         assert s["mesaj_client"].index(azi) < s["mesaj_client"].index(dupa)
         assert valideaza(s, x, cfg) == []
+
+
+def test_punctele_gresite_se_elimina_fara_reincercare(monkeypatch):
+    """Un punct-cheie cu o cifră inventată sau prea lung dispare; restul răspunsului rămâne al modelului."""
+    trimise = []
+
+    def post(self, url, **kw):
+        trimise.append(1)
+        return _raspuns_anthropic(url, raspuns(puncte_cheie=["Ok: expires 2026-12-12", "Invented 14 days", "x" * 250, "a", "b"]))
+    monkeypatch.setattr(httpx.Client, "post", post)
+    r = genereaza(caz(), OFFER_FULL, cfg=CFG, env={"ANTHROPIC_API_KEY": "k"})
+    assert r["sursa"] == "llm" and r["incercari"] == 1 and len(trimise) == 1
+    assert r["puncte_cheie"] == ["Ok: expires 2026-12-12", "a", "b"]

@@ -297,6 +297,23 @@ def fapte_client(ctx: dict, interventie: str | None) -> dict:
     return {"credit": ctx["credit"], "oferta": opt["oferta"] if opt else None}
 
 
+def puncte_valide(puncte, ctx: dict, cfg: LlmConfig) -> list[str]:
+    """Punctele-cheie sunt doar afișare: păstrăm cele care trec aceleași verificări (lungime, termeni, cifre) și
+    renunțăm la restul, în loc să respingem tot răspunsul pentru un punct greșit."""
+    if not isinstance(puncte, list):
+        return []
+    permise, ok = numere_permise(ctx), []
+    for x in puncte:
+        if not isinstance(x, str) or not x.strip() or len(x) > 200:
+            continue
+        if any(_termen_gasit(x, t) for t in cfg.termeni_interzisi):
+            continue
+        if any(cand and not any(_potrivit(c, permise, cfg.toleranta_numere) for c in cand) for _, cand in numere_din_text(x)):
+            continue
+        ok.append(x.strip())
+    return ok[:3]
+
+
 def valideaza(r: dict, ctx: dict, cfg: LlmConfig) -> list[str]:
     """Probleme găsite în răspunsul modelului (listă goală = acceptat). Mesajele sunt în engleză: merg înapoi la model."""
     p: list[str] = []
@@ -596,8 +613,8 @@ def genereaza(caz: dict, offer_full: dict | None = None, pf=None, cfg_full=None,
             return _rezultat(sablon(ctx), ctx, cfg, "sablon", furnizor=furnizor, model=model,
                              avertisment=f"The AI agent is unavailable ({e}); the text comes from the template.",
                              incercari=incercari, probleme=probleme, durata_ms=ms())
-        if isinstance(r, dict) and isinstance(r.get("puncte_cheie"), list):
-            r["puncte_cheie"] = r["puncte_cheie"][:3]          # doar afișare: păstrăm primele 3 în loc de o reîncercare
+        if isinstance(r, dict):
+            r["puncte_cheie"] = puncte_valide(r.get("puncte_cheie"), ctx, cfg)   # doar afișare: fără reîncercare
         gasite = valideaza(r, ctx, cfg)
         if not gasite:
             return _rezultat(r, ctx, cfg, "llm", furnizor=furnizor, model=model, avertisment=None, incercari=incercari,
