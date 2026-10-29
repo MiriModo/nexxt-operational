@@ -82,6 +82,18 @@ def test_oferta_are_grafic_si_cifre(recs, pipeline):
     o = r["oferta"]
     assert o["dobanda_noua"] == 4.90 and o["rata_noua"] > 0 and o["cost_banca"] > 0 and o["economie_client"] > 0
     assert o["perioada"] == "3 ani" and o["rata_noua"] < o["rata_veche"]
+    # „rata veche” e ce plătește clientul azi, nu rata de după expirarea fixei (aceea apare separat)
+    loan = next(l for l in pipeline["pf"].loans if l["loan_id"] == r["loan_id"])
+    from retailagent.finance import luni_ramase, rata_anuitate, segmente_credit
+    seg = segmente_credit(loan, pipeline["pf"].today, pipeline["pf"].market)
+    azi = (loan["rata_lunara"] if seg[0][1] == loan["dobanda_curenta"]
+           else rata_anuitate(loan["sold_ramas"], seg[0][1], luni_ramase(loan, pipeline["pf"].today)))
+    assert o["rata_veche"] == pytest.approx(azi, abs=0.01)
+    if len(seg) > 1:
+        assert o["rata_dupa_fixa"] > 0 and o["fixa_expira"] == loan["dobanda_fixa_expira_la"]
+    else:
+        assert "rata_dupa_fixa" not in o
+    assert o["economie_orizont_luni"] == 36
     g = r["grafic"]
     assert len(g["primele_luni"]) == 12 and g["nr_rate"] > 200 and g["dobanda_totala"] > 0
     assert g["primele_luni"][0]["luna"] == "2026-11"

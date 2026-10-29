@@ -7,7 +7,7 @@ import { CATEGORIES, categoryName } from "../components/Categories";
 import { AgentProposal } from "../components/AgentProposal";
 import { State, decisionName } from "../components/State";
 import { Band, Loading } from "../components/ui";
-import { label, num, pct, pp, ron } from "../format";
+import { label, monthYear, num, pct, pp, ron } from "../format";
 import { proposal } from "../proposal";
 import type { Caz, CheckInfo, Cheltuieli, OfferInfo, Reverificare, VerificareRezultat } from "../types/api";
 
@@ -306,13 +306,18 @@ export default function Case() {
                   {of.rata_veche > 0 && <s>{ron(of.rata_veche)}</s>}
                   {ron(of.rata_noua)}
                 </dd>
-                <dt>monthly payment</dt>
+                <dt>monthly payment, today → with the offer</dt>
               </div>
               <div>
                 <dd>{ron(of.cost_banca)}</dd>
                 <dt>it costs the bank</dt>
               </div>
             </dl>
+          )}
+          {of?.rata_dupa_fixa && of.fixa_expira && of.rata_dupa_fixa > of.rata_noua && (
+            <p className="meta" style={{ margin: "10px 0 0" }}>
+              Without the offer, the payment rises to {ron(of.rata_dupa_fixa)} when the current fixed rate ends in {monthYear(of.fixa_expira)}.
+            </p>
           )}
           {of?.amanata_buget && (
             <p className="small" style={{ margin: "12px 0 0" }}>

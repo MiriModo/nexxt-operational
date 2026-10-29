@@ -48,6 +48,14 @@ def _iter_scenariu(sold: float, segmente: list[tuple[int, float]]):
             yield idx, d, principal, max(0.0, rest), dob
 
 
+def rata_in_luna(sold: float, segmente: list[tuple[int, float]], luna: int) -> float:
+    """Rata plătită în luna `luna` (1 = luna următoare) a scenariului; 0 dacă creditul e stins până atunci."""
+    for nr, d, principal, *_ in _iter_scenariu(sold, segmente):
+        if nr == luna:
+            return d + principal
+    return 0.0
+
+
 def grafic(sold: float, segmente: list[tuple[int, float]], luna_start: str) -> list[dict]:
     """Graficul de rambursare, rând cu rând, pentru un scenariu de dobânzi."""
     rows, luna = [], luna_start

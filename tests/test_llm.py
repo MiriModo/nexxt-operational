@@ -267,3 +267,21 @@ def test_configurare_citeste_env_fara_executie(tmp_path, monkeypatch):
     assert vals["ANTHROPIC_API_KEY"] == "sk-din-fisier" and vals["X"] == "$(rm -rf /)"
     monkeypatch.setenv("ANTHROPIC_API_KEY", "din-mediu")
     assert llm.configurare()["ANTHROPIC_API_KEY"] == "din-mediu"
+
+
+def test_mesajul_compara_cu_rata_de_azi_si_numeste_saltul(monkeypatch):
+    """Clientul plătește azi 4.638 lei; fără ofertă, după ianuarie 2028, ar plăti 5.661. Mesajul spune ambele, corect."""
+    of = {"tip": "fix_piata", "dobanda_noua": 4.9, "perioada": "3 ani", "dupa_perioada": "IRCC + 2.71 pp = 8.26%",
+          "rata_veche": 4637.53, "rata_noua": 4126.59, "rata_dupa_fixa": 5661.22, "fixa_expira": "2028-01-03",
+          "dobanda_dupa_fixa": 8.26, "cost_banca": 68582.44, "economie_client": 52350.88, "economie_orizont_luni": 36}
+    monkeypatch.setattr(llm, "_oferta_pentru", lambda it, c, pf, cfg: of)
+    c = caz()
+    c["rec"]["oferta"] = of
+    for limba, azi, dupa, luna in (("ro", "4.638 lei", "5.661 lei", "ianuarie 2028"), ("en", "4,638 RON", "5,661 RON", "January 2028")):
+        cfg = LlmConfig(**{**CFG.model_dump(), "limba_client": limba})
+        x = context_agent(c, OFFER_FULL, cfg=cfg)
+        assert x["optiuni"][0]["oferta"]["economie_in_ani"] == 3.0
+        s = sablon(x)
+        assert azi in s["mesaj_client"] and dupa in s["mesaj_client"] and luna in s["mesaj_client"]
+        assert s["mesaj_client"].index(azi) < s["mesaj_client"].index(dupa)
+        assert valideaza(s, x, cfg) == []

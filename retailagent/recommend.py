@@ -19,7 +19,7 @@ from pathlib import Path
 from .checks import Mocks, load_mocks, run_all_checks
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, fmt_ron, log_event, month_key, parse_date, setup_console, shift_month, write_json
 from .config_loader import Config
-from .finance import grafic, luni_ramase, rata_anuitate, segmente_credit
+from .finance import grafic, luni_ramase, rata_anuitate, rata_in_luna, segmente_credit
 from .queue import run_pipeline
 from .retention import build_offers
 
@@ -41,7 +41,17 @@ def oferta_din_interventie(loan: dict, it: dict, today: date, market: dict, cfg:
     """Oferta concretă (dobândă nouă, rată nouă, perioadă) + graficul, pentru intervenția aleasă."""
     luni = luni_ramase(loan, today)
     seg = segmente_credit(loan, today, market)
-    rata_veche = rata_anuitate(loan["sold_ramas"], seg[-1][1], luni)
+    # „rata veche” = ce plătește clientul azi (prima lună a scenariului „rămâi așa”). Dacă perioada fixă curentă se
+    # termină înainte de scadență, rata de după (recalculată pe soldul de atunci, ca la bancă) apare separat.
+    # Rata din contract, când dobânda de azi e cea din contract (altfel, rata recalculată la dobânda de azi).
+    contract = loan.get("rata_lunara")
+    rata_veche = (float(contract) if contract and seg[0][1] == float(loan["dobanda_curenta"])
+                  else rata_in_luna(loan["sold_ramas"], seg, 1))
+    stare_actuala = {}
+    if len(seg) > 1:
+        stare_actuala = {"rata_dupa_fixa": round(rata_in_luna(loan["sold_ramas"], seg, seg[0][0] + 1), 2),
+                         "fixa_expira": loan.get("dobanda_fixa_expira_la"), "dobanda_dupa_fixa": seg[-1][1]}
+    orizont = {"economie_orizont_luni": min(luni, round(cfg.retention.orizont_ani * 12))}
     d = it.get("detalii") or {}
     tip = it["tip"]
     if tip == "fix_piata":
@@ -72,13 +82,13 @@ def oferta_din_interventie(loan: dict, it: dict, today: date, market: dict, cfg:
                       "sold_dupa_pauza": round(sold_cap, 2)}
             g = _grafic(sold_cap, seg_nou, today + timedelta(days=30 * pauza))
             oferta.update(rata_veche=round(rata_veche, 2), rata_noua=round(g["primele_luni"][0]["rata"], 2),
-                          cost_banca=it["cost"], economie_client=0.0)
+                          cost_banca=it["cost"], economie_client=0.0, **stare_actuala)
             return oferta, g
     else:
         return None, None
     g = _grafic(loan["sold_ramas"], seg_nou, today)
     oferta.update(rata_veche=round(rata_veche, 2), rata_noua=round(g["primele_luni"][0]["rata"], 2),
-                  cost_banca=it["cost"], economie_client=it.get("castig_client", 0.0))
+                  cost_banca=it["cost"], economie_client=it.get("castig_client", 0.0), **orizont, **stare_actuala)
     return oferta, g
 
 
@@ -242,8 +252,11 @@ def explicatie(r: dict, case: dict, check: dict, offer: dict, client: dict) -> s
     o = r["oferta"]
     if o and o.get("rata_noua"):
         if o.get("rata_veche"):
-            L.append(f"Oferta: dobândă {o['dobanda_noua']:.2f}% ({o['perioada']}), rata scade de la {fmt_ron(o['rata_veche'])} la "
-                     f"{fmt_ron(o['rata_noua'])} RON/lună; cost pentru bancă {fmt_ron(o['cost_banca'])} RON."
+            sens = "scade" if o["rata_noua"] <= o["rata_veche"] else "crește"
+            L.append(f"Oferta: dobândă {o['dobanda_noua']:.2f}% ({o['perioada']}), rata {sens} de la {fmt_ron(o['rata_veche'])} "
+                     f"(azi) la {fmt_ron(o['rata_noua'])} RON/lună; cost pentru bancă {fmt_ron(o['cost_banca'])} RON."
+                     + (f" Fără ofertă, după {o['fixa_expira']} rata ar fi {fmt_ron(o['rata_dupa_fixa'])} RON/lună."
+                        if o.get("rata_dupa_fixa") else "")
                      + (f" Condiție: {o['conditie']}." if o.get("conditie") else ""))
         else:
             L.append(f"Oferta: {o.get('produs')} {fmt_ron(o.get('suma') or 0)} RON la {o['dobanda_noua']:.2f}%, rată {fmt_ron(o['rata_noua'])} RON/lună.")

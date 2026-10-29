@@ -120,11 +120,18 @@ def _oferta_fapte(o: dict | None) -> dict | None:
     f = {"tip": o.get("tip"), "dobanda_noua_pct": round(float(o.get("dobanda_noua") or 0), 2), "perioada": o.get("perioada")}
     if _ani(o.get("perioada")):
         f["ani_perioada"] = _ani(o.get("perioada"))
-    for k in ("rata_veche", "rata_noua", "economie_client", "scutire_ron"):
+    # rata_veche = ce plătește clientul azi; rata_dupa_fixa = cât ar plăti fără ofertă după ce se termină fixa curentă
+    for k in ("rata_veche", "rata_noua", "rata_dupa_fixa", "economie_client", "scutire_ron"):
         if isinstance(o.get(k), (int, float)) and not isinstance(o.get(k), bool):
             f[f"{k}_ron"] = round(float(o[k]))
     if f.get("rata_veche_ron") and f.get("rata_noua_ron") and f["rata_veche_ron"] > f["rata_noua_ron"]:
         f["scadere_rata_lunara_ron"] = f["rata_veche_ron"] - f["rata_noua_ron"]
+    if o.get("rata_dupa_fixa") and o.get("fixa_expira"):
+        f["fixa_actuala_expira"] = str(o["fixa_expira"])[:10]
+        if isinstance(o.get("dobanda_dupa_fixa"), (int, float)):
+            f["dobanda_dupa_fixa_actuala_pct"] = round(float(o["dobanda_dupa_fixa"]), 2)
+    if o.get("economie_orizont_luni"):
+        f["economie_in_ani"] = round(o["economie_orizont_luni"] / 12, 1)
     m = re.search(r"=\s*(\d+(?:\.\d+)?)%", o.get("dupa_perioada") or "")
     if m:
         f["dobanda_dupa_perioada_pct"] = float(m.group(1))
@@ -343,6 +350,21 @@ def _pct_ro(v) -> str:
     return f"{v:.2f}".replace(".", ",") + "%"
 
 
+LUNI = {"ro": ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie",
+               "noiembrie", "decembrie"],
+        "en": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+               "November", "December"]}
+
+
+def _luna(iso: str, limba: str) -> str:
+    """„2028-01-03” → „ianuarie 2028” / „January 2028”."""
+    try:
+        an, luna = int(iso[:4]), int(iso[5:7])
+        return f"{LUNI[limba][luna - 1]} {an}"
+    except (ValueError, IndexError):
+        return iso
+
+
 def _descriere(o: dict, limba: str) -> str:
     tip, ani, d = o.get("tip"), o.get("ani_perioada"), o.get("dobanda_noua_pct")
     if limba == "ro":
@@ -425,6 +447,12 @@ def sablon(ctx: dict, interventie: str | None = None) -> dict:
     elif o.get("rata_noua_ron"):
         mesaj += (f"Rata lunară ar fi de {_ron_ro(o['rata_noua_ron'])}. " if ro else
                   f"Your monthly payment would be {_ron_en(o['rata_noua_ron'])}. ")
+    if o.get("rata_dupa_fixa_ron") and o.get("fixa_actuala_expira") and o["rata_dupa_fixa_ron"] > (o.get("rata_noua_ron") or 0):
+        luna = _luna(o["fixa_actuala_expira"], limba)
+        mesaj += (f"Fără această ofertă, după încheierea perioadei fixe actuale, din {luna}, rata ar crește la "
+                  f"{_ron_ro(o['rata_dupa_fixa_ron'])}. " if ro else
+                  f"Without it, once your current fixed period ends in {luna}, the payment would rise to "
+                  f"{_ron_en(o['rata_dupa_fixa_ron'])}. ")
     mesaj += ("Vă invităm să discutați detaliile cu consilierul dumneavoastră." if ro else
               "Your advisor will be glad to go through the details with you.")
     descr = _descriere(o, "en")

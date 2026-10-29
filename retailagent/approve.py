@@ -117,11 +117,11 @@ def print_decision(rec: dict, d: dict) -> None:
     o = d["oferta"]
     if o:
         print("\n── Oferta")
-        for k in ("tip", "produs", "suma", "dobanda_noua", "marja_noua", "perioada", "dupa_perioada", "rata_veche", "rata_noua",
+        for k in ("tip", "produs", "suma", "dobanda_noua", "marja_noua", "perioada", "dupa_perioada", "rata_veche", "rata_noua", "rata_dupa_fixa",
                   "cost_banca", "economie_client", "conditie", "scutire_ron", "sold_dupa_pauza"):
             if o.get(k) is not None:
                 v = o[k]
-                print(f"  {k:<16} {fmt_ron(v) + ' RON' if k in ('suma', 'rata_veche', 'rata_noua', 'cost_banca', 'economie_client', 'scutire_ron', 'sold_dupa_pauza') else v}")
+                print(f"  {k:<16} {fmt_ron(v) + ' RON' if k in ('suma', 'rata_veche', 'rata_noua', 'rata_dupa_fixa', 'cost_banca', 'economie_client', 'scutire_ron', 'sold_dupa_pauza') else v}")
     g = d["grafic"]
     if g:
         print(f"\n── Grafic (primele 12 luni din {g['nr_rate']}; dobândă totală {fmt_ron(g['dobanda_totala'])} RON)")

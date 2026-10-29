@@ -184,10 +184,17 @@ export interface RecInfo {
     dobanda_noua: number;
     perioada: string;
     luni_noi: number;
+    /** what the client pays today */
     rata_veche: number;
     rata_noua: number;
+    /** without the offer: the payment once the current fixed period ends (only when it ends before maturity) */
+    rata_dupa_fixa?: number;
+    fixa_expira?: string;
+    dobanda_dupa_fixa?: number;
     cost_banca: number;
+    /** interest the client saves over `economie_orizont_luni` (the decision horizon) */
     economie_client: number;
+    economie_orizont_luni?: number;
     conditie?: string;
     /** incertitudini de lămurit înainte ca oferta să fie comunicată */
     conditii_de_confirmat?: string[];
@@ -434,6 +441,9 @@ export interface OfertaFapte {
   perioada: string;
   ani_perioada?: number;
   rata_veche_ron?: number;
+  rata_dupa_fixa_ron?: number;
+  fixa_actuala_expira?: string;
+  economie_in_ani?: number;
   rata_noua_ron?: number;
   scadere_rata_lunara_ron?: number;
   economie_client_ron?: number;

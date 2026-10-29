@@ -16,6 +16,9 @@ export const days = (deadline: string, today: string) =>
 
 export const date = (iso: string) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(iso));
 
+/** "2028-01-03" → "January 2028". */
+export const monthYear = (iso: string) =>
+  new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date(iso.length === 10 ? iso + "T12:00:00" : iso));
 export const dateLong = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date(iso.length === 10 ? iso + "T12:00:00" : iso));
 

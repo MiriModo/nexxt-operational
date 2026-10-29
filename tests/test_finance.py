@@ -6,7 +6,7 @@ from datetime import date
 import pytest
 
 from retailagent.finance import (comision_rambursare_anticipata, dobanda_totala, dti, grafic, luni_ramase,
-                                 rata_anuitate, segmente_credit, varsta_la)
+                                 rata_anuitate, rata_in_luna, segmente_credit, varsta_la)
 
 TODAY = date(2026, 10, 28)
 MARKET = {"ircc": 5.55}
@@ -74,3 +74,13 @@ def test_dti_si_varsta():
     assert dti(2_000, 5_000) == pytest.approx(0.4)
     assert dti(2_000, 0) is None
     assert varsta_la("1960-10-28", date(2046, 10, 28)) == pytest.approx(86.0, abs=0.05)
+
+
+def test_rata_in_luna_azi_si_dupa_expirarea_fixei():
+    """Rata de azi e la dobânda fixă curentă; după expirare se recalculează pe soldul rămas, la IRCC + marjă."""
+    seg = segmente_credit(loan(), TODAY, MARKET)                       # 12 luni la 5,2%, apoi 228 la 8,05%
+    assert rata_in_luna(300_000, seg, 1) == pytest.approx(rata_anuitate(300_000, 5.2, 240), abs=0.01)
+    rows = grafic(300_000, seg, "2026-11")
+    assert rata_in_luna(300_000, seg, 13) == pytest.approx(rows[12]["rata"], abs=0.01)
+    assert rata_in_luna(300_000, seg, 13) > rata_in_luna(300_000, seg, 1)   # saltul de la expirare
+    assert rata_in_luna(300_000, seg, 999) == 0.0
