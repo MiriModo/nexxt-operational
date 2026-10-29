@@ -195,3 +195,70 @@ def test_conturi_si_roluri(client):
     # logout invalidează tokenul
     client.post("/api/logout", headers=ana)
     assert client.get("/api/eu", headers=ana).status_code == 401
+
+
+def test_propunere_llm_si_audit(client, monkeypatch):
+    """Agentul LLM (pasul 3): propunerea are id, stă în cache per caz, se leagă de decizie și intră în audit."""
+    rows = client.get('/api/cazuri?compact=false').json()
+    c = next(c for c in rows if c['rec']['recomandare'] == 'oferta_minima' and c['rec']['interventie'])
+    cid, motor = c['case']['case_id'], c['rec']['interventie']
+    alt = next(i['id'] for i in c['offer']['interventii'] if i['fezabil'] and i['id'] not in (motor, 'nu_interveni'))
+    alegere = {'v': motor}
+    monkeypatch.setattr('retailagent.api.genereaza', lambda *a, **k: {
+        'sursa': 'llm', 'interventie': alegere['v'], 'interventie_motor': motor, 'acord_cu_motorul': alegere['v'] == motor,
+        'titlu': 'Propunere', 'motiv_alegere': 'Motiv', 'argument': 'Argument', 'mesaj_client': 'Mesaj',
+        'puncte_cheie': [], 'atentionari': [], 'model': 'test'})
+    p = client.post(f'/api/cazuri/{cid}/propunere').json()
+    assert p['case_id'] == cid and p['interventie'] == motor
+    assert client.post(f'/api/cazuri/{cid}/propunere').json()['id'] == p['id']          # din cache
+    assert client.post('/api/cazuri/Q9999/propunere').status_code == 404
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'respinge', 'motiv': 'x', 'propunere_id': p['id']}).status_code == 400
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'propunere_id': 'inexistent'}).status_code == 400
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={
+        'decizie': 'aproba', 'propunere_id': p['id']}).status_code == 200
+    assert client.get('/api/decizii').json()[-1]['propunere_llm']['id'] == p['id']
+    assert p['id'] in (client.out / 'audit.jsonl').read_text(encoding='utf-8')
+    # agentul alege altă opțiune admisibilă: consilierul o adoptă ca „modifică”, cu motivul agentului
+    alegere['v'] = alt
+    q = client.post(f'/api/cazuri/{cid}/propunere?nou=true').json()
+    assert q['id'] != p['id'] and q['interventie'] == alt
+    assert client.post(f'/api/cazuri/{cid}/decizie', json={'decizie': 'aproba', 'propunere_id': q['id']}).status_code == 400
+    r = client.post(f'/api/cazuri/{cid}/decizie', json={'decizie': 'modifica', 'interventie': alt, 'motiv': 'Motivul agentului',
+                                                       'propunere_id': q['id']})
+    assert r.status_code == 200 and r.json()['interventie'] == alt and r.json()['override']
+
+
+def test_propunere_fara_cheie_vine_din_sablon(client, monkeypatch):
+    monkeypatch.setattr('retailagent.llm.configurare', lambda: {})
+    s = client.get('/api/llm/stare').json()
+    assert s['mod'] == 'sablon' and s['cheie'] is False and s['motiv']
+    rows = client.get('/api/cazuri?compact=false').json()
+    for stare in ('oferta_minima', 'restructurare', 'nu_interveni'):
+        c = next((c for c in rows if c['rec']['recomandare'] == stare), None)
+        if c is None:
+            continue
+        p = client.post(f"/api/cazuri/{c['case']['case_id']}/propunere?nou=true").json()
+        assert p['sursa'] == 'sablon' and p['mesaj_client'] and p['argument'] and 'ANTHROPIC_API_KEY' in p['avertisment']
+        assert c['client']['nume'] not in p['mesaj_client'] + p['argument']
+        if stare != 'oferta_minima':
+            assert p['decide'] is False and p['interventie'] == c['rec']['interventie']
+
+
+def test_propunere_respecta_accesul(client, monkeypatch):
+    ana = autentificare(client, "ana.pop", "1234")
+    rows = client.get('/api/coada?limit=500').json()['items']
+    foreign = next(c['case']['case_id'] for c in rows if c['consilier'] != 'ana.pop')
+    own = next(c['case']['case_id'] for c in rows if c['consilier'] == 'ana.pop')
+    calls = []
+    def generate(c, *a, **k):
+        calls.append(c['case']['case_id'])
+        return {'interventie': None, 'titlu': 'Titlu', 'motiv': 'Motiv', 'indicii': [],
+                'mesaj_client': 'Mesaj', 'atentionari': [], 'model': 'test'}
+    monkeypatch.setattr('retailagent.api.genereaza', generate)
+    assert client.post(f'/api/cazuri/{own}/propunere', headers={'Authorization': ''}).status_code == 401
+    assert client.post(f'/api/cazuri/{foreign}/propunere', headers=ana).status_code == 403
+    assert calls == []
+    assert client.post(f'/api/cazuri/{own}/propunere?nou=true', headers=ana).status_code == 200
+    assert calls == [own]

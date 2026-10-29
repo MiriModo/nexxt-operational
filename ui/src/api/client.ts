@@ -5,7 +5,7 @@
 // iar deciziile se țin în localStorage. `getSursa()` spune ce sursă e activă (pentru antet).
 import type {
   Birou, BugetPortofoliu, Caz, ConfigFisier, Consilier, DecizieInput, DecizieRecord, DecizieServer, Feedback, Metrici, ModelInfo,
-  PaginaCoada, ParametriCoada, Reverificare, Snapshot, Sumar, Versiune,
+  PaginaCoada, ParametriCoada, PropunereLLM, Reverificare, Snapshot, StareLLM, Sumar, Versiune,
 } from "../types/api";
 
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? "/api";
@@ -414,4 +414,19 @@ export function comandaApprove(caseId: string, d: DecizieInput): string {
   if (d.motiv) p.push(`--motiv "${d.motiv.replace(/"/g, "'")}"`);
   if (d.consilier) p.push(`--consilier ${d.consilier}`);
   return p.join(" ");
+}
+
+/** Pasul 3: propunerea agentului LLM (decizie în constrângeri + text). Doar prin API: în modul offline nu se simulează.
+ *  Serverul păstrează propunerea per caz; `nou` cere una nouă. */
+export async function postPropunere(caseId: string, nou = false): Promise<PropunereLLM> {
+  if (sursa === "static") throw new Error("The AI agent needs the server; start the API and reload.");
+  const r = await req(`/cazuri/${encodeURIComponent(caseId)}/propunere${nou ? "?nou=true" : ""}`, { method: "POST" });
+  if (!r.ok) throw new Error(`AI agent: ${r.status}`);
+  return (await r.json()) as PropunereLLM;
+}
+
+export async function getStareLlm(): Promise<StareLLM | null> {
+  if (sursa === "static") return null;
+  const r = await req("/llm/stare");
+  return r.ok ? ((await r.json()) as StareLLM) : null;
 }

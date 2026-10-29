@@ -4,6 +4,7 @@ import { EroareHttp, getCaz, getContext, getDeciziiLocale } from "../api/client"
 import { useVerifica } from "../api/hooks";
 import { Due } from "../components/CaseCard";
 import { CATEGORIES, categoryName } from "../components/Categories";
+import { AgentProposal } from "../components/AgentProposal";
 import { State, decisionName } from "../components/State";
 import { Band, Loading } from "../components/ui";
 import { label, num, pct, pp, ron } from "../format";
@@ -332,12 +333,7 @@ export default function Case() {
               </ul>
             </div>
           )}
-          {rec.llm && (
-            <>
-              <p className="mono" style={{ margin: "14px 0 6px" }}>Text for the client</p>
-              <pre className="text">{rec.llm.text_client}</pre>
-            </>
-          )}
+          <AgentProposal caseId={cs.case_id} />
         </section>
       </div>
 

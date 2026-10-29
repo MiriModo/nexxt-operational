@@ -114,16 +114,17 @@ explicația) rămân în română — traducerea lor e un pas separat.
   (fereastră de 14 zile), paginare (60 odată), schelet la încărcare.
 * **Case** (`/queue/{id}`) — banda sticky cu clientul, starea, rata veche → nouă, termenul și **Decide →**; secțiuni
   cu etichete mono: [01] Why now, [02] The client, [03] What the agent proposes (dobândă, rată, economie, cost în
-  display; to confirm / to request; textul LLM când există), [04] Checks — un rând pe verificare, pe trepte, cu
+  display; to confirm / to request; cardul **AI offer agent** cu alegerea, argumentul și mesajul către client), [04] Checks — un rând pe verificare, pe trepte, cu
   cercurile verde / amber / roșu din ghid și **Re-check** (rulează doar verificările acelui caz și le arată pas cu
   pas). În acordeon „How the agent got here": semnalele, B / p / V, meniul ca grafic cost × p_după, explicația, versiunea.
-* **Decision** (`/queue/{id}/decide`) — Approve / Change / Reject cu motiv; consilierul e cel autentificat
+* **Decision** (`/queue/{id}/decide`) — propunerea agentului LLM lângă cea a motorului (**Adopt the agent's choice** o
+  transformă în „Change” cu motivul agentului); Approve / Change / Reject cu motiv; consilierul e cel autentificat
   (administratorul poate alege în numele cui decide), deciziile anterioare și rezultatul la 90 de zile; toast și
   întoarcere la caz.
 * **Reports** (`/reports`, administrator) — cifrele mari (saved vs. uniform, no-cost cases, queries avoided, hard-rule
   breaches), costul pe strategie și distribuția ca bare în paleta de chart, bugetul lunar ca bară, **calibrarea
   modelului** cu diagonala ideală, consilierii față de agent, versiunea.
-* **Rules engine** (`/rules`, administrator) — editor pentru cele 7 YAML-uri cu validare pe server la salvare, diff
+* **Rules engine** (`/rules`, administrator) — editor pentru cele 8 YAML-uri cu validare pe server la salvare, diff
   față de git, „Re-run the flow"; rutele `/api/config*` și `/api/rescan` răspund 403 pentru consilieri.
 
 ## Comenzi
@@ -278,6 +279,34 @@ lipsă din dosar (reguli în `checks.yaml → documente_necesare`), explicația 
 `approve` validează decizia consilierului: `modifica` și `respinge` cer motiv; intervenția aleasă de om trebuie
 să existe în meniu și să fie fezabilă (altfel refuz cu motivul constrângerii); override-ul intră în audit.
 
+### 5. Agentul LLM de ofertare (`config/llm.yaml`, `retailagent/llm.py`)
+
+Pasul 3 din roadmap: **decide oferta în constrângeri și scrie textul în limbaj uman**. Constrângerile rămân la motor;
+modelul alege doar dintre opțiunile pe care motorul le-a declarat admisibile și scrie doar cu cifrele calculate.
+
+1. **Opțiunile admisibile** (`optiuni_admisibile`): în cazurile de retenție (ofertă minimă / ofertă + produs), intervențiile
+   fezabile (DTI, LTV, vârstă, marjă minimă, buget pe nivel) care aduc p sub țintă și costă ≤ p×V, plafonate la
+   `cost_max_fata_de_motor` × costul alegerii motorului (implicit 2×). Pentru fiecare se calculează oferta concretă, la
+   fel ca la decizia „modifică”. Cazurile blocate, escaladate, cu risc de credit sau fără nevoie de ofertă nu primesc
+   opțiuni: agentul doar explică decizia motorului.
+2. **Contextul** (`context_agent`): doar fapte calculate și etichete din config. Fără nume, fără dovezile semnalelor
+   (text liber din date, unde pot apărea comercianți sau bănci), deci fără injecție de prompt.
+3. **Apelul**: tool forțat cu schemă strictă; `interventie` e un enum din opțiunile admisibile. Implicit Anthropic
+   (`claude-haiku-5-5`), opțional Bedrock sau OpenAI.
+4. **Validarea** (`valideaza`): fiecare număr din text trebuie să existe în fapte; mesajul către client poate cita doar
+   creditul și oferta aleasă (nu costul băncii, p, V sau scoruri) și trebuie să spună rata sau dobânda nouă; termenii
+   interziși (bănci concurente, „garantat”, „gratuit”, cashback) resping textul. Un răspuns respins primește o
+   reîncercare cu motivul respingerii, apoi agentul cade pe **șablonul determinist** (aceleași câmpuri, marcat
+   `sablon`).
+5. **Decizia rămâne a consilierului.** Dacă agentul alege altă opțiune decât motorul, interfața arată diferența de
+   cost; adoptarea ei e un „modifică” cu motivul agentului. `propunere_id` intră în decizie doar dacă propunerea
+   corespunde intervenției finale (serverul verifică), iar propunerea întreagă intră în `approvals.json` și
+   `audit.jsonl`. Hash-ul promptului intră în `versiune.prompturi`.
+
+Cheia **nu** stă în repo: `ANTHROPIC_API_KEY` (sau `AWS_BEARER_TOKEN_BEDROCK` / `OPENAI_API_KEY`) în mediu sau în
+`.env` din rădăcină (vezi `.env.example`; `.env` e ignorat de git și de Docker). Fără cheie, totul funcționează pe
+șablon. Verificare rapidă: `python -m retailagent.llm --verifica` (starea + un apel de probă pe un caz sintetic).
+
 ## Portofoliul realist la scară (`config/portofoliu.yaml`, `retailagent/profil.py`)
 
 Pentru `--n > 50` generatorul nu mai repetă cele 50 de scenarii în blocuri: primii 50 rămân scenariile de mână
@@ -421,7 +450,7 @@ retailagent/
   profil.py                      # profilul portofoliului realist (pydantic)
   churn/                         # features (o singură funcție), model (SigmoidChurn / TrainedChurn), labels, train
 models/                          # churn_v1.pkl (joblib) + churn_v1.json (feature-uri, metrici, calibrare, coeficienți)
-  common.py, config_loader.py    # utilitare; validare pydantic a celor 5 YAML-uri + verificări încrucișate
+  common.py, config_loader.py    # utilitare; validare pydantic a YAML-urilor + verificări încrucișate
   signals/                       # registru, inflows (deducerea încasărilor), plecare, risc_credit, blocaj_proces
   scan.py, intake.py, queue.py   # Modulul 1: semnale → cazuri → coadă (schema queue.json stabilă)
   finance.py                     # anuitate, grafic, dobândă pe scenarii / orizont, OUG 50, DTI, cost mutare
@@ -430,10 +459,11 @@ models/                          # churn_v1.pkl (joblib) + churn_v1.json (featur
   recommend.py, approve.py       # cele 6 stări, ofertă, grafic, documente, audit, incertitudini; aprobarea consilierului + rezultat la 90 zile
   buget.py                       # bugetul lunar de retenție pe portofoliu (ordonare V_reținut / cost, marcaje in_buget / amânată)
   feedback.py, versiune.py       # raportul agent vs. consilier vs. rezultat; hash config + versiune model + commit
+  llm.py                         # pasul 3: agentul LLM de ofertare (opțiuni admisibile, context, validare, șablon, furnizori)
   explain.py, evaluate.py, evaluate_final.py, demo.py, pipeline.py
   api.py                         # FastAPI pe contractul din ui/src/types/api.ts (snapshot comun cu demo.py → build_data)
 ui/                              # React (Vite + TS + React Query): Acasă, Coadă, Caz, Decizie, Dashboard, Admin; public/data e generat
-config/                          # signals, priority, checks, constraints, retention, portofoliu, echipa
+config/                          # signals, priority, checks, constraints, retention, portofoliu, echipa, llm
 docs/REGULI.md                   # fiecare regulă cu sursa (BNR / OUG 50 / KYC-AML / politică internă / model) + situațiile neașteptate
 data/                            # portofoliul + externe/ (mock-uri)         out/   # artefactele rulării
 tests/                           # 192 teste (… + situații neașteptate, feedback, API)

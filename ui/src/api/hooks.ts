@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { DecizieInput, ParametriCoada } from "../types/api";
 import {
   getBirou, getCaz, getCoada, getConfig, getConfigDiff, getConfigLista, getContext, getEchipa, getFeedback, getIstoric, getMetrici, getModel,
-  getSumar, getUtilizatori, postDecizie, postRescan, postRezultat, postVerifica, putConfig,
+  getStareLlm, getSumar, getUtilizatori, postDecizie, postPropunere, postRescan, postRezultat, postVerifica, putConfig,
 } from "./client";
 
 export const chei = {
@@ -21,6 +21,8 @@ export const chei = {
   configDiff: (n: string) => ["config", n, "diff"] as const,
   birou: ["birou"] as const,
   utilizatori: ["utilizatori"] as const,
+  propunere: (id: string) => ["propunere", id] as const,
+  stareLlm: ["llm", "stare"] as const,
 };
 
 export const useContext = () => useQuery({ queryKey: chei.context, queryFn: getContext, staleTime: 60_000 });
@@ -36,6 +38,14 @@ export const useFeedback = () => useQuery({ queryKey: chei.feedback, queryFn: ge
 export const useModel = () => useQuery({ queryKey: chei.model, queryFn: getModel, staleTime: 5 * 60_000 });
 export const useConfigLista = () => useQuery({ queryKey: chei.config, queryFn: getConfigLista });
 export const useConfigFisier = (n: string) => useQuery({ queryKey: chei.configFisier(n), queryFn: () => getConfig(n), enabled: !!n });
+/** Agentul LLM: propunerea unui caz, comună paginii cazului și paginii de decizie (serverul o ține în cache). */
+export const usePropunere = (id: string, enabled = true) =>
+  useQuery({ queryKey: chei.propunere(id), queryFn: () => postPropunere(id), enabled: !!id && enabled, staleTime: Infinity, retry: false });
+export const useStareLlm = () => useQuery({ queryKey: chei.stareLlm, queryFn: getStareLlm, staleTime: 60_000 });
+export function useRegenereaza(id: string) {
+  const qc = useQueryClient();
+  return useMutation({ mutationFn: () => postPropunere(id, true), onSuccess: (p) => qc.setQueryData(chei.propunere(id), p) });
+}
 export const useConfigDiff = (n: string) => useQuery({ queryKey: chei.configDiff(n), queryFn: () => getConfigDiff(n), enabled: !!n });
 
 export function useDecizie(id: string) {

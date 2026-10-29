@@ -50,5 +50,10 @@ def versiune_cod() -> str | None:
 
 def versiune_completa(cfg, config_dir: Path | str = CONFIG_DIR) -> dict:
     c, m = versiune_config(config_dir), versiune_model(cfg)
-    scurt = f"cfg:{c['hash']} model:{m['model']}:{m['hash'] or m['versiune']} prompturi:—"
-    return {"config": c, "model": m, "prompturi": None, "cod": versiune_cod(), "scurt": scurt}
+    llm = getattr(cfg, "llm", None)
+    prompturi = None
+    if llm is not None and llm.activat:
+        from .llm import hash_prompt
+        prompturi = {"llm": hash_prompt(llm), "furnizor": llm.furnizor, "model": llm.modele.get(llm.furnizor, "")}
+    scurt = f"cfg:{c['hash']} model:{m['model']}:{m['hash'] or m['versiune']} prompturi:{prompturi['llm'] if prompturi else '—'}"
+    return {"config": c, "model": m, "prompturi": prompturi, "cod": versiune_cod(), "scurt": scurt}

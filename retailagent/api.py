@@ -8,7 +8,9 @@
     GET  /api/coada, /api/cazuri     coada utilizatorului: toată pentru admin, doar cazurile alocate pentru consilier
     GET  /api/cazuri/{id}            un caz (403 dacă nu e al tău)
     GET  /api/metrici, /api/model    rezultatele agentului (admin)
-    POST /api/cazuri/{id}/decizie    {decizie, interventie?, motiv?} → approve.decide + persist; consilierul = cel autentificat
+    POST /api/cazuri/{id}/propunere  agentul LLM: alege oferta în constrângeri + textul (llm.genereaza); ?nou=true regenerează
+    GET  /api/llm/stare              agentul LLM e activ (cheie + llm.yaml) sau pe șablon
+    POST /api/cazuri/{id}/decizie    {decizie, interventie?, motiv?, propunere_id?} → approve.decide + persist; consilierul = cel autentificat
     GET  /api/decizii, /api/feedback deciziile / raportul utilizatorului (toate pentru admin)
     GET/PUT /api/config/{nume}, POST /api/rescan   motorul de reguli (admin)
 
@@ -23,6 +25,7 @@ from pathlib import Path
 from typing import Literal
 
 import secrets
+from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,6 +34,7 @@ from pydantic import BaseModel
 from .approve import ApprovalError, decide, inregistreaza_rezultat, persist
 from .common import CONFIG_DIR, DATA_DIR, OUT_DIR, read_json
 from .demo import build_data
+from .llm import genereaza, stare_llm
 from .pipeline import run_full
 
 
@@ -39,6 +43,7 @@ class DecizieInput(BaseModel):
     interventie: str | None = None
     motiv: str | None = None
     consilier: str | None = None
+    propunere_id: str | None = None        # propunerea agentului LLM pe care se bazează decizia (intră în audit)
 
 
 class RezultatInput(BaseModel):
@@ -83,6 +88,8 @@ class Stare:
         self.refresh()
 
     def refresh(self) -> None:
+        self.propuneri: dict[str, dict] = {}                    # id → propunerea LLM; expiră la reîncărcarea fluxului
+        self.propunere_caz: dict[str, str] = {}                 # case_id → id-ul ultimei propuneri (cache)
         self.full = run_full(self.data_dir, self.out_dir, self.config_dir, rescan=True)
         gt = read_json(self.data_dir / "ground_truth.json")
         self.data = build_data(self.full, gt, None)
@@ -295,16 +302,46 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
     def metrici():
         return stare.data["metrici"]
 
+    @app.get("/api/llm/stare")
+    def llm_stare(eu: dict = Depends(utilizator_curent)):
+        """Agentul LLM e activ (cheie + llm.yaml) sau lucrează pe șablon; nu expune niciodată cheia."""
+        return stare_llm(stare.full.cfg.llm)
+
+    @app.post("/api/cazuri/{case_id}/propunere")
+    def propunere(case_id: str, nou: bool = False, eu: dict = Depends(utilizator_curent)):
+        """Agentul LLM (pasul 3): alege oferta dintre opțiunile admisibile ale motorului și scrie argumentul pentru
+        consilier + mesajul pentru client, validate față de faptele calculate. Fără cheie sau la eroare: șablonul.
+        Propunerea se păstrează per caz până la reîncărcarea fluxului; `?nou=true` cere una nouă."""
+        c = al_meu(case_id, eu)
+        vechi = stare.propunere_caz.get(case_id)
+        if vechi and not nou and vechi in stare.propuneri:
+            return stare.propuneri[vechi]
+        result = genereaza(c, stare.offers.get(case_id), stare.full.pf, stare.full.cfg)
+        result = {**result, "id": str(uuid4()), "case_id": case_id, "generat_la": datetime.now().isoformat(timespec="seconds")}
+        stare.propuneri[result["id"]] = result
+        stare.propunere_caz[case_id] = result["id"]
+        return result
+
     @app.post("/api/cazuri/{case_id}/decizie")
     def decizie(case_id: str, d: DecizieInput, eu: dict = Depends(utilizator_curent)):
         """Decizia poartă consilierul autentificat; doar administratorul poate decide în numele altcuiva."""
         al_meu(case_id, eu)
+        suggestion = None
+        if d.propunere_id:
+            suggestion = stare.propuneri.get(d.propunere_id)
+            if suggestion is None or suggestion["case_id"] != case_id:
+                raise HTTPException(400, "Propunerea LLM a expirat. Generează din nou.")
+            final = d.interventie if d.decizie == "modifica" else stare.recs[case_id]["interventie"]
+            if d.decizie == "respinge" or suggestion["interventie"] != final:
+                raise HTTPException(400, "Propunerea LLM nu corespunde intervenției alese.")
         consilier = d.consilier if eu["rol"] == "admin" else eu["id"]
         try:
             rec = decide(stare.recs[case_id], stare.offers[case_id], d.decizie, d.interventie, d.motiv, stare.full.cfg,
                          datetime.now(), stare.data_dir, consilier)
         except ApprovalError as e:
             raise HTTPException(400, str(e)) from e
+        if suggestion:
+            rec["propunere_llm"] = suggestion
         persist(rec, stare.out_dir)
         return {"decizie": d.decizie, "interventie": rec["interventie_finala"], "motiv": rec["motiv"], "case_id": case_id,
                 "la": rec["timestamp"], "sursa": "api", "override": rec["override"], "oferta": rec["oferta"],
@@ -375,7 +412,7 @@ def create_app(data_dir=DATA_DIR, out_dir=OUT_DIR, config_dir=CONFIG_DIR) -> Fas
         return {"activ": versiune_model(stare.full.cfg), "antrenat": meta}
 
     # ---- motorul de reguli (administrator): editare YAML cu validare pe server, apoi re-rulare
-    EDITABILE = ("priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa")
+    EDITABILE = ("priority", "retention", "constraints", "checks", "signals", "portofoliu", "echipa", "llm")
     admin = doar_admin
 
     @app.get("/api/config", dependencies=[Depends(admin)])

@@ -10,3 +10,8 @@ data/
 models/labels_din_approvals.json
 *.tsbuildinfo
 .claude/
+
+# Chei locale pentru agentul LLM (pasul 3): nu intră niciodată în repo
+.env
+.env.*
+!.env.example

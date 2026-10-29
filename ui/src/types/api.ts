@@ -206,8 +206,6 @@ export interface RecInfo {
   explicatie: string;
   incertitudini?: Incertitudine[];
   buget?: { rang: number; scor_v_pe_cost: number | null; valoare_retinuta: number; cost: number; in_buget: boolean } | null;
-  /** rezervat pasului 3 (agentul LLM): argumentul și textul ofertei generate; apare doar când există */
-  llm?: { argument: string; text_client: string; model?: string } | null;
 }
 
 /** Spending profile over the last months, by payment category (as in the bank's app). */
@@ -332,6 +330,8 @@ export interface DecizieServer {
   rezultat: "ramas" | "plecat" | null;
   rezultat_la: string | null;
   versiune?: string | null;
+  /** propunerea agentului LLM pe care s-a bazat decizia (dacă a fost folosită) */
+  propunere_llm?: PropunereLLM | null;
 }
 
 export interface Strategie {
@@ -423,6 +423,65 @@ export interface DecizieInput {
   interventie?: string;
   motiv?: string;
   consilier?: string;
+  /** id-ul propunerii agentului LLM folosite; serverul verifică să corespundă intervenției finale */
+  propunere_id?: string;
+}
+
+/** Cifrele publice ale unei oferte, așa cum le vede și le poate cita agentul LLM. */
+export interface OfertaFapte {
+  tip: string;
+  dobanda_noua_pct: number;
+  perioada: string;
+  ani_perioada?: number;
+  rata_veche_ron?: number;
+  rata_noua_ron?: number;
+  scadere_rata_lunara_ron?: number;
+  economie_client_ron?: number;
+  dobanda_dupa_perioada_pct?: number;
+  conditie?: string;
+}
+
+/** Pasul 3: agentul LLM alege oferta dintre opțiunile admisibile ale motorului și scrie textul. */
+export interface PropunereLLM {
+  id: string;
+  case_id: string;
+  generat_la: string;
+  /** llm = textul modelului, validat; sablon = text determinist (fără cheie, eroare sau validare picată) */
+  sursa: "llm" | "sablon";
+  furnizor: string | null;
+  model: string | null;
+  /** false când cazul nu admite oferte (blocat, escaladat, risc de credit, nu interveni): agentul doar explică */
+  decide: boolean;
+  interventie: string | null;
+  interventie_motor: string | null;
+  acord_cu_motorul: boolean;
+  optiuni: { id: string; eticheta: string; cost_banca_ron: number; p_dupa_pct: number | null }[];
+  titlu: string;
+  oferta: OfertaFapte | null;
+  cost_banca: number | null;
+  cost_motor: number | null;
+  motiv_alegere: string;
+  argument: string;
+  mesaj_client: string;
+  limba_client: "ro" | "en";
+  puncte_cheie: string[];
+  atentionari: string[];
+  avertisment: string | null;
+  incercari: number;
+  probleme: string[];
+  durata_ms: number;
+  prompt_hash: string;
+}
+
+export interface StareLLM {
+  activat: boolean;
+  furnizor: string | null;
+  model: string | null;
+  cheie: boolean;
+  mod: "llm" | "sablon";
+  motiv: string | null;
+  prompt_hash?: string;
+  limba_client?: "ro" | "en";
 }
 
 export interface DecizieRecord extends DecizieInput {

@@ -14,3 +14,8 @@ ui/public/data
 vault
 docs
 tests
+
+# Cheile LLM nu intră în imagine; containerul le primește din mediu (docker-compose.yml)
+.env
+.env.*
+!.env.example

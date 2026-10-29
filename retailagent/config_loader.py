@@ -355,6 +355,37 @@ class EchipaConfig(BaseModel):
 MOTIVE_SPECIALE = ("risc", "blocaj")
 
 
+# ---------------------------------------------------------------- llm.yaml
+
+FURNIZORI_LLM = ("anthropic", "bedrock", "openai")
+
+
+class LlmConfig(BaseModel):
+    """Agentul LLM de ofertare (pasul 3). Valorile implicite permit rularea fără llm.yaml (folosește șablonul)."""
+    activat: bool = True
+    furnizor: Literal["anthropic", "bedrock", "openai"] = "anthropic"
+    modele: dict[str, str] = Field(default_factory=lambda: {"anthropic": "claude-haiku-5-5",
+                                                             "bedrock": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+                                                             "openai": "gpt-4.1-mini"})
+    max_tokens: int = Field(1500, ge=300, le=8000)
+    timeout_s: float = Field(45, gt=0, le=300)
+    reincercari: int = Field(1, ge=0, le=2)
+    limba_client: Literal["ro", "en"] = "ro"
+    cost_max_fata_de_motor: float = Field(2.0, ge=1.0)
+    toleranta_numere: float = Field(0.01, ge=0, le=0.05)
+    termeni_interzisi: list[str] = Field(default_factory=list)
+    termeni_interzisi_client: list[str] = Field(default_factory=list)
+    prompt: str = ""
+
+    @model_validator(mode="after")
+    def _check(self) -> "LlmConfig":
+        if self.furnizor not in self.modele or not self.modele[self.furnizor].strip():
+            raise ValueError(f"llm.yaml: lipsește modele.{self.furnizor} pentru furnizorul ales")
+        if self.activat and len(self.prompt.strip()) < 50:
+            raise ValueError("llm.yaml: prompt lipsește sau e prea scurt")
+        return self
+
+
 class Config(BaseModel):
     signals: SignalsConfig
     priority: PriorityConfig
@@ -362,6 +393,7 @@ class Config(BaseModel):
     retention: RetentionConfig
     checks: ChecksConfig
     echipa: EchipaConfig = Field(default_factory=EchipaConfig)
+    llm: LlmConfig = Field(default_factory=lambda: LlmConfig(activat=False))     # fără llm.yaml: doar șablonul
 
     @model_validator(mode="after")
     def _cross(self) -> "Config":
@@ -399,4 +431,5 @@ def load_config(config_dir: Path | str = CONFIG_DIR) -> Config:
                   constraints=ConstraintsConfig(**_load_yaml(config_dir / "constraints.yaml")),
                   retention=RetentionConfig(**_load_yaml(config_dir / "retention.yaml")),
                   checks=ChecksConfig(**_load_yaml(config_dir / "checks.yaml")),
-                  echipa=EchipaConfig(**_load_yaml(config_dir / "echipa.yaml")) if (config_dir / "echipa.yaml").exists() else EchipaConfig())
+                  echipa=EchipaConfig(**_load_yaml(config_dir / "echipa.yaml")) if (config_dir / "echipa.yaml").exists() else EchipaConfig(),
+                  llm=LlmConfig(**_load_yaml(config_dir / "llm.yaml")) if (config_dir / "llm.yaml").exists() else LlmConfig(activat=False))

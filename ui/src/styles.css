@@ -561,3 +561,23 @@ dl.stats dt { font-size: 12px; color: var(--body-2); margin-bottom: 6px; line-he
 /* Reports: KPI cards sit on one baseline (the generic .win + .win margin pushed all but the first one down) */
 .stats > .win, .report-grid > .win { margin-top: 0; }
 .brand svg { width: 26px; height: 26px; }
+
+/* ---------- step 3, the AI offer agent: one quiet card; the client message carries the yellow marker ---------- */
+.agent { margin: 18px 0 0; padding: 16px 18px 12px; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--border); }
+.agent-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.agent-head .btn { margin-left: auto; }
+.agent-skel { height: 96px; margin-top: 8px; }
+.agent-note { font-size: 13px; color: var(--amber); background: var(--amber-bg); border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
+.agent-choice { margin: 0 0 4px; font-size: 15px; color: var(--foreground); }
+.agent-why { margin: 0 0 10px; }
+.agent-arg { margin: 0 0 10px; font-size: 14.5px; line-height: 1.55; color: var(--foreground); max-width: 70ch; }
+.agent-points { margin: 0 0 12px; padding-left: 18px; font-size: 13.5px; color: var(--body-2); }
+.agent-points li { margin-bottom: 2px; }
+.agent-msg { border-left: 3px solid var(--rb-yellow, #fee600); background: var(--neutral-bg); border-radius: 0 10px 10px 0; padding: 10px 14px 12px; margin: 4px 0 12px; }
+.agent-msg-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+.agent-msg p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--foreground); white-space: pre-wrap; }
+.agent-warn { margin: 0 0 10px; }
+.agent-warn li { font-size: 13px; color: var(--amber); margin-bottom: 3px; }
+.agent-warn li::before { content: "! "; font-weight: 600; }
+.agent-foot { margin: 8px 0 0; font-size: 12px; }
+.agent .adopt { margin: 2px 0 8px; }

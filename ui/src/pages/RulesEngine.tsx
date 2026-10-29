@@ -12,6 +12,7 @@ const ABOUT: Record<string, string> = {
   signals: "the signals: thresholds and scores",
   portofoliu: "profile of the generated portfolio",
   echipa: "advisors and case allocation",
+  llm: "AI offer agent: provider, model, prompt, text checks",
 };
 
 /** The rules live in YAML; here they're edited with server-side validation (same models as at start-up), then the flow

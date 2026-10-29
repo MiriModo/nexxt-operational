@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { comandaApprove, getCaz, getDeciziiLocale, getSursa, postDecizie } from "../api/client";
-import { useEchipa, useIstoric, useRezultat } from "../api/hooks";
+import { useEchipa, useIstoric, usePropunere, useRezultat } from "../api/hooks";
 import { useEu } from "../auth";
+import { AgentProposal } from "../components/AgentProposal";
 import { State, decisionName } from "../components/State";
 import { useToast } from "../components/Toast";
 import { Band, Loading } from "../components/ui";
@@ -32,6 +33,7 @@ export default function Decision() {
   const team = useEchipa();
   const history = useIstoric(id);
   const outcome = useRezultat(id);
+  const ai = usePropunere(id, getSursa() !== "static").data;
 
   useEffect(() => {
     getCaz(id).then((x) => setC(x ?? null)).catch((e) => setErr(String(e)));
@@ -41,9 +43,17 @@ export default function Decision() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [c]);
 
+  // the AI proposal travels with the decision (and into the audit log) only when it backs the final intervention
+  const finalIntervention = decision === "modifica" ? intervention : c?.rec.interventie ?? null;
   const input: DecizieInput = useMemo(
-    () => ({ decizie: decision, interventie: decision === "modifica" ? intervention || undefined : undefined, motiv: reason.trim() || undefined, consilier: advisor || undefined }),
-    [decision, intervention, reason, advisor],
+    () => ({
+      decizie: decision,
+      interventie: decision === "modifica" ? intervention || undefined : undefined,
+      motiv: reason.trim() || undefined,
+      consilier: advisor || undefined,
+      propunere_id: ai && decision !== "respinge" && (finalIntervention ?? null) === (ai.interventie ?? null) ? ai.id : undefined,
+    }),
+    [decision, intervention, reason, advisor, ai, finalIntervention],
   );
   const valid = decision === "aproba" || (reason.trim().length > 0 && (decision !== "modifica" || intervention));
 
@@ -93,6 +103,28 @@ export default function Decision() {
           </p>
           <p className="lead" style={{ color: "var(--foreground)", fontSize: 15.5 }}>{proposal(rec)}</p>
           {rec.oferta?.amanata_buget && <p className="meta">Deferred: this month's retention cap is used up; approving it does so explicitly.</p>}
+          <AgentProposal
+            caseId={cs.case_id}
+            action={(p) =>
+              p.decide && !p.acord_cu_motorul && p.interventie ? (
+                <div className="actions adopt">
+                  <button
+                    type="button"
+                    className="btn secondary sm"
+                    disabled={decision === "modifica" && intervention === p.interventie}
+                    onClick={() => {
+                      setDecision("modifica");
+                      setIntervention(p.interventie ?? "");
+                      if (!reason.trim()) setReason(`AI agent: ${p.motiv_alegere}`);
+                    }}
+                  >
+                    {decision === "modifica" && intervention === p.interventie ? "Agent's choice selected" : "Adopt the agent's choice"}
+                  </button>
+                  <span className="meta">recorded as a change, with the agent's reason</span>
+                </div>
+              ) : null
+            }
+          />
           {existing && (
             <div className="notice warn" style={{ marginTop: 12 }}>
               Existing decision from {date(existing.la)}: <b>{decisionName(existing.decizie)}</b>

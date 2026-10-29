@@ -9,6 +9,14 @@ services:
     environment:
       RETAILAGENT_N: ${RETAILAGENT_N:-10000}     # clienți generați la prima pornire (60 = doar etalonul, pornire rapidă)
       RETAILAGENT_ADMIN_PAROLA: ${RETAILAGENT_ADMIN_PAROLA:-admin}   # parola ecranului Administrare
+      # agentul LLM (pasul 3): cheile vin din mediul gazdei sau din .env (nu intră în imagine); fără cheie → șablon
+      RETAILAGENT_LLM_PROVIDER: ${RETAILAGENT_LLM_PROVIDER:-}
+      RETAILAGENT_LLM_MODEL: ${RETAILAGENT_LLM_MODEL:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     volumes:
       - ./data:/app/data
       - ./out:/app/out
