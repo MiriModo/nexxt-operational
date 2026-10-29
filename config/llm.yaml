@@ -50,7 +50,8 @@ prompt: |
      that without the offer the payment would rise to that amount once the current fixed period ends
      (`fixa_actuala_expira`). `economie_client_ron` is interest saved over `economie_in_ani` years, not per month.
      No greeting by name, no signature. Never mention the bank's cost, probabilities, scores or internal figures to
-     the client.
+     the client. In Romanian, write amounts as "3.238 lei" (dot for thousands, "lei", no decimals) and rates as
+     "4,90%"; in English, "3,238 RON" and "4.90%".
   5. `puncte_cheie`: up to 3 short English bullet points for the advisor.
 
   Rules: use only numbers that appear in the facts, written as they are (you may round to whole RON). Do not

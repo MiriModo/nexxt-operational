@@ -596,6 +596,8 @@ def genereaza(caz: dict, offer_full: dict | None = None, pf=None, cfg_full=None,
             return _rezultat(sablon(ctx), ctx, cfg, "sablon", furnizor=furnizor, model=model,
                              avertisment=f"The AI agent is unavailable ({e}); the text comes from the template.",
                              incercari=incercari, probleme=probleme, durata_ms=ms())
+        if isinstance(r, dict) and isinstance(r.get("puncte_cheie"), list):
+            r["puncte_cheie"] = r["puncte_cheie"][:3]          # doar afișare: păstrăm primele 3 în loc de o reîncercare
         gasite = valideaza(r, ctx, cfg)
         if not gasite:
             return _rezultat(r, ctx, cfg, "llm", furnizor=furnizor, model=model, avertisment=None, incercari=incercari,
@@ -621,7 +623,9 @@ def _caz_proba() -> tuple[dict, dict]:
            "offer": {"p": 0.95, "p_tinta": 0.2, "V": 227414, "B": 32462, "legaturi": {"vechime_ani": 4.6}, "B_detalii": {"luni_ramase": 264}},
            "rec": {"recomandare": "oferta_minima", "eticheta": "ofertă minimă", "interventie": "fix_3_ani", "documente_lipsa": [],
                    "oferta": {"tip": "fix_piata", "dobanda_noua": 4.9, "perioada": "3 ani", "dupa_perioada": "IRCC + 2.50 pp = 8.05%",
-                              "rata_veche": 3237.5, "rata_noua": 2478.59, "cost_banca": 44680.77, "economie_client": 35411.83}}}
+                              "rata_veche": 2507.9, "rata_noua": 2478.59, "rata_dupa_fixa": 3237.5, "fixa_expira": "2026-12-12",
+                              "dobanda_dupa_fixa": 8.05, "cost_banca": 44680.77, "economie_client": 35411.83,
+                              "economie_orizont_luni": 36}}}
     return caz, {"interventii": [it]}
 
 
