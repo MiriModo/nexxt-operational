@@ -225,8 +225,8 @@ export default function Decision() {
           )}
 
           <div className="actions">
-            <button type="button" className="btn primary" disabled={!valid || busy} onClick={send}>
-              {busy ? "Sending…" : "Send the decision"} <span className="arrow">→</span>
+            <button type="button" className="btn primary" disabled={!valid || busy} aria-busy={busy} onClick={send}>
+              {busy ? "Sending…" : "Send the decision"} <span className="arrow" aria-hidden="true">→</span>
             </button>
             <button type="button" className="btn ghost" onClick={() => nav(`/queue/${cs.case_id}`)}>
               Cancel
