@@ -16,7 +16,7 @@ All data is synthetic: 10,000 generated clients, seed 42.
 
 ## The problem
 
-**Meet Michael.** He opened his first account at his bank when he was 20. Thirteen years later the bank has his
+**Meet Michael.-Programmer** He opened his first account at his bank when he was 20. Thirteen years later the bank has his
 salary, his savings and a mortgage of over 720,000 lei. He is still filed as a "standard" client.
 
 His fixed rate ends in January 2028, and then his payment jumps from 4,638 to 5,626 lei a month. Other banks lend
